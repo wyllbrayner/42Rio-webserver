@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+hml" href="images/icon.svg"/>
+  <title>Upload Page</title>
+</head>
+
+<body>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/upload.html" class="current">Upload</a></li>
+    <li><a href="/index.php">Index</a></li>
+</ul>
+  <p>Upload Page</p>
+  <form method="post" enctype="multipart/form-data" action="./index.html">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="user_name" value="Name" required /><br>
+    <label for="myfile">Select a file:</label><br>
+    <!-- <input type="hidden" name="MAX_FILE_SIZE" value="30000" /> -->
+    <input type="file" id="myfile" name="user_file" required />
+    <button type="submit">Upload</button>
+    <!-- <input type="text" id="test" name="test_name" required /><br> -->
+  </form>
+
+</body>
+
+</html>
