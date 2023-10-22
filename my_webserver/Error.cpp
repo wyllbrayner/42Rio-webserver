@@ -22,6 +22,11 @@ const char *	Error::InvalidPathServer::what( void ) const throw()
 	return ("Error: could not open config file.");
 }
 
+const char *	Error::InvalidConfigurationServer::what( void ) const throw()
+{
+	return ("Error: server has configuration errors");
+}
+
 const char *	Error::InvalidServer::what( void ) const throw()
 {
 	return ("Error: server did not find.");

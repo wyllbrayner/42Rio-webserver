@@ -31,6 +31,13 @@ class	Error
 			public:
 				virtual const char* what( void ) const throw();
 		};
+
+		class	InvalidConfigurationServer : public std::exception
+		{
+			public:
+				virtual const char* what( void ) const throw();
+		};
+
 		class	InvalidServer : public std::exception
 		{
 			public:

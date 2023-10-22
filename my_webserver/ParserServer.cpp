@@ -34,6 +34,8 @@ ParserServer::~ParserServer( void )
 
 void 	ParserServer::createServer( const std::string & config_path)
 {
+//	std::cout << "start | createServer" << std::endl;
+
 	std::ifstream	ifs;
 	std::string		line;
 	std::string		servers;
@@ -54,10 +56,12 @@ void 	ParserServer::createServer( const std::string & config_path)
 	}
 	else
 		throw Error::InvalidPathServer();
+//	std::cout << "end   | createServer" << std::endl;
 }
 
 void 	ParserServer::removeComents( std::string & line )
 {
+//	std::cout << "start | removeComents" << std::endl;
 	size_t pos;
 
 	pos = line.find('#', 0);
@@ -67,10 +71,12 @@ void 	ParserServer::removeComents( std::string & line )
 		line.erase(pos, (std::string::npos - pos));
 //		std::cout << "possui comentário!! Pós => line: " << line << std::endl;
 	}
+//	std::cout << "end   | removeComents" << std::endl;
 }
 
 void	ParserServer::splitServers( std::string & servers )
 {
+//	std::cout << "start | splitServers" << std::endl;
 	size_t						start;
 	size_t						end;
 	std::vector< std::string >	splitted_server;
@@ -82,7 +88,7 @@ void	ParserServer::splitServers( std::string & servers )
 	while ( start < servers.size() )
 	{
 		if ( servers.compare( start, 6, "server" ) != 0 )
-			throw Error::InvalidPathServer();
+			throw Error::InvalidConfigurationServer();
 		start = start + 6;
 		this->findStartServer( servers , start );
 		end = start;
@@ -95,7 +101,7 @@ void	ParserServer::splitServers( std::string & servers )
 		if (splitted_server.size())
 		{
 //testeinicio
-			std::cout << "splitted_server size: " << splitted_server.size() << std::endl;
+//			std::cout << "splitted_server size: " << splitted_server.size() << std::endl;
 			i = splitted_server.begin();
 			j = splitted_server.end();
 			while(i != j)
@@ -108,23 +114,30 @@ void	ParserServer::splitServers( std::string & servers )
 /*
 */
 	}
+//	std::cout << "end   | splitServers" << std::endl;
 }
 
 void	ParserServer::findStartServer( const std::string & servers, size_t & start )
 {
-	while (servers[start] && std::isspace(servers[start]))
+//	std::cout << "start | findStartServer | start: " << start << std::endl;
+
+//	while (servers[start] && std::isspace(servers[start]))
+	while ( (start < servers.size()) && std::isspace(servers[start]))
 		start++;
 	if (servers[start] != '{')
-		throw Error::InvalidPathServer();
+		throw Error::InvalidConfigurationServer();
+//	std::cout << "end   | findStartServer | start: " << start << std::endl;
 }
 
 void	ParserServer::findEndServer( const std::string & servers, size_t & end )
 {
+//	std::cout << "start | findEndtServer  | end  : " << end << std::endl;
 	short unsigned int scope;
 
 	scope = 0;
-	while (servers[end])
+	while (end < servers.size())
 	{
+//		std::cout << "start | findEndtServer  | end  : " << end << " while: c "<< servers[end] << " scope: " << scope << std::endl;
 		if (servers[end] == '{')
 			scope++;
 		else if (servers[end] == '}')
@@ -135,4 +148,8 @@ void	ParserServer::findEndServer( const std::string & servers, size_t & end )
 		}
 		end++;
 	}
+//	std::cout << "pré final da findEndServer" << std::endl;
+	if ( (end == servers.size()) && scope)
+		throw Error::InvalidConfigurationServer();
+//	std::cout << "end   | findEndServer   | end  : " << end<< std::endl;
 }
