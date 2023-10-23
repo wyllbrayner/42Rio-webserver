@@ -22,12 +22,14 @@
 class	ParserServer
 {
 	private:
-		short unsigned int _n;
+		short unsigned int 		_n;
 		std::vector< Server >	_servers;
+
 		void  	removeComents( std::string & line );
 		void	splitServers( std::string & servers );
 		void	findStartServer( const std::string & servers, size_t & start );
 		void	findEndServer( const std::string & servers, size_t & end );
+		void	buildServer( const std::string & server );
 	
 	public:
 		ParserServer( void );
@@ -36,4 +38,5 @@ class	ParserServer
 		~ParserServer( void );
 
 		void	createServer( const std::string & config_path);
+
 };

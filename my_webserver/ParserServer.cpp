@@ -79,12 +79,9 @@ void	ParserServer::splitServers( std::string & servers )
 //	std::cout << "start | splitServers" << std::endl;
 	size_t						start;
 	size_t						end;
-	std::vector< std::string >	splitted_server;
 
 	start = 0;
 //	std::string					tmp; // apenas para teste
-	std::vector< std::string >::iterator i; //para teste
-	std::vector< std::string >::iterator j; //para teste
 	while ( start < servers.size() )
 	{
 		if ( servers.compare( start, 6, "server" ) != 0 )
@@ -95,24 +92,8 @@ void	ParserServer::splitServers( std::string & servers )
 		this->findEndServer( servers , end );
 //		tmp = servers.substr(start, (end - start + 1)); // apenas para teste
 //		std::cout << "start: " << start << " end: " << end << " substr:" << tmp << std::endl;  // apenas para teste
-		splitted_server = Utils::split(servers.substr(start, \
-						(end - start + 1)), std::string(" \n\t;"));
+		this->buildServer( servers.substr(start, (end - start + 1)) );
 		start = end + 1;
-		if (splitted_server.size())
-		{
-//testeinicio
-//			std::cout << "splitted_server size: " << splitted_server.size() << std::endl;
-			i = splitted_server.begin();
-			j = splitted_server.end();
-			while(i != j)
-			{
-				std::cout << "splitted_server: " << *i << std::endl;
-				i++;
-			}
-//testetérmino
-		}
-/*
-*/
 	}
 //	std::cout << "end   | splitServers" << std::endl;
 }
@@ -152,4 +133,36 @@ void	ParserServer::findEndServer( const std::string & servers, size_t & end )
 	if ( (end == servers.size()) && scope)
 		throw Error::InvalidConfigurationServer();
 //	std::cout << "end   | findEndServer   | end  : " << end<< std::endl;
+}
+
+void		ParserServer::buildServer( const std::string & server )
+{
+	std::cout << "start | buildServer: server: " << server << std::endl;
+
+	std::vector< std::string >				splitted_server;
+	Server									_server;
+	std::vector< std::string >::iterator	i; //para teste
+
+	splitted_server = Utils::split(server, std::string(" \n\t;"));
+	if (splitted_server.size())
+	{
+//testeinicio
+		i = splitted_server.begin();
+		while(i != splitted_server.end())
+		{
+			std::cout << "splitted_server: " << *i << std::endl;
+			if ( ( (*i).compare( 0 , 6, "listen" ) == 0 ) && ((i + 1) != splitted_server.end()) )
+			{
+				std::cout << "this is a listen!: " << *i << std::endl;
+				if (_server.getPort() == -1)
+					_server.setPort(*(++i));
+				std::cout << "this is a listen!: " << *i << std::endl;
+			}
+			i++;
+		}
+//testetérmino
+	}
+/*
+*/
+	std::cout << "end   | buildServer: server: " << server << std::endl;
 }

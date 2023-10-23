@@ -18,7 +18,8 @@
 class	Server
 {
 	private:
-		unsigned long int	_port;
+		int	_port;
+/*
 		in_addr_t			_host;
 		std::string			_server_name;
 		std::string			_root;
@@ -27,10 +28,14 @@ class	Server
 		bool				_autoindex;
 		int					_fd_sockaddr;
 		struct sockaddr_in	_server_addr;
+*/
 	
 	public:
 		Server( void );
 		Server( const Server& copy );
 		Server	&operator=( const Server &src );
 		~Server( void );
+
+		int & getPort( void );
+		void				setPort( const std::string & _p );
 };

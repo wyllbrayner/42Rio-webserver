@@ -31,3 +31,8 @@ const char *	Error::InvalidServer::what( void ) const throw()
 {
 	return ("Error: server did not find.");
 }
+
+const char *	Error::InvalidParameter::what( void ) const throw()
+{
+	return ("Error: Invalid parameter.");
+}

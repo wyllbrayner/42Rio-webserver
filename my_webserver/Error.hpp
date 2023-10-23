@@ -44,4 +44,10 @@ class	Error
 				virtual const char* what( void ) const throw();
 		};
 
+		class	InvalidParameter : public std::exception
+		{
+			public:
+				virtual const char* what( void ) const throw();
+		};
+
 };
