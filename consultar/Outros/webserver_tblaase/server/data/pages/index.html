@@ -1,0 +1,65 @@
+<html>
+	<head>
+	<title>Your Title Here</title>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<meta charset="UTF-8">
+	</head>
+	<body bgcolor="FFFF00">
+	<div>
+		<h3><a href="/bigfile.random"> Large file</a></h3>
+	</div>
+	<!-- <center><img src="images/test_image.png" align="BOTTOM"> </center> -->
+	<center><img src="/images/large.jpg" style="width:400px; height:auto;" align="BOTTOM"> </center>
+	<video controls="controls" width="800" height="600" name="onehour.mp4" preload="none">
+		<source src="/images/endless.mp4">
+	</video>
+	<hr>
+	<a href="http://www.42heilbronn.de">42HN</a>
+	is a link to another site
+	<br>
+	<a href="http://localhost:8080/doesnotexist">localhost:8080/doesnotexist</a>
+	is a link to a non-existing dir
+	<br>
+	<a href="http://localhost:8080/otherpages/other/more/test.html">localhost:8080/otherpages/other/more/test.html</a>
+	is a link to a non-existing file
+	<br>
+	<a href="http://127.0.0.1:8085/">127.0.0.1:8085</a>
+	<a href="http://localhost:8080/">localhost:8080</a>
+	<a href="http://127.0.0.1:8005/">127.0.0.1:8005</a>
+	<a href="http://localhost:8000/">localhost:8000</a>
+	<br>
+	<a href="http://localhost:8080/animals/chicken/">localhost:8080/animals/chicken/</a>
+	<br>
+	<a href="http://localhost:8080/error.jpg">localhost:8080/error.jpg</a>
+	<h1>This is a Header and this is a non-ASCII char: ü</h1>
+	<h2><a href="http://localhost:8080/index.html?name=ferret&color=purple">This is a url with a query string</a></h2>
+	Send me mail at <a href="mailto:support@yourcompany.com">
+	support@yourcompany.com</a>.
+	<p> This is a new paragraph!
+	<p> <b>This is a new paragraph!</b>
+	<br> <b><i>This is a new sentence without a paragraph break, in bold italics.</i></b>
+	<hr>
+	<h3>Upload file here:</h3>
+	<!-- this form needs some work -->
+	<form action="http://localhost:8080" method="post">
+		<label for="myfile">Select a file:</label>
+		<input type="file" id="myfile" name="myfile" />
+		<br /><br />
+		<input type="submit" />
+	</form>
+	</body>
+	<script type="text/javascript">
+		function upload() {
+			var formData = new FormData();
+			formData.append('myfile', document.getElementById('myfile').files[0]);
+			axios.post('/upload', formData)
+				.then(function (response) {
+					console.log(response);
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		}
+	</script>
+</html>

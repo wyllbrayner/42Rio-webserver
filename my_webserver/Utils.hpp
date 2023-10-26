@@ -27,5 +27,6 @@ class	Utils
 	
 	public:
 		static	void							trim( std::string & line );
-		static	std::vector<std::string>		split( std::string line, std::string sep);
+		static	std::vector<std::string>		split( const std::string line, std::string sep);
+		static	int								atoi(const std::string line);
 };

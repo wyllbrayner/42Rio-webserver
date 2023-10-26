@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link href="https://fonts.font.im/css?family=Open+Sans" rel="stylesheet" type="text/css">
+	<link href="data/style.css" rel="stylesheet">
+	<title>WEBSERV</title>
+</head>
+<body>
+	<h1>Weberv</h1>
+	<h1>💻</h1>
+
+	<nav>
+		<ul>
+			<li><a href="index.html" class="tests">HOME</a></li>
+			<li><a href="test_post.html" class="tests">POST</a></li>
+			<li><a href="test_delete.html" class="tests">DELETE</a></li>
+			<li><a href="test_joke.html" class="tests">CGI</a></li>
+		</ul>
+	</nav>
+
+	<h2>Click on the "Choose File" button to upload a file:</h2>
+	<form name="upload" enctype="multipart/form-data" method="post" action="/post" class="post">
+		<input type="file" name="file1"><br>
+		<input type="file" name="file2"><br>
+		<input type="file" name="file3"><br>
+		<input type="file" name="file4"><br>
+		<input type="file" name="file5"><br>
+		<input type="submit" value="upload">
+	</form>
+
+</body>
+</html>

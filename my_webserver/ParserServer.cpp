@@ -141,28 +141,70 @@ void		ParserServer::buildServer( const std::string & server )
 
 	std::vector< std::string >				splitted_server;
 	Server									_server;
-	std::vector< std::string >::iterator	i; //para teste
+	std::vector< std::string >::iterator	i;
 
-	splitted_server = Utils::split(server, std::string(" \n\t;"));
+	splitted_server = Utils::split(server, std::string(" \n\t"));
 	if (splitted_server.size())
 	{
-//testeinicio
 		i = splitted_server.begin();
 		while(i != splitted_server.end())
 		{
 			std::cout << "splitted_server: " << *i << std::endl;
-			if ( ( (*i).compare( 0 , 6, "listen" ) == 0 ) && ((i + 1) != splitted_server.end()) )
+			if (((*i).compare(0 , 6, "listen") == 0) && ((i + 1) != splitted_server.end()))
 			{
-				std::cout << "this is a listen!: " << *i << std::endl;
+//				std::cout << "this is a listen!: " << *i << std::endl;
 				if (_server.getPort() == -1)
 					_server.setPort(*(++i));
-				std::cout << "this is a listen!: " << *i << std::endl;
+				else
+					throw Error::InvalidParameter();
+//				std::cout << "this is a listen!: " << *i << std::endl;
 			}
-			i++;
+			else if (((*i).compare(0 , 4, "host") == 0) && ((i + 1) != splitted_server.end()))
+			{
+//				std::cout << "this is a host!: " << *i << std::endl;
+				if (_server.getHost() == 0 )
+					_server.setHost(*(++i));
+				else
+					throw Error::InvalidParameter();
+//				std::cout << "this is a host!: " << *i << std::endl;
+			}
+			else if (((*i).compare(0, 11, "server_name") == 0) && ((i + 1) != splitted_server.end()))
+			{
+				std::cout << "this is a server_name!: " << *i << std::endl;
+				if (_server.getServerName().size() == 0)
+					_server.setServerName(++i, splitted_server);
+				else
+					throw Error::InvalidParameter();
+				std::cout << "this is a server_name!: " << std::endl;
+			}
+			else if (((*i).compare(0, 5, "index") == 0) && ((i + 1) != splitted_server.end()))
+			{
+				std::cout << "this is a indix!: " << *i << std::endl;
+				if (_server.getIndex().size() == 0)
+				{
+					std::cout << "indix  " << *(i + 1) << std::endl;
+					_server.setIndex(*(++i));
+				}
+				else
+					throw Error::InvalidParameter();
+				std::cout << "this is a indix!: " << std::endl;
+			}
+			else if (((*i).compare(0, 4, "root") == 0) && ((i + 1) != splitted_server.end()))
+			{
+				std::cout << "this is a root: " << *i << std::endl;
+				if (_server.getRoot().size() == 0)
+				{
+					std::cout << "root  " << *(i + 1) << std::endl;
+					_server.setRoot(*(++i));
+				}
+				else
+					throw Error::InvalidParameter();
+				std::cout << "this is a root: " << std::endl;
+			}
+
+			if (i != splitted_server.end())
+				i++;
 		}
-//testetérmino
 	}
-/*
-*/
 	std::cout << "end   | buildServer: server: " << server << std::endl;
 }

@@ -51,7 +51,7 @@ void	Utils::trim( std::string & line )
 	}
 }
 
-std::vector<std::string> Utils::split( std::string line, std::string sep )
+std::vector<std::string> Utils::split( const std::string line, std::string sep )
 {
 //	std::cout << "line in split: " << line << std::endl;
 	std::vector<std::string>	str;
@@ -78,4 +78,30 @@ std::vector<std::string> Utils::split( std::string line, std::string sep )
 */
 	}
 	return (str);
+}
+
+int	Utils::atoi(const std::string line)
+{
+	int		signal;
+	int		nbr;
+	size_t	i;
+//	std::cout << "line in atoi: string " << line << std::endl;
+	signal = 1;
+	i = 0;
+	while ( (i < line.size()) && (std::isspace(line[i])) )
+		i++;
+	if ((line[i] == '+') || (line[i] == '-'))
+	{
+		if (line[i] == '-')
+			signal = -1;
+		i++;
+	}
+	nbr = 0;
+	while ((i < line.size()) && std::isdigit(line[i]))
+	{
+		nbr = (10 * nbr) + (line[i] - '0');
+		i++;
+	}
+//	std::cout << "line in atoi: int    " << (nbr * signal) << std::endl;
+	return (nbr * signal);
 }

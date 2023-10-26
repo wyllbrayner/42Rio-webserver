@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEST DELETE</title>
+		<style>
+			body{
+				font-family: 'Lato', sans-serif;
+				color: rgb(142, 180, 39);
+				margin: 0;
+			}
+
+			#main{
+				display: table;
+				width: 100%;
+				height: 100vh;
+				text-align: center;
+			}
+
+			.fof{
+				display: table-cell;
+				vertical-align: middle;
+			}
+
+			.fof h1{
+				font-size: 50px;
+				display: inline-block;
+				padding-right: 12px;
+			}
+		</style>
+	</head>
+		<body style="background-color:#360510a9;">
+		<div id="main">
+			<div class="fof">
+					<h1>htmlTest_delete/</h1><br>
+					<u>You are actualy in the delete test folder</u><br><br>
+					<u>To test DELETE methode please use : <br>curl -X DELETE http://127.0.0.1:8778/delete/$NAME$</u><br><br>
+					<u>$NAME$ => Name of the file/folder you want to delete</u>
+			</div>
+		</div>
+	</body>
+</html>

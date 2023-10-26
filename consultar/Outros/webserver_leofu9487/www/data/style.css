@@ -1,0 +1,115 @@
+html {
+	font-size: 20px; /* px 表示 “像素（pixels）”: 基础字号为 10 像素 */
+	font-family: 'Open Sans', sans-serif; /* Google fonts 输出的 CSS */
+	/*background: linear-gradient(red, orange, yellow, green, blue, purple);*/
+	background-color: #343434;
+	color: white;
+	margin-top: 50px;
+	margin-left: 200px;
+	margin-right: 200px;
+}
+
+body {
+	display: block;
+	padding: 30px;
+}
+
+img {
+	display: block;
+	margin: 0 auto;
+}
+
+#left{
+	float: left;
+	/*width: 600px;*/
+	margin-top: 10px;
+	margin-left: 800px
+}
+
+#right{
+	float: right;
+	/*width: 600px;*/
+	margin-top: 10px;
+	margin-right: 800px
+}
+
+h1 {
+	margin: 0; 	/* to remove the top gap */
+	margin-top: 80px;
+	font-size: 50px;
+	letter-spacing: 3px;
+	text-align: center;
+}
+
+h2 {
+	font-size: 25px;
+	margin-top: 180px;
+	letter-spacing: 2px;
+	text-align: center;
+}
+
+h3 {
+	font-size: 40px;
+	margin-top: 100px;
+	letter-spacing: 2px;
+	text-align: center;
+}
+
+nav ul {
+	list-style: none;
+	text-align: center;
+	padding: 0;
+}
+
+nav ul li {
+	display: inline-block;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+a.tests {
+	/* float: left; */
+	font-size: 25px;
+	color: white;
+	text-align: center;
+	letter-spacing: 2px;
+}
+
+p {
+	font-size: 20px;
+	/* line-height 后而可以跟不同的参数，如果是数字，就是当前字体大小乘上数字 */
+	line-height: 1;
+	letter-spacing: 1px;
+	margin-top: 20px;
+	text-align: center;
+}
+
+a.intra {
+	/* float: left; */
+	font-size: 20px;
+	color: white;
+	text-align: center;
+	letter-spacing: 2px;
+}
+
+form.post {
+	text-align: center;
+}
+
+form.cgi {
+	line-height: 2;
+	text-align: center;
+}
+
+button {
+	background-color: #555555;
+	border: none;
+	color: white;
+	padding: 15px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	letter-spacing: 1px;
+	margin-top: 50px;
+  }

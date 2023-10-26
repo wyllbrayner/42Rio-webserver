@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+
+	<title>Webserv</title>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:400|Sonsie+One" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/style_default.css">
+
+	</head>
+
+	<body>
+	<header>
+		<h1>42 WebServ</h1>
+	</header>
+
+	<main>
+		<article>
+		<h2>Webserv Default Page</h2>
+
+		<img src="img/42_Logo.svg.png" id="42_img">
+		<h4>This test page only work with default.conf on port 8778</h4>
+		<h3>Redirect on same folder</h3>
+		<p><a href="/index2.html">Redirect on html/index2.html</a></p>
+		<p><a href="/img/giphy.gif">Redirect on html/img/giphy.gif</a></p>
+		<p><a href="/random_page.html">Redirect on html/random_page.html</a></p>
+		<br>
+		<h3>Redirect on different folder</h3>
+		<p><a href="/banana/">Redirect on html2/</a></p>
+		<p><a href="/banana/toto/index.html">Redirect on html2/toto/index.html</a></p>
+		<p><a href="/banana/toto/titi/">Redirect on html2/toto/titi/</a></p>
+		<br>
+		</article>
+
+		<aside>
+		<h2>CGI</h2>
+		<ul>
+			<li><a href="/cgi/">CGI Folder</a></li>
+			<li><a href="/cgi/post.html">POST with php-cgi</a></li>
+			<li><a href="/cgi/upload.html">Upload with php-cgi</a></li>
+			<li><a href="/cgi/displayenv.php">Show environment variables with php-cgi</a></li>
+			<li><a href="/cgi/info.php">Show PHP settings via php-cgi</a></li>
+		</ul>
+		</aside>
+
+	</main>
+
+	<footer>
+		<p>
+			Model of the page found on <a href="https://github.com/mdn/learning-area/tree/master/html/introduction-to-html/document_and_website_structure">Firefox's Github</a>
+		</p>
+	</footer>
+
+	</body>
+</html>

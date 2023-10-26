@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Webserv</title>
+    <link rel="shortcut icon" href="https://lucie-lebriquer.fr/webserv/favicon.png"/>
+    <meta charset="utf-8"/>
+	<link rel="stylesheet" href="https://lucie-lebriquer.fr/webserv/main.css"/>
+    <script src="https://kit.fontawesome.com/58cd01063a.js" crossorigin="anonymous"></script>
+  </head>
+<div class=whiteband></div>
+<header>
+	<div class="logo">
+		<img src="https://lucie-lebriquer.fr/webserv/logo.png">
+		<div class="titlename">Webserv</div>
+		<div class="title">euses</div>
+	</div>
+	<span class="buttonTab">
+        <a href="index.html"><i class="fas fa-home"></i><span class="tabname">Index</span></a>
+    </span>
+	<span class="buttonTab active">
+        <a href="form.html"><i class="fas fa-file"></i><span class="tabname">Form</span></a>
+    </span>
+	<span class="buttonTab">
+		<a href="upload.html"><i class="fas fa-upload"></i><span class="tabname">Upload</span></a>
+    </span>
+	<span class="buttonTab">
+        <a href="https://github.com/LucieLeBriquer/webserv.git"><i class="fab fa-github"></i><span class="tabname">Source</span></a>
+    </span>
+</header>
+
+<body class="main">
+		<h3>POST</h3>
+		<h4>multipart</h4>
+		<form method="post" action="./php/form.php" enctype="multipart/form-data">
+			<div class="flex">
+				<label for="say">What greeting do you want to say ?</label>
+				<input type="text" name="say" id="say" value="Hi">
+			</div>
+			<div class="flex">
+				<label for="to">Who do you want to say it to ?</label>
+				<input type="text" name="to" value="Massilia">
+			</div>
+			<div>
+				<button>Send my greetings</button>
+			</div>
+		</form>
+		<br><br><br>
+
+		<h4>classic</h4>
+		<form method="post" action="./php/form.php">
+			<div class="flex">
+				<label for="say">What greeting do you want to say ?</label>
+				<input type="text" name="say" id="say" value="Hey">
+			</div>
+			<div class="flex">
+				<label for="to">Who do you want to say it to ?</label>
+				<input type="text" name="to" value="Lou">
+			</div>
+			<div>
+				<button>Send my greetings</button>
+			</div>
+		</form>
+		<br><br><br>
+
+		<h3>GET</h3>
+		<form method="get" action="./php/form.php">
+			<div class="flex">
+				<label for="say">What greeting do you want to say ?</label>
+				<input type="text" name="say" id="say" value="Hello">
+			</div>
+			<div class="flex">
+				<label for="to">Who do you want to say it to ?</label>
+				<input type="text" name="to" value="Lucie">
+			</div>
+			<div>
+				<button>Send my greetings</button>
+			</div>
+		</form>
+</body>
+
+<footer>
+	<ul class="footer">
+		<li></li>
+		<li><a href="https://github.com/MassiliaB" target="_blank"><i class="fab fa-github"></i> masboula</a></li>
+		<li><a href="https://github.com/loupascreau" target="_blank"><i class="fab fa-github"></i> lpascrea</a></li>
+		<li><a href="https://github.com/LucieLeBriquer" target="_blank"><i class="fab fa-github"></i> lle-briq</a></li>
+		<li></li>
+	</ul>
+</footer>
+</html>
