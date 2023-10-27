@@ -22,14 +22,17 @@
 # include "Error.hpp"
 # include "Utils.hpp"
 
+typedef std::vector<std::string>::iterator	myItVecS;
+typedef std::vector<std::string> 			myVecS;
+
 class	Server
 {
 	private:
 		int							_port;
 		in_addr_t					_host;
-		std::vector<std::string>	_server_name;
-		std::vector<std::string>	_page_server_name;
-		std::string					_index;
+		myVecS						_server_name;
+		myVecS						_page_server_name;
+		myVecS						_index;
 		std::string					_root;
 /*
 		unsigned long int	_client_max_body_size;
@@ -39,6 +42,7 @@ class	Server
 */
 		bool		isTokenValid( std::string & _p );
 		bool		isHostValid( std::string & _parameter );
+		void		putVecString(myItVecS &i, std::vector<std::string> & sp_server, myVecS & _vecString );
 	
 	public:
 		Server( void );
@@ -49,11 +53,11 @@ class	Server
 		const int 		&					getPort(void) const;
 		const in_addr_t &					getHost(void) const;
 		const std::vector<std::string> &	getServerName(void) const;
-		const std::string &					getIndex(void) const;
+		const std::vector<std::string> &	getIndex(void) const;
 		const std::string &					getRoot(void) const;
 		void								setPort(std::string & _p);
 		void								setHost(std::string & _parameter);
-		void								setServerName(std::vector<std::string>::iterator &i, std::vector<std::string> & sp_server);
-		void								setIndex(std::string & _parameter);
+		void								setServerName(myItVecS &i, myVecS & sp_server);
+		void								setIndex(myItVecS &i, myVecS & sp_server);
 		void								setRoot(std::string & _parameter);
 };

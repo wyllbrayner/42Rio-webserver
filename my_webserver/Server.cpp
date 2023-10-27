@@ -61,7 +61,7 @@ const std::vector<std::string> &	Server::getServerName(void) const
 	return (this->_server_name);
 }
 
-const std::string &					Server::getIndex(void) const
+const std::vector<std::string> &	Server::getIndex(void) const
 {
 	return (this->_index);
 }
@@ -110,9 +110,9 @@ void					Server::setHost(std::string & _parameter)
 //	std::cout << "fim    de setHost: " << _parameter << std::endl;
 }
 
-void					Server::setServerName(std::vector<std::string>::iterator &i, std::vector<std::string> & sp_server)
+void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
 {
-//	std::cout << "início de setServerName: " << *(i) << std::endl;
+//	std::cout << "início de putVecString: " << *(i) << std::endl;
 	std::string tmp;
 //	size_t j = 0;
 
@@ -122,36 +122,40 @@ void					Server::setServerName(std::vector<std::string>::iterator &i, std::vecto
 		if ((tmp.find(";")) != std::string::npos)
 		{
 			this->isTokenValid(tmp);
-			this->_server_name.push_back(tmp);
-//			std::cout << "server_name: " << tmp << std::endl;
-/*
-			std::cout << "setServerName: " ;
-			while (j < this->_server_name.size())
-			{
-				std::cout << this->_server_name[j] << " ";
-				j++;
-			}
-			std::cout << std::endl;
-*/
+			_vecString.push_back(tmp);
+//			std::cout << "putVecString: " << tmp << std::endl;
+//			std::cout << "VecString: " ;
+//			while (j < _vecString.size())
+//			{
+//			std::cout << _vecString[j] << " ";
+//			j++;
+//			}
+//			std::cout << std::endl;
 			break ;
 		}
 		else
 		{
-			this->_server_name.push_back(tmp);
-//			std::cout << "server_name: " << tmp << std::endl;
+			_vecString.push_back(tmp);
+//			std::cout << "putVecString: " << tmp << std::endl;
 		}
 		i++;
 	}
-//	std::cout << "fim    de setServerName: " << std::endl;
+//	std::cout << "fim    de putVecString: " << std::endl;
 	tmp.clear();
 }
 
-void					Server::setIndex(std::string & _parameter)
+void					Server::setServerName(myItVecS &i, myVecS & sp_server)
 {
-//	std::cout << "início de setIndex: " << _parameter << std::endl;
-	if (this->isTokenValid(_parameter))
-		this->_index = _parameter;
-//	std::cout << "fim    de setIndex: " << _parameter << std::endl;
+//	std::cout << "início de setServerName: " << *(i) << std::endl;
+	this->putVecString(i, sp_server, this->_server_name);
+//	std::cout << "fim    de setServerName: " << *(i) << std::endl;
+}
+
+void					Server::setIndex(myItVecS &i, myVecS & sp_server)
+{
+//	std::cout << "início de setIndex: " << *(i) << std::endl;
+	this->putVecString(i, sp_server, this->_index);
+//	std::cout << "fim    de setIndex: " << *(i) << std::endl;
 }
 
 void					Server::setRoot(std::string & _parameter)

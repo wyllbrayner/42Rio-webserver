@@ -170,38 +170,37 @@ void		ParserServer::buildServer( const std::string & server )
 			}
 			else if (((*i).compare(0, 11, "server_name") == 0) && ((i + 1) != splitted_server.end()))
 			{
-				std::cout << "this is a server_name!: " << *i << std::endl;
+//				std::cout << "this is a server_name!: " << *i << std::endl;
 				if (_server.getServerName().size() == 0)
 					_server.setServerName(++i, splitted_server);
 				else
 					throw Error::InvalidParameter();
-				std::cout << "this is a server_name!: " << std::endl;
+//				std::cout << "this is a server_name!: " << std::endl;
 			}
 			else if (((*i).compare(0, 5, "index") == 0) && ((i + 1) != splitted_server.end()))
 			{
-				std::cout << "this is a indix!: " << *i << std::endl;
+//				std::cout << "this is a indix!: " << *i << std::endl;
 				if (_server.getIndex().size() == 0)
 				{
-					std::cout << "indix  " << *(i + 1) << std::endl;
-					_server.setIndex(*(++i));
+//					std::cout << "indix  " << *(i + 1) << std::endl;
+					_server.setIndex(++i, splitted_server);
 				}
 				else
 					throw Error::InvalidParameter();
-				std::cout << "this is a indix!: " << std::endl;
+//				std::cout << "this is a indix!: " << std::endl;
 			}
 			else if (((*i).compare(0, 4, "root") == 0) && ((i + 1) != splitted_server.end()))
 			{
-				std::cout << "this is a root: " << *i << std::endl;
+//				std::cout << "this is a root: " << *i << std::endl;
 				if (_server.getRoot().size() == 0)
 				{
-					std::cout << "root  " << *(i + 1) << std::endl;
+//					std::cout << "root  " << *(i + 1) << std::endl;
 					_server.setRoot(*(++i));
 				}
 				else
 					throw Error::InvalidParameter();
-				std::cout << "this is a root: " << std::endl;
+//				std::cout << "this is a root: " << std::endl;
 			}
-
 			if (i != splitted_server.end())
 				i++;
 		}
