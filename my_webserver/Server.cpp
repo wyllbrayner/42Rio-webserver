@@ -56,12 +56,12 @@ const in_addr_t &	Server::getHost(void) const
 	return (this->_host);
 }
 
-const std::vector<std::string> &	Server::getServerName(void) const
+const myVecS &	Server::getServerName(void) const
 {
 	return (this->_server_name);
 }
 
-const std::vector<std::string> &	Server::getIndex(void) const
+const myVecS &	Server::getIndex(void) const
 {
 	return (this->_index);
 }
@@ -127,8 +127,8 @@ void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecStri
 //			std::cout << "VecString: " ;
 //			while (j < _vecString.size())
 //			{
-//			std::cout << _vecString[j] << " ";
-//			j++;
+//				std::cout << _vecString[j] << " ";
+//				j++;
 //			}
 //			std::cout << std::endl;
 			break ;
@@ -185,6 +185,38 @@ void					Server::setRoot(std::string & _parameter)
 			throw Error::InvalidParameter();
 	}
 //	std::cout << "fim    de setRoot: " << _parameter << std::endl;
+}
+
+void					Server::setLocation(myItVecS &i, myVecS & sp_server)
+{
+	myVecS vecLocation;
+	std::cout << "init    de setLocation: " << *i << std::endl;
+
+	std::string path;
+
+	if ((*i).compare(0, 1, "{") == 0)
+		throw Error::InvalidParameter();
+	path = (*i++);
+//	std::cout << "path: " << path << std::endl;
+	if ((*i++).compare(0, 1, "{") != 0)
+		throw Error::InvalidParameter();
+	while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
+	{
+//		std::cout << "Location: " << *i << std::endl;
+		vecLocation.push_back(*i++);
+	}
+
+/*
+	size_t j = 0;
+	std::cout << "setLocation: ";
+	while(j < vecLocation.size())
+	{
+		std::cout << vecLocation[j] << " ";
+		j++;
+	}
+	std::cout << std::endl;
+*/
+	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
 
 bool					Server::isHostValid(std::string & _parameter)

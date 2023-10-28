@@ -12,27 +12,24 @@
 
 #include "ParserServer.hpp"
 
-ParserServer::ParserServer( void ) : _n(0) {}
+ParserServer::ParserServer(void) {}
 
-ParserServer	&ParserServer::operator=( const ParserServer &src )
+ParserServer	&ParserServer::operator=(const ParserServer & src)
 {
 	if (this != &src)
-		this->_n = src._n;
+		this->_servers = src._servers;
 	return (*this);
 }
 
-ParserServer::ParserServer( const ParserServer& copy )
+ParserServer::ParserServer(const ParserServer & copy)
 {
 	*this = copy;
 	return ;
 }
 
-ParserServer::~ParserServer( void )
-{
-	this->_n = 0;
-}
+ParserServer::~ParserServer(void) {}
 
-void 	ParserServer::createServer( const std::string & config_path)
+void 	ParserServer::createServer(const std::string & config_path)
 {
 //	std::cout << "start | createServer" << std::endl;
 
@@ -43,10 +40,10 @@ void 	ParserServer::createServer( const std::string & config_path)
 	ifs.open(config_path.c_str());
 	if (ifs.is_open())
 	{
-		while( std::getline(ifs, line))
+		while(std::getline(ifs, line))
 		{
 //			std::cout << "file config: " << line << std::endl;
-			this->removeComents( line );
+			this->removeComents(line);
 //			Utils::trim( line );
 			servers += line;
 		}
@@ -59,7 +56,7 @@ void 	ParserServer::createServer( const std::string & config_path)
 //	std::cout << "end   | createServer" << std::endl;
 }
 
-void 	ParserServer::removeComents( std::string & line )
+void 	ParserServer::removeComents(std::string & line)
 {
 //	std::cout << "start | removeComents" << std::endl;
 	size_t pos;
@@ -74,7 +71,7 @@ void 	ParserServer::removeComents( std::string & line )
 //	std::cout << "end   | removeComents" << std::endl;
 }
 
-void	ParserServer::splitServers( std::string & servers )
+void	ParserServer::splitServers(std::string & servers)
 {
 //	std::cout << "start | splitServers" << std::endl;
 	size_t						start;
@@ -82,35 +79,34 @@ void	ParserServer::splitServers( std::string & servers )
 
 	start = 0;
 //	std::string					tmp; // apenas para teste
-	while ( start < servers.size() )
+	while (start < servers.size())
 	{
-		if ( servers.compare( start, 6, "server" ) != 0 )
+		if (servers.compare(start, 6, "server") != 0)
 			throw Error::InvalidConfigurationServer();
 		start = start + 6;
-		this->findStartServer( servers , start );
+		this->findStartServer(servers, start);
 		end = start;
-		this->findEndServer( servers , end );
+		this->findEndServer(servers, end);
 //		tmp = servers.substr(start, (end - start + 1)); // apenas para teste
 //		std::cout << "start: " << start << " end: " << end << " substr:" << tmp << std::endl;  // apenas para teste
-		this->buildServer( servers.substr(start, (end - start + 1)) );
+		this->buildServer(servers.substr(start, (end - start + 1)));
 		start = end + 1;
 	}
 //	std::cout << "end   | splitServers" << std::endl;
 }
 
-void	ParserServer::findStartServer( const std::string & servers, size_t & start )
+void	ParserServer::findStartServer(const std::string & servers, size_t & start)
 {
 //	std::cout << "start | findStartServer | start: " << start << std::endl;
 
-//	while (servers[start] && std::isspace(servers[start]))
-	while ( (start < servers.size()) && std::isspace(servers[start]))
+	while ((start < servers.size()) && std::isspace(servers[start]))
 		start++;
 	if (servers[start] != '{')
 		throw Error::InvalidConfigurationServer();
 //	std::cout << "end   | findStartServer | start: " << start << std::endl;
 }
 
-void	ParserServer::findEndServer( const std::string & servers, size_t & end )
+void	ParserServer::findEndServer(const std::string & servers, size_t & end)
 {
 //	std::cout << "start | findEndtServer  | end  : " << end << std::endl;
 	short unsigned int scope;
@@ -130,12 +126,12 @@ void	ParserServer::findEndServer( const std::string & servers, size_t & end )
 		end++;
 	}
 //	std::cout << "pré final da findEndServer" << std::endl;
-	if ( (end == servers.size()) && scope)
+	if ((end == servers.size()) && scope)
 		throw Error::InvalidConfigurationServer();
 //	std::cout << "end   | findEndServer   | end  : " << end<< std::endl;
 }
 
-void		ParserServer::buildServer( const std::string & server )
+void		ParserServer::buildServer(const std::string & server)
 {
 	std::cout << "start | buildServer: server: " << server << std::endl;
 
@@ -201,6 +197,13 @@ void		ParserServer::buildServer( const std::string & server )
 					throw Error::InvalidParameter();
 //				std::cout << "this is a root: " << std::endl;
 			}
+			else if (((*i).compare(0, 8, "location") == 0) && ((i + 1) != splitted_server.end()))
+			{
+				std::cout << "ini this is a location: " << *i << std::endl;
+					_server.setLocation(++i, splitted_server);
+				std::cout << "end this is a location: " << std::endl;
+			}
+
 			if (i != splitted_server.end())
 				i++;
 		}

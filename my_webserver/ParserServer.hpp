@@ -22,7 +22,6 @@
 class	ParserServer
 {
 	private:
-		short unsigned int 		_n;
 		std::vector< Server >	_servers;
 
 		void  	removeComents( std::string & line );

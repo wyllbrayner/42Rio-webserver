@@ -52,12 +52,13 @@ class	Server
 
 		const int 		&					getPort(void) const;
 		const in_addr_t &					getHost(void) const;
-		const std::vector<std::string> &	getServerName(void) const;
-		const std::vector<std::string> &	getIndex(void) const;
+		const myVecS &						getServerName(void) const;
+		const myVecS &						getIndex(void) const;
 		const std::string &					getRoot(void) const;
 		void								setPort(std::string & _p);
 		void								setHost(std::string & _parameter);
 		void								setServerName(myItVecS &i, myVecS & sp_server);
 		void								setIndex(myItVecS &i, myVecS & sp_server);
 		void								setRoot(std::string & _parameter);
+		void								setLocation(myItVecS &i, myVecS & sp_server);
 };
