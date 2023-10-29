@@ -203,7 +203,6 @@ void		ParserServer::buildServer(const std::string & server)
 					_server.setLocation(++i, splitted_server);
 				std::cout << "end this is a location: " << std::endl;
 			}
-
 			if (i != splitted_server.end())
 				i++;
 		}

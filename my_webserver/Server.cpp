@@ -110,40 +110,6 @@ void					Server::setHost(std::string & _parameter)
 //	std::cout << "fim    de setHost: " << _parameter << std::endl;
 }
 
-void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
-{
-//	std::cout << "início de putVecString: " << *(i) << std::endl;
-	std::string tmp;
-//	size_t j = 0;
-
-	while( i != sp_server.end())
-	{
-		tmp = *(i);
-		if ((tmp.find(";")) != std::string::npos)
-		{
-			this->isTokenValid(tmp);
-			_vecString.push_back(tmp);
-//			std::cout << "putVecString: " << tmp << std::endl;
-//			std::cout << "VecString: " ;
-//			while (j < _vecString.size())
-//			{
-//				std::cout << _vecString[j] << " ";
-//				j++;
-//			}
-//			std::cout << std::endl;
-			break ;
-		}
-		else
-		{
-			_vecString.push_back(tmp);
-//			std::cout << "putVecString: " << tmp << std::endl;
-		}
-		i++;
-	}
-//	std::cout << "fim    de putVecString: " << std::endl;
-	tmp.clear();
-}
-
 void					Server::setServerName(myItVecS &i, myVecS & sp_server)
 {
 //	std::cout << "início de setServerName: " << *(i) << std::endl;
@@ -189,35 +155,96 @@ void					Server::setRoot(std::string & _parameter)
 
 void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 {
-	myVecS vecLocation;
 	std::cout << "init    de setLocation: " << *i << std::endl;
-
-	std::string path;
+	myVecS		vecLocation;
+	Location	intLocation;
 
 	if ((*i).compare(0, 1, "{") == 0)
 		throw Error::InvalidParameter();
-	path = (*i++);
-//	std::cout << "path: " << path << std::endl;
+	intLocation.setPath(*i++);
 	if ((*i++).compare(0, 1, "{") != 0)
 		throw Error::InvalidParameter();
+//	std::cout << "palavra: " << *i << std::endl;
 	while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
 	{
-//		std::cout << "Location: " << *i << std::endl;
-		vecLocation.push_back(*i++);
+		if (((*i).compare(0, 13, "allow_methods") == 0) || ((*i).compare(0, 7, "methods") == 0))
+		{
+			i++;
+			while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
+			{
+				if (((*i).find(";")) != std::string::npos)
+				{
+					this->isTokenValid(*i);
+					if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
+						vecLocation.push_back(*i++);
+					else
+						throw Error::InvalidParameter();
+					break ;
+				}
+				else
+				{
+					if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
+						vecLocation.push_back(*i++);
+					else
+						throw Error::InvalidParameter();
+				}
+			}
+	//		std::cout << "Location: " << *i << std::endl;
+			if (!vecLocation.size())
+				throw Error::InvalidParameter();
+			intLocation.setMethods(vecLocation);
+		}
 	}
-
-/*
-	size_t j = 0;
-	std::cout << "setLocation: ";
-	while(j < vecLocation.size())
-	{
-		std::cout << vecLocation[j] << " ";
-		j++;
-	}
-	std::cout << std::endl;
-*/
 	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
+/*
+void					Server::setLocation(myItVecS &i, myVecS & sp_server)
+{
+	std::cout << "init    de setLocation: " << *i << std::endl;
+	myVecS		vecLocation;
+	Location	intLocation;
+
+	if ((*i).compare(0, 1, "{") == 0)
+		throw Error::InvalidParameter();
+	intLocation.setPath(*i++);
+	if ((*i++).compare(0, 1, "{") != 0)
+		throw Error::InvalidParameter();
+//	std::cout << "palavra: " << *i << std::endl;
+	if (((*i).compare(0, 13, "allow_methods") != 0) && ((*i).compare(0, 7, "methods") != 0))
+		throw Error::InvalidParameter();
+	else
+	{
+		i++;
+		while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
+		{
+			if (((*i).find(";")) != std::string::npos)
+			{
+				this->isTokenValid(*i);
+				if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
+					vecLocation.push_back(*i++);
+				else
+					throw Error::InvalidParameter();
+				if ((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
+					throw Error::InvalidParameter();
+				else
+					break ;
+			}
+			else
+			{
+				if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
+					vecLocation.push_back(*i++);
+				else
+					throw Error::InvalidParameter();
+			}
+	//		std::cout << "Location: " << *i << std::endl;
+		}
+		if (!vecLocation.size())
+			throw Error::InvalidParameter();
+		intLocation.setMethods(vecLocation);
+	}
+	std::cout << "fim     de setLocation: " << *i << std::endl;
+}
+*/
 
 bool					Server::isHostValid(std::string & _parameter)
 {
@@ -263,4 +290,38 @@ bool					Server::isTokenValid( std::string & _parameter)
 		_parameter.erase(pos);
 //	std::cout << " pós _p: " << _p << std::endl;
 	return (true);
+}
+
+void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
+{
+//	std::cout << "início de putVecString: " << *(i) << std::endl;
+	std::string tmp;
+//	size_t j = 0;
+
+	while( i != sp_server.end())
+	{
+		tmp = *(i);
+		if ((tmp.find(";")) != std::string::npos)
+		{
+			this->isTokenValid(tmp);
+			_vecString.push_back(tmp);
+//			std::cout << "putVecString: " << tmp << std::endl;
+//			std::cout << "VecString: " ;
+//			while (j < _vecString.size())
+//			{
+//				std::cout << _vecString[j] << " ";
+//				j++;
+//			}
+//			std::cout << std::endl;
+			break ;
+		}
+		else
+		{
+			_vecString.push_back(tmp);
+//			std::cout << "putVecString: " << tmp << std::endl;
+		}
+		i++;
+	}
+//	std::cout << "fim    de putVecString: " << std::endl;
+	tmp.clear();
 }
