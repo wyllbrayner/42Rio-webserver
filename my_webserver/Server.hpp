@@ -32,7 +32,6 @@ class	Server
 		int							_port;
 		in_addr_t					_host;
 		myVecS						_server_name;
-		myVecS						_page_server_name;
 		myVecS						_index;
 		std::string					_root;
 		std::vector<Location>		_vec_location;

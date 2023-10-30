@@ -25,7 +25,7 @@ int	main( int argc, char **argv )
 	try
 	{
 //		std::cout << "try start | main" << std::endl;
-		if ( argc > 2 )
+		if (argc > 2)
 			throw Error::InvalidArg();
 		else
 		{
@@ -34,6 +34,7 @@ int	main( int argc, char **argv )
 			else
 				server.createServer(argv[1]);
 		}
+		
 //		std::cout << "try end   | main" << std::endl;
 	}
 	catch ( std::exception &e )
