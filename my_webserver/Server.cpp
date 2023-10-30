@@ -102,9 +102,9 @@ void					Server::setHost(std::string & _parameter)
 //	std::cout << "início de setHost: " << _parameter << std::endl;
 	if (this->isTokenValid(_parameter))
 	{
-		if (_parameter.compare(0, 9, "localhost" ) == 0)
+		if (_parameter.compare(0, 9, "localhost") == 0)
 			_parameter = "127.0.0.1";
-		if (this->isHostValid(_parameter ))
+		if (this->isHostValid(_parameter))
 			this->_host = inet_addr(_parameter.c_str());
 	}
 //	std::cout << "fim    de setHost: " << _parameter << std::endl;
@@ -157,11 +157,11 @@ void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 {
 	std::cout << "init    de setLocation: " << *i << std::endl;
 	myVecS		vecLocation;
-	Location	intLocation;
+	Location	indorLocation;
 
 	if ((*i).compare(0, 1, "{") == 0)
 		throw Error::InvalidParameter();
-	intLocation.setPath(*i++);
+	indorLocation.setPath(*i++);
 	if ((*i++).compare(0, 1, "{") != 0)
 		throw Error::InvalidParameter();
 //	std::cout << "palavra: " << *i << std::endl;
@@ -170,7 +170,7 @@ void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 		if (((*i).compare(0, 13, "allow_methods") == 0) || ((*i).compare(0, 7, "methods") == 0))
 		{
 			i++;
-			while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
+			while((i != sp_server.end()))
 			{
 				if (((*i).find(";")) != std::string::npos)
 				{
@@ -192,9 +192,16 @@ void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 	//		std::cout << "Location: " << *i << std::endl;
 			if (!vecLocation.size())
 				throw Error::InvalidParameter();
-			intLocation.setMethods(vecLocation);
+			indorLocation.setMethods(vecLocation);
+		}
+		else
+		{
+			while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
+				i++;
 		}
 	}
+	if (vecLocation.size())
+		this->_vec_location.push_back(indorLocation);
 	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
 /*
@@ -284,7 +291,7 @@ bool					Server::isTokenValid( std::string & _parameter)
 //	std::cout << " pré _p: " << _p << std::endl;
 
 	pos = _parameter.find(";");
-	if( pos != (_parameter.size() - 1))
+	if(pos != (_parameter.size() - 1))
 		throw Error::InvalidParameter();
 	else
 		_parameter.erase(pos);
@@ -298,7 +305,7 @@ void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecStri
 	std::string tmp;
 //	size_t j = 0;
 
-	while( i != sp_server.end())
+	while(i != sp_server.end())
 	{
 		tmp = *(i);
 		if ((tmp.find(";")) != std::string::npos)

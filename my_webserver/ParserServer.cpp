@@ -206,6 +206,9 @@ void		ParserServer::buildServer(const std::string & server)
 			if (i != splitted_server.end())
 				i++;
 		}
+		this->_servers.push_back(_server);
 	}
+	else
+		throw Error::InvalidParameter();
 	std::cout << "end   | buildServer: server: " << server << std::endl;
 }

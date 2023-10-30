@@ -35,12 +35,8 @@ class	Server
 		myVecS						_page_server_name;
 		myVecS						_index;
 		std::string					_root;
-/*
-		unsigned long int	_client_max_body_size;
-		bool				_autoindex;
-		int					_fd_sockaddr;
-		struct sockaddr_in	_server_addr;
-*/
+		std::vector<Location>		_vec_location;
+
 		bool		isTokenValid( std::string & _p );
 		bool		isHostValid( std::string & _parameter );
 		void		putVecString(myItVecS &i, std::vector<std::string> & sp_server, myVecS & _vecString );
