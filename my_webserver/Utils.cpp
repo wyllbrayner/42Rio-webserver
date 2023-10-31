@@ -53,7 +53,7 @@ void	Utils::trim( std::string & line )
 
 std::vector<std::string> Utils::split( const std::string line, std::string sep )
 {
-//	std::cout << "line in split: " << line << std::endl;
+//	std::cout << "line in split: " << line << " sep: " << sep << std::endl;
 	std::vector<std::string>	str;
 	size_t						start;
 	size_t						end;
@@ -62,7 +62,7 @@ std::vector<std::string> Utils::split( const std::string line, std::string sep )
 	end = 0;
 	if (line.size())
 	{
-		while (line[end])
+		while (end < line.size()) //new!!!!!
 		{
 			end = line.find_first_of(sep, start);
 			str.push_back(line.substr(start, (end - start)));

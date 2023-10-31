@@ -81,6 +81,8 @@ void	ParserServer::splitServers(std::string & servers)
 //	std::string					tmp; // apenas para teste
 	while (start < servers.size())
 	{
+		while ((start < servers.size()) && (std::isspace(servers[start]))) //new!!!!
+			start++; //new!!!!
 		if (servers.compare(start, 6, "server") != 0)
 			throw Error::InvalidConfigurationServer();
 		start = start + 6;
@@ -89,7 +91,7 @@ void	ParserServer::splitServers(std::string & servers)
 		this->findEndServer(servers, end);
 //		tmp = servers.substr(start, (end - start + 1)); // apenas para teste
 //		std::cout << "start: " << start << " end: " << end << " substr:" << tmp << std::endl;  // apenas para teste
-		this->buildServer(servers.substr(start, (end - start + 1)));
+		this->buildServer(servers.substr(start, (end - start + 1))); //aqui
 		start = end + 1;
 	}
 //	std::cout << "end   | splitServers" << std::endl;
@@ -134,7 +136,6 @@ void	ParserServer::findEndServer(const std::string & servers, size_t & end)
 void		ParserServer::buildServer(const std::string & server)
 {
 	std::cout << "start | buildServer: server: " << server << std::endl;
-
 	std::vector< std::string >				splitted_server;
 	Server									_server;
 	std::vector< std::string >::iterator	i;
@@ -145,7 +146,7 @@ void		ParserServer::buildServer(const std::string & server)
 		i = splitted_server.begin();
 		while(i != splitted_server.end())
 		{
-			std::cout << "splitted_server: " << *i << std::endl;
+//			std::cout << "splitted_server: " << *i << std::endl;
 			if (((*i).compare(0 , 6, "listen") == 0) && ((i + 1) != splitted_server.end()))
 			{
 //				std::cout << "this is a listen!: " << *i << std::endl;

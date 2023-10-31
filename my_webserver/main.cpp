@@ -33,8 +33,7 @@ int	main( int argc, char **argv )
 				server.createServer(DB);
 			else
 				server.createServer(argv[1]);
-		}
-		
+		}		
 //		std::cout << "try end   | main" << std::endl;
 	}
 	catch ( std::exception &e )
