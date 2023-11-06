@@ -82,11 +82,11 @@ void					Server::setPort(std::string & _parameter)
 	{
 		while (i < _parameter.size())
 		{
-			if ( !std::isdigit(_parameter[i]))
+			if (!std::isdigit(_parameter[i]))
 				throw Error::InvalidParameter();
 			i++;
 		}
-		if ( i > 5 ) // 0 maior valor para uma porta válida é 65535, logo possui, no máximo, 5 dígitos.
+		if (i > 5) // 0 maior valor para uma porta válida é 65535, logo possui, no máximo, 5 dígitos.
 			throw Error::InvalidParameter();
 		nbr_port = Utils::atoi(_parameter);
 		if (nbr_port > 65535 || nbr_port < 0)
@@ -204,54 +204,20 @@ void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 		this->_vec_location.push_back(indorLocation);
 	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
-/*
-void					Server::setLocation(myItVecS &i, myVecS & sp_server)
-{
-	std::cout << "init    de setLocation: " << *i << std::endl;
-	myVecS		vecLocation;
-	Location	intLocation;
 
-	if ((*i).compare(0, 1, "{") == 0)
-		throw Error::InvalidParameter();
-	intLocation.setPath(*i++);
-	if ((*i++).compare(0, 1, "{") != 0)
-		throw Error::InvalidParameter();
-//	std::cout << "palavra: " << *i << std::endl;
-	if (((*i).compare(0, 13, "allow_methods") != 0) && ((*i).compare(0, 7, "methods") != 0))
+bool					Server::isTokenValid( std::string & _parameter)
+{
+	size_t	pos;
+//	std::cout << " pré _p: " << _p << std::endl;
+
+	pos = _parameter.find(";");
+	if(pos != (_parameter.size() - 1))
 		throw Error::InvalidParameter();
 	else
-	{
-		i++;
-		while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
-		{
-			if (((*i).find(";")) != std::string::npos)
-			{
-				this->isTokenValid(*i);
-				if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
-					vecLocation.push_back(*i++);
-				else
-					throw Error::InvalidParameter();
-				if ((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
-					throw Error::InvalidParameter();
-				else
-					break ;
-			}
-			else
-			{
-				if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
-					vecLocation.push_back(*i++);
-				else
-					throw Error::InvalidParameter();
-			}
-	//		std::cout << "Location: " << *i << std::endl;
-		}
-		if (!vecLocation.size())
-			throw Error::InvalidParameter();
-		intLocation.setMethods(vecLocation);
-	}
-	std::cout << "fim     de setLocation: " << *i << std::endl;
+		_parameter.erase(pos);
+//	std::cout << " pós _p: " << _p << std::endl;
+	return (true);
 }
-*/
 
 bool					Server::isHostValid(std::string & _parameter)
 {
@@ -282,20 +248,6 @@ bool					Server::isHostValid(std::string & _parameter)
 		i += (j + 1);
 	}
 //	std::cout << "fim    de isHostValid: " << _parameter << std::endl;
-	return (true);
-}
-
-bool					Server::isTokenValid( std::string & _parameter)
-{
-	size_t	pos;
-//	std::cout << " pré _p: " << _p << std::endl;
-
-	pos = _parameter.find(";");
-	if(pos != (_parameter.size() - 1))
-		throw Error::InvalidParameter();
-	else
-		_parameter.erase(pos);
-//	std::cout << " pós _p: " << _p << std::endl;
 	return (true);
 }
 

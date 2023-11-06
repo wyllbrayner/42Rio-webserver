@@ -22,20 +22,22 @@
 class	ParserServer
 {
 	private:
+		ParserServer(const ParserServer& copy);
+		ParserServer	&operator=(const ParserServer &src);
 		std::vector< Server >	_servers;
+		size_t					_nbrServers;
 
-		void  	removeComents( std::string & line );
-		void	splitServers( std::string & servers );
-		void	findStartServer( const std::string & servers, size_t & start );
-		void	findEndServer( const std::string & servers, size_t & end );
-		void	buildServer( const std::string & server );
+		void  	removeComents(std::string & line);
+		void	splitServers(std::string & servers);
+		void	findStartServer(const std::string & servers, size_t & start);
+		void	findEndServer(const std::string & servers, size_t & end);
+		void	buildServer(const std::string & server);
 	
 	public:
-		ParserServer( void );
-		ParserServer( const ParserServer& copy );
-		ParserServer	&operator=( const ParserServer &src );
-		~ParserServer( void );
+		ParserServer(void);
+		~ParserServer(void);
 
-		void	createServer( const std::string & config_path);
-
+		const	std::vector<Server>	&	getServers(void) const;
+		const	size_t				&	getNbrServers(void) const;
+		void							createServer(const std::string & config_path);
 };

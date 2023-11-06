@@ -12,12 +12,18 @@
 
 #include "ParserServer.hpp"
 
-ParserServer::ParserServer(void) {}
+ParserServer::ParserServer(void)
+{
+	this->_nbrServers = 0;	
+}
 
 ParserServer	&ParserServer::operator=(const ParserServer & src)
 {
 	if (this != &src)
+	{
 		this->_servers = src._servers;
+		this->_nbrServers = src._nbrServers;
+	}
 	return (*this);
 }
 
@@ -27,7 +33,20 @@ ParserServer::ParserServer(const ParserServer & copy)
 	return ;
 }
 
-ParserServer::~ParserServer(void) {}
+ParserServer::~ParserServer(void)
+{
+	this->_nbrServers = 0;
+}
+
+const std::vector<Server> &	ParserServer::getServers(void) const
+{
+	return (this->_servers);
+}
+
+const size_t 					&	ParserServer::getNbrServers(void) const
+{
+	return (this->_nbrServers);
+}
 
 void 	ParserServer::createServer(const std::string & config_path)
 {
@@ -50,6 +69,7 @@ void 	ParserServer::createServer(const std::string & config_path)
 		ifs.close();
 //		std::cout << "servers final:" << servers << std::endl;
 		splitServers(servers);
+		this->_nbrServers = this->_servers.size();
 	}
 	else
 		throw Error::InvalidPathServer();
@@ -136,6 +156,7 @@ void	ParserServer::findEndServer(const std::string & servers, size_t & end)
 void		ParserServer::buildServer(const std::string & server)
 {
 	std::cout << "start | buildServer: server: " << server << std::endl;
+
 	std::vector< std::string >				splitted_server;
 	Server									_server;
 	std::vector< std::string >::iterator	i;

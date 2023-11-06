@@ -42,9 +42,9 @@ class	Server
 	
 	public:
 		Server( void );
-		Server( const Server& copy );
-		Server	&operator=( const Server &src );
 		~Server( void );
+		Server	&operator=( const Server &src );
+		Server( const Server& copy );
 
 		const int 		&					getPort(void) const;
 		const in_addr_t &					getHost(void) const;

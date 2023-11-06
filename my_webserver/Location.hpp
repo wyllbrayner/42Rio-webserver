@@ -25,9 +25,9 @@ class	Location
 	
 	public:
 		Location( void );
+		~Location( void );
 		Location( const Location& copy );
 		Location	&operator=( const Location &src );
-		~Location( void );
 
 		const std::string &					getPath(void) const;
 		const std::vector<std::string>		getMethods(void) const;
