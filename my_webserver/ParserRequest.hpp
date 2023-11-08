@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParserServer.hpp                                   :+:      :+:    :+:   */
+/*   ParserRequest.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,27 +17,28 @@
 # include <iostream> //confirmar se será necessário para a entrega
 # include "Error.hpp"
 # include "Utils.hpp"
-# include "ConfigFile.hpp"
+# include <vector>
 
-class	ParserServer
+class	ParserRequest
 {
 	private:
-		ParserServer(const ParserServer& copy);
-		ParserServer	&operator=(const ParserServer &src);
-		std::vector< ConfigFile >	_servers;
-		size_t					_nbrServers;
+		std::string	_method;
+		std::string	_location;
+		std::string	_requestedInf;
+		std::string	_contentType;
+		ParserRequest(const ParserRequest& copy);
+		ParserRequest	&operator=(const ParserRequest &src);
 
-		void  	removeComents(std::string & line);
-		void	splitServers(std::string & servers);
-		void	findStartServer(const std::string & servers, size_t & start);
-		void	findEndServer(const std::string & servers, size_t & end);
-		void	buildServer(const std::string & server);
-	
+		void	splitRequest(std::string & fullRequest, size_t & pos);
+
 	public:
-		ParserServer(void);
-		~ParserServer(void);
+		ParserRequest(void);
+		~ParserRequest(void);
 
-		const	std::vector<ConfigFile>	&	getServers(void) const;
-		const	size_t				&	getNbrServers(void) const;
-		void							createServer(const std::string & config_path);
+		const std::string &				getMethod(void) const;
+		const std::string &				getLocation(void) const;
+		const std::string &				getRequestedInf(void) const;
+		const std::string &				getContentType(void) const;
+
+		void							parserRequest(const std::string & request);
 };

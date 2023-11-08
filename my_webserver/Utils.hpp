@@ -29,4 +29,5 @@ class	Utils
 		static	void							trim( std::string & line );
 		static	std::vector<std::string>		split( const std::string line, std::string sep);
 		static	int								atoi(const std::string line);
+//		static	size_t							strrchr(const std::string line, int c);
 };

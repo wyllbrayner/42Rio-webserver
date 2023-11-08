@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   ConfigFile.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -26,7 +26,7 @@
 typedef std::vector<std::string>::iterator	myItVecS;
 typedef std::vector<std::string> 			myVecS;
 
-class	Server
+class	ConfigFile
 {
 	private:
 		int							_port;
@@ -41,10 +41,10 @@ class	Server
 		void		putVecString(myItVecS &i, std::vector<std::string> & sp_server, myVecS & _vecString );
 	
 	public:
-		Server( void );
-		~Server( void );
-		Server	&operator=( const Server &src );
-		Server( const Server& copy );
+		ConfigFile( void );
+		~ConfigFile( void );
+		ConfigFile	&operator=( const ConfigFile &src );
+		ConfigFile( const ConfigFile& copy );
 
 		const int 		&					getPort(void) const;
 		const in_addr_t &					getHost(void) const;

@@ -38,7 +38,7 @@ ParserServer::~ParserServer(void)
 	this->_nbrServers = 0;
 }
 
-const std::vector<Server> &	ParserServer::getServers(void) const
+const std::vector<ConfigFile> &	ParserServer::getServers(void) const
 {
 	return (this->_servers);
 }
@@ -158,7 +158,7 @@ void		ParserServer::buildServer(const std::string & server)
 	std::cout << "start | buildServer: server: " << server << std::endl;
 
 	std::vector< std::string >				splitted_server;
-	Server									_server;
+	ConfigFile									_server;
 	std::vector< std::string >::iterator	i;
 
 	splitted_server = Utils::split(server, std::string(" \n\t"));

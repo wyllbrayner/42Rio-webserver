@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   ConfigFile.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#include "ConfigFile.hpp"
 
-Server::Server( void )
+ConfigFile::ConfigFile( void )
 {
 	this->_port = -1; // o range de portas validas em um sistema vai de 0 a 65535, então inicializo com -1 para saber que nada foi inserido nela.
 	this->_host = 0;
 }
 
-Server	&Server::operator=( const Server &src )
+ConfigFile	&ConfigFile::operator=( const ConfigFile &src )
 {
 	if (this != &src)
 	{
@@ -31,13 +31,13 @@ Server	&Server::operator=( const Server &src )
 	return (*this);
 }
 
-Server::Server( const Server& copy )
+ConfigFile::ConfigFile( const ConfigFile& copy )
 {
 	*this = copy;
 	return ;
 }
 
-Server::~Server( void )
+ConfigFile::~ConfigFile( void )
 {
 	this->_port = 0;
 	this->_host = 0;
@@ -46,32 +46,32 @@ Server::~Server( void )
 }
 
 
-const int &	Server::getPort(void) const 
+const int &	ConfigFile::getPort(void) const 
 {
 	return (this->_port);
 }
 
-const in_addr_t &	Server::getHost(void) const 
+const in_addr_t &	ConfigFile::getHost(void) const 
 {
 	return (this->_host);
 }
 
-const myVecS &	Server::getServerName(void) const
+const myVecS &	ConfigFile::getServerName(void) const
 {
 	return (this->_server_name);
 }
 
-const myVecS &	Server::getIndex(void) const
+const myVecS &	ConfigFile::getIndex(void) const
 {
 	return (this->_index);
 }
 
-const std::string &					Server::getRoot(void) const
+const std::string &					ConfigFile::getRoot(void) const
 {
 	return (this->_root);
 }
 
-void					Server::setPort(std::string & _parameter)
+void					ConfigFile::setPort(std::string & _parameter)
 {
 	int 				nbr_port;
 	unsigned short int	i;
@@ -97,7 +97,7 @@ void					Server::setPort(std::string & _parameter)
 	}
 }
 
-void					Server::setHost(std::string & _parameter)
+void					ConfigFile::setHost(std::string & _parameter)
 {
 //	std::cout << "início de setHost: " << _parameter << std::endl;
 	if (this->isTokenValid(_parameter))
@@ -110,21 +110,21 @@ void					Server::setHost(std::string & _parameter)
 //	std::cout << "fim    de setHost: " << _parameter << std::endl;
 }
 
-void					Server::setServerName(myItVecS &i, myVecS & sp_server)
+void					ConfigFile::setServerName(myItVecS &i, myVecS & sp_server)
 {
 //	std::cout << "início de setServerName: " << *(i) << std::endl;
 	this->putVecString(i, sp_server, this->_server_name);
 //	std::cout << "fim    de setServerName: " << *(i) << std::endl;
 }
 
-void					Server::setIndex(myItVecS &i, myVecS & sp_server)
+void					ConfigFile::setIndex(myItVecS &i, myVecS & sp_server)
 {
 //	std::cout << "início de setIndex: " << *(i) << std::endl;
 	this->putVecString(i, sp_server, this->_index);
 //	std::cout << "fim    de setIndex: " << *(i) << std::endl;
 }
 
-void					Server::setRoot(std::string & _parameter)
+void					ConfigFile::setRoot(std::string & _parameter)
 {
 //	std::cout << "início de setRoot: " << _parameter << std::endl;
 	char path[4096];
@@ -153,7 +153,7 @@ void					Server::setRoot(std::string & _parameter)
 //	std::cout << "fim    de setRoot: " << _parameter << std::endl;
 }
 
-void					Server::setLocation(myItVecS &i, myVecS & sp_server)
+void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 {
 	std::cout << "init    de setLocation: " << *i << std::endl;
 	myVecS		vecLocation;
@@ -205,7 +205,7 @@ void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
 
-bool					Server::isTokenValid( std::string & _parameter)
+bool					ConfigFile::isTokenValid( std::string & _parameter)
 {
 	size_t	pos;
 //	std::cout << " pré _p: " << _p << std::endl;
@@ -219,7 +219,7 @@ bool					Server::isTokenValid( std::string & _parameter)
 	return (true);
 }
 
-bool					Server::isHostValid(std::string & _parameter)
+bool					ConfigFile::isHostValid(std::string & _parameter)
 {
 //	std::cout << "início de isHostValid: " << _parameter << std::endl;
 	int 				nbr;
@@ -251,7 +251,7 @@ bool					Server::isHostValid(std::string & _parameter)
 	return (true);
 }
 
-void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
+void					ConfigFile::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
 {
 //	std::cout << "início de putVecString: " << *(i) << std::endl;
 	std::string tmp;

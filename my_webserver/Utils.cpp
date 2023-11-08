@@ -52,7 +52,26 @@ void	Utils::trim( std::string & line )
 	}
 }
 
-std::vector<std::string> Utils::split( const std::string line, std::string sep )
+/*
+size_t						Utils::strrchr(const std::string line, int c)
+{
+	size_t	len;
+
+	len = (line.size() - 1);
+	while (len != 0)
+	{
+		if (line[len] == c)
+			return (len);
+
+		len--;
+	}
+	if (line[len] == c)
+		return (len);
+	return (std::string::npos);
+}
+*/
+
+std::vector<std::string>	Utils::split( const std::string line, std::string sep )
 {
 //	std::cout << "line in split: " << line << " sep: " << sep << std::endl;
 	std::vector<std::string>	str;

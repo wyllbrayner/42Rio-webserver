@@ -16,6 +16,7 @@
 # include <iostream> //confirmar se será necessário para a entrega
 # include "Error.hpp"
 # include "Utils.hpp"
+# include <vector>
 
 class	Location
 {
