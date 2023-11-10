@@ -98,7 +98,7 @@ void	ParserConfigFile::splitServers(std::string & servers)
 	size_t						end;
 
 	start = 0;
-//	std::string					tmp; // apenas para teste
+//	std::string					tmp0; // apenas para teste
 	while (start < servers.size())
 	{
 		while ((start < servers.size()) && (std::isspace(servers[start])))
@@ -109,8 +109,8 @@ void	ParserConfigFile::splitServers(std::string & servers)
 		this->findStartServer(servers, start);
 		end = start;
 		this->findEndServer(servers, end);
-//		tmp = servers.substr(start, (end - start + 1)); // apenas para teste
-//		std::cout << "start: " << start << " end: " << end << " substr:" << tmp << std::endl;  // apenas para teste
+//		tmp0 = servers.substr(start, (end - start + 1)); // apenas para teste
+//		std::cout << "start: " << start << " end: " << end << " substr:" << tmp0 << std::endl;  // apenas para teste
 		this->buildServer(servers.substr(start, (end - start + 1))); //aqui
 		start = end + 1;
 	}
@@ -248,7 +248,8 @@ void		ParserConfigFile::buildServer(const std::string & server)
 void	ParserConfigFile::printServer(void)
 {
 	size_t		i;
-	size_t		tmp;
+	size_t		tmp0;
+	size_t		tmp1;
 
 	i = 0;
 	while (i < this->_servers.size())
@@ -256,48 +257,31 @@ void	ParserConfigFile::printServer(void)
 		std::cout << "servidor n: " << (i + 1) << std::endl;
 		std::cout << "listen port:" << this->_servers[i].getPort() << std::endl;		
 		std::cout << "host:" << this->_servers[i].getHost() << std::endl;
-		tmp = 0;
-		std::cout << "server_name: " << (this->_servers[i].getServerName())[tmp];
-		while (++tmp != (this->_servers[i].getServerName()).size())
-			std::cout << ", "<< (this->_servers[i].getServerName())[tmp];
+		tmp0 = 0;
+		std::cout << "server_name: " << (this->_servers[i].getServerName())[tmp0];
+		while (++tmp0 != (this->_servers[i].getServerName()).size())
+			std::cout << ", "<< (this->_servers[i].getServerName())[tmp0];
 		std::cout << std::endl;
-		tmp = 0;
-		std::cout << "index: " << (this->_servers[i].getIndex())[tmp];
-		while (++tmp != (this->_servers[i].getIndex()).size())
-			std::cout << ", "<< (this->_servers[i].getIndex())[tmp];
+		tmp0 = 0;
+		std::cout << "index: " << (this->_servers[i].getIndex())[tmp0];
+		while (++tmp0 != (this->_servers[i].getIndex()).size())
+			std::cout << ", " << (this->_servers[i].getIndex())[tmp0];
 		std::cout << std::endl;
 		std::cout << "root:" << this->_servers[i].getRoot() << std::endl;
-		tmp = 0;
+		tmp0 = 0;
 
 		std::vector<Location> indorloc = this->_servers[i].getLocation();
-		while(tmp < (this->_servers[i].getLocation()).size())
+		while(tmp0 < (this->_servers[i].getLocation()).size())
 		{
-			std::cout << "Location n: " << (tmp + 1) << std::endl;
-			std::cout << "Path: " << ((this->_servers[i].getLocation())[tmp]).getPath() << std::endl;
-			tmp++;
+			std::cout << "Location n: " << (tmp0 + 1) << std::endl;
+			std::cout << "Path: " << ((this->_servers[i].getLocation())[tmp0]).getPath() << std::endl;
+			tmp1 = 0;
+			std::cout << "method: " << (((this->_servers[i].getLocation())[tmp0]).getMethods())[tmp1];
+			while(tmp1 < (((this->_servers[i].getLocation())[tmp0]).getMethods()).size())
+				std::cout << ", " << (((this->_servers[i].getLocation())[tmp0]).getMethods())[tmp1++];
+			std::cout << std::endl;
+			tmp0++;
 		}
 		i++;
 	}
-
-
-/*
-//	i = this->_servers.begin();
-	j = 1;
-	while (i != this->_servers.end())
-	{
-
-		tmp1 = this->_server.getLocation().begin();
-		while (tmp1 != this->_server.getLocation().end())
-		{
-			k = 0;		
-			std::cout << "Location n:" << k << std::endl;
-			std::cout << "{" << std::endl;
-			std::cout << "\tPath: " << tmp1.getPath()   << std::endl;
-//			std::cout << "\t: " << tmp1.getPath()   << std::endl;
-			std::cout << "}" << std::endl;
-		}
-		j++;
-		i++;
-	}
-*/
 }
