@@ -174,7 +174,7 @@ void					ConfigFile::setRoot(std::string _parameter)
 
 void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 {
-	std::cout << "init    de setLocation: " << *i << std::endl;
+//	std::cout << "init    de setLocation: " << *i << std::endl;
 	myVecS		vecLocation;
 	Location	indorLocation;
 
@@ -221,7 +221,7 @@ void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 	}
 	if (vecLocation.size())
 		this->_vec_location.push_back(indorLocation);
-	std::cout << "fim     de setLocation: " << *i << std::endl;
+//	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
 
 bool					ConfigFile::isTokenValid( std::string & _parameter)

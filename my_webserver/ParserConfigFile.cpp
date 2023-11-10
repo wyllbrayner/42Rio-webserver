@@ -273,13 +273,14 @@ void	ParserConfigFile::printServer(void)
 		std::vector<Location> indorloc = this->_servers[i].getLocation();
 		while(tmp0 < (this->_servers[i].getLocation()).size())
 		{
-			std::cout << "Location n: " << (tmp0 + 1) << std::endl;
+			std::cout << "Location n: " << (tmp0 + 1) << " {" << std::endl;
 			std::cout << "Path: " << ((this->_servers[i].getLocation())[tmp0]).getPath() << std::endl;
 			tmp1 = 0;
 			std::cout << "method: " << (((this->_servers[i].getLocation())[tmp0]).getMethods())[tmp1];
 			while(tmp1 < (((this->_servers[i].getLocation())[tmp0]).getMethods()).size())
 				std::cout << ", " << (((this->_servers[i].getLocation())[tmp0]).getMethods())[tmp1++];
 			std::cout << std::endl;
+			std::cout << "}" << std::endl;
 			tmp0++;
 		}
 		i++;

@@ -44,15 +44,16 @@ const std::vector<std::string>		Location::getMethods(void) const
 
 void								Location::setPath(std::string & path)
 {
-	std::cout << "int     de setPath: " << path << std::endl;
+//	std::cout << "int     de setPath: " << path << std::endl;
 	this->_path = path;
-	std::cout << "end     de setPath: " << this->_path << std::endl;
+//	std::cout << "end     de setPath: " << this->_path << std::endl;
 }
 
 void								Location::setMethods(std::vector<std::string> & vecLocation)
 {
-	std::cout << "int     de setMethods: " << vecLocation[0] << std::endl;
+//	std::cout << "int     de setMethods: " << vecLocation[0] << std::endl;
 	this->_allowed_methods = vecLocation;
+/*
 	size_t j = 0;
 	std::cout << "setMethods: ";
 	while(j < this->_allowed_methods.size())
@@ -61,8 +62,6 @@ void								Location::setMethods(std::vector<std::string> & vecLocation)
 		j++;
 	}
 	std::cout << std::endl;
-/*
 */
-
-	std::cout << "end     de setMethods: " << vecLocation[0] << std::endl;
+//	std::cout << "end     de setMethods: " << vecLocation[0] << std::endl;
 }
