@@ -51,10 +51,13 @@ class	ConfigFile
 		const myVecS &						getServerName(void) const;
 		const myVecS &						getIndex(void) const;
 		const std::string &					getRoot(void) const;
+		const std::vector<Location> &		getLocation(void) const;
 		void								setPort(std::string & _p);
-		void								setHost(std::string & _parameter);
+		void								setHost(std::string _parameter);
 		void								setServerName(myItVecS &i, myVecS & sp_server);
+		void								setServerNameSmart(std::string _parameter);
 		void								setIndex(myItVecS &i, myVecS & sp_server);
-		void								setRoot(std::string & _parameter);
+		void								setIndexSmart(std::string _parameter);
+		void								setRoot(std::string _parameter);
 		void								setLocation(myItVecS &i, myVecS & sp_server);
 };

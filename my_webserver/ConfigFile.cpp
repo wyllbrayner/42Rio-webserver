@@ -27,6 +27,7 @@ ConfigFile	&ConfigFile::operator=( const ConfigFile &src )
 		this->_server_name = src.getServerName();
 		this->_index = src.getIndex();
 		this->_root = src.getRoot();
+		this->_vec_location = src.getLocation();
 	}
 	return (*this);
 }
@@ -71,6 +72,11 @@ const std::string &					ConfigFile::getRoot(void) const
 	return (this->_root);
 }
 
+const std::vector<Location>		& ConfigFile::getLocation(void) const
+{
+	return (this->_vec_location);
+}
+
 void					ConfigFile::setPort(std::string & _parameter)
 {
 	int 				nbr_port;
@@ -97,7 +103,7 @@ void					ConfigFile::setPort(std::string & _parameter)
 	}
 }
 
-void					ConfigFile::setHost(std::string & _parameter)
+void					ConfigFile::setHost(std::string _parameter)
 {
 //	std::cout << "início de setHost: " << _parameter << std::endl;
 	if (this->isTokenValid(_parameter))
@@ -117,6 +123,12 @@ void					ConfigFile::setServerName(myItVecS &i, myVecS & sp_server)
 //	std::cout << "fim    de setServerName: " << *(i) << std::endl;
 }
 
+void					ConfigFile::setServerNameSmart(std::string _parameter)
+{
+	if (this->isTokenValid(_parameter))
+		this->_server_name.push_back(_parameter);
+}
+
 void					ConfigFile::setIndex(myItVecS &i, myVecS & sp_server)
 {
 //	std::cout << "início de setIndex: " << *(i) << std::endl;
@@ -124,28 +136,35 @@ void					ConfigFile::setIndex(myItVecS &i, myVecS & sp_server)
 //	std::cout << "fim    de setIndex: " << *(i) << std::endl;
 }
 
-void					ConfigFile::setRoot(std::string & _parameter)
+void					ConfigFile::setIndexSmart(std::string _parameter)
+{
+	if (this->isTokenValid(_parameter))
+		this->_index.push_back(_parameter);
+}
+
+void					ConfigFile::setRoot(std::string _parameter)
 {
 //	std::cout << "início de setRoot: " << _parameter << std::endl;
 	char path[4096];
 	std::string fullPath;
-	DIR *directory;
+//	DIR *directory;
 
-	directory = NULL;
+//	directory = NULL;
 	if (this->isTokenValid(_parameter))
 	{
 		if (getcwd(path, 4096))
 		{
 			fullPath = path;
-			fullPath.append("/").append(_parameter);
-			directory = opendir(fullPath.c_str());
-			if (!directory)
-				throw Error::InvalidParameter();
-			else
-			{
+			fullPath.append("/");
+//			fullPath.append("/").append(_parameter);
+//			directory = opendir(fullPath.c_str());
+//			if (!directory)
+//				throw Error::InvalidParameter();
+//			else
+//			{
 				this->_root = fullPath;
-				closedir(directory);
-			}
+//				closedir(directory);
+//			}
 		}
 		else
 			throw Error::InvalidParameter();

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParserServer.cpp                                   :+:      :+:    :+:   */
+/*   ParserConfigFile.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ParserServer.hpp"
+#include "ParserConfigFile.hpp"
 
-ParserServer::ParserServer(void)
+ParserConfigFile::ParserConfigFile(void)
 {
 	this->_nbrServers = 0;	
 }
 
-ParserServer	&ParserServer::operator=(const ParserServer & src)
+ParserConfigFile	&ParserConfigFile::operator=(const ParserConfigFile & src)
 {
 	if (this != &src)
 	{
@@ -27,28 +27,28 @@ ParserServer	&ParserServer::operator=(const ParserServer & src)
 	return (*this);
 }
 
-ParserServer::ParserServer(const ParserServer & copy)
+ParserConfigFile::ParserConfigFile(const ParserConfigFile & copy)
 {
 	*this = copy;
 	return ;
 }
 
-ParserServer::~ParserServer(void)
+ParserConfigFile::~ParserConfigFile(void)
 {
 	this->_nbrServers = 0;
 }
 
-const std::vector<ConfigFile> &	ParserServer::getServers(void) const
+const std::vector<ConfigFile> &	ParserConfigFile::getServers(void) const
 {
 	return (this->_servers);
 }
 
-const size_t 					&	ParserServer::getNbrServers(void) const
+const size_t 					&	ParserConfigFile::getNbrServers(void) const
 {
 	return (this->_nbrServers);
 }
 
-void 	ParserServer::createServer(const std::string & config_path)
+void 	ParserConfigFile::createServer(const std::string & config_path)
 {
 //	std::cout << "start | createServer" << std::endl;
 
@@ -76,7 +76,7 @@ void 	ParserServer::createServer(const std::string & config_path)
 //	std::cout << "end   | createServer" << std::endl;
 }
 
-void 	ParserServer::removeComents(std::string & line)
+void 	ParserConfigFile::removeComents(std::string & line)
 {
 //	std::cout << "start | removeComents" << std::endl;
 	size_t pos;
@@ -91,7 +91,7 @@ void 	ParserServer::removeComents(std::string & line)
 //	std::cout << "end   | removeComents" << std::endl;
 }
 
-void	ParserServer::splitServers(std::string & servers)
+void	ParserConfigFile::splitServers(std::string & servers)
 {
 //	std::cout << "start | splitServers" << std::endl;
 	size_t						start;
@@ -101,8 +101,8 @@ void	ParserServer::splitServers(std::string & servers)
 //	std::string					tmp; // apenas para teste
 	while (start < servers.size())
 	{
-		while ((start < servers.size()) && (std::isspace(servers[start]))) //new!!!!
-			start++; //new!!!!
+		while ((start < servers.size()) && (std::isspace(servers[start])))
+			start++;
 		if (servers.compare(start, 6, "server") != 0)
 			throw Error::InvalidConfigurationServer();
 		start = start + 6;
@@ -117,7 +117,7 @@ void	ParserServer::splitServers(std::string & servers)
 //	std::cout << "end   | splitServers" << std::endl;
 }
 
-void	ParserServer::findStartServer(const std::string & servers, size_t & start)
+void	ParserConfigFile::findStartServer(const std::string & servers, size_t & start)
 {
 //	std::cout << "start | findStartServer | start: " << start << std::endl;
 
@@ -128,7 +128,7 @@ void	ParserServer::findStartServer(const std::string & servers, size_t & start)
 //	std::cout << "end   | findStartServer | start: " << start << std::endl;
 }
 
-void	ParserServer::findEndServer(const std::string & servers, size_t & end)
+void	ParserConfigFile::findEndServer(const std::string & servers, size_t & end)
 {
 //	std::cout << "start | findEndtServer  | end  : " << end << std::endl;
 	short unsigned int scope;
@@ -153,9 +153,9 @@ void	ParserServer::findEndServer(const std::string & servers, size_t & end)
 //	std::cout << "end   | findEndServer   | end  : " << end<< std::endl;
 }
 
-void		ParserServer::buildServer(const std::string & server)
+void		ParserConfigFile::buildServer(const std::string & server)
 {
-	std::cout << "start | buildServer: server: " << server << std::endl;
+//	std::cout << "start | buildServer: server: " << server << std::endl;
 
 	std::vector< std::string >				splitted_server;
 	ConfigFile									_server;
@@ -221,16 +221,83 @@ void		ParserServer::buildServer(const std::string & server)
 			}
 			else if (((*i).compare(0, 8, "location") == 0) && ((i + 1) != splitted_server.end()))
 			{
-				std::cout << "ini this is a location: " << *i << std::endl;
+//				std::cout << "ini this is a location: " << *i << std::endl;
 					_server.setLocation(++i, splitted_server);
-				std::cout << "end this is a location: " << std::endl;
+//				std::cout << "end this is a location: " << std::endl;
 			}
 			if (i != splitted_server.end())
 				i++;
 		}
+		if (_server.getHost() == 0)
+			_server.setHost("localhost;");
+		if (_server.getServerName().size() == 0)
+			_server.setServerNameSmart("webserver42Rio;");
+		if (_server.getIndex().size() == 0)
+			_server.setIndexSmart("index.html;");
+		if (_server.getRoot().size() == 0)
+			_server.setRoot("/;");
+		if ((_server.getPort() == -1) || (_server.getLocation().size() == 0))
+			throw Error::InvalidConfigurationServer();
 		this->_servers.push_back(_server);
 	}
 	else
 		throw Error::InvalidParameter();
-	std::cout << "end   | buildServer: server: " << server << std::endl;
+//	std::cout << "end   | buildServer: server: " << server << std::endl;
+}
+
+void	ParserConfigFile::printServer(void)
+{
+	size_t		i;
+	size_t		tmp;
+
+	i = 0;
+	while (i < this->_servers.size())
+	{
+		std::cout << "servidor n: " << (i + 1) << std::endl;
+		std::cout << "listen port:" << this->_servers[i].getPort() << std::endl;		
+		std::cout << "host:" << this->_servers[i].getHost() << std::endl;
+		tmp = 0;
+		std::cout << "server_name: " << (this->_servers[i].getServerName())[tmp];
+		while (++tmp != (this->_servers[i].getServerName()).size())
+			std::cout << ", "<< (this->_servers[i].getServerName())[tmp];
+		std::cout << std::endl;
+		tmp = 0;
+		std::cout << "index: " << (this->_servers[i].getIndex())[tmp];
+		while (++tmp != (this->_servers[i].getIndex()).size())
+			std::cout << ", "<< (this->_servers[i].getIndex())[tmp];
+		std::cout << std::endl;
+		std::cout << "root:" << this->_servers[i].getRoot() << std::endl;
+		tmp = 0;
+
+		std::vector<Location> indorloc = this->_servers[i].getLocation();
+		while(tmp < (this->_servers[i].getLocation()).size())
+		{
+			std::cout << "Location n: " << (tmp + 1) << std::endl;
+			std::cout << "Path: " << ((this->_servers[i].getLocation())[tmp]).getPath() << std::endl;
+			tmp++;
+		}
+		i++;
+	}
+
+
+/*
+//	i = this->_servers.begin();
+	j = 1;
+	while (i != this->_servers.end())
+	{
+
+		tmp1 = this->_server.getLocation().begin();
+		while (tmp1 != this->_server.getLocation().end())
+		{
+			k = 0;		
+			std::cout << "Location n:" << k << std::endl;
+			std::cout << "{" << std::endl;
+			std::cout << "\tPath: " << tmp1.getPath()   << std::endl;
+//			std::cout << "\t: " << tmp1.getPath()   << std::endl;
+			std::cout << "}" << std::endl;
+		}
+		j++;
+		i++;
+	}
+*/
 }

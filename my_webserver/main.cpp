@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "Error.hpp"
-#include "ParserServer.hpp"
+#include "ParserConfigFile.hpp"
 #include "ParserRequest.hpp"
 
 #include <iostream>
@@ -21,21 +21,22 @@
 
 int	main(int argc, char **argv)
 {
-	std::cout << "start     | main argc: " << argc << " argv[0]: " << argv[0] << std::endl;
-	ParserServer	server;
+//	std::cout << "start     | main argc: " << argc << " argv[0]: " << argv[0] << std::endl;
+	ParserConfigFile	server;
 	try
 	{
 		if (argc > 2)
 			throw Error::InvalidArg();
 		else
 		{
-/*
-			std::cout << "server nbrServers pré: " << server.getNbrServers() << std::endl;
+//			std::cout << "server nbrServers pré: " << server.getNbrServers() << std::endl;
 			if (argc == 1)
 				server.createServer(DB);
 			else
 				server.createServer(argv[1]);
-			std::cout << "server nbrServers pós: " << server.getNbrServers() << std::endl;
+			server.printServer();
+//			std::cout << "server nbrServers pós: " << server.getNbrServers() << std::endl;
+/*
 			std::vector< ConfigFile > inter = server.getServers();
 			std::vector< ConfigFile >::iterator i = inter.begin();
 			size_t									j = 0;
@@ -45,13 +46,13 @@ int	main(int argc, char **argv)
 				j++;
 				i++;
 			}
-*/
 			ParserRequest	requestParser;
 			requestParser.parserRequest(REQUEST);
 			std::cout << "Method     : " << requestParser.getMethod() << std::endl;
 			std::cout << "Location   : " << requestParser.getLocation() << std::endl;
 			std::cout << "RequestInf : " << requestParser.getRequestedInf() << std::endl;
 			std::cout << "ContentType: " << requestParser.getContentType() << std::endl;
+*/
 		}
 
 	}
@@ -60,6 +61,6 @@ int	main(int argc, char **argv)
 //		std::cout << "catch     | " << std::endl;
 		std::cerr << e.what() << std::endl;
 	}
-	std::cout << "end       | main" << std::endl;
+//	std::cout << "end       | main" << std::endl;
 	return (0);
 }
