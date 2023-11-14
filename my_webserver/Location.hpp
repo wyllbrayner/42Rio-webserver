@@ -13,22 +13,19 @@
 #pragma	once
 
 # include <string>
-# include <iostream> //confirmar se será necessário para a entrega
-# include "Error.hpp"
-# include "Utils.hpp"
 # include <vector>
 
 class	Location
 {
 	private:
 		std::string					_path;
-		std::vector<std::string>	_allowed_methods;
+		std::vector<std::string>	_allowedMethods;
 	
 	public:
-		Location( void );
-		~Location( void );
-		Location( const Location& copy );
-		Location	&operator=( const Location &src );
+		Location(void);
+		~Location(void);
+		Location(const Location& copy);
+		Location	&operator=(const Location &src);
 
 		const std::string &					getPath(void) const;
 		const std::vector<std::string>		getMethods(void) const;

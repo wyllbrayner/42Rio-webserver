@@ -21,7 +21,6 @@
 
 int	main(int argc, char **argv)
 {
-//	std::cout << "start     | main argc: " << argc << " argv[0]: " << argv[0] << std::endl;
 	ParserConfigFile	server;
 	try
 	{
@@ -29,13 +28,11 @@ int	main(int argc, char **argv)
 			throw Error::InvalidArg();
 		else
 		{
-//			std::cout << "server nbrServers pré: " << server.getNbrServers() << std::endl;
 			if (argc == 1)
 				server.createServer(DB);
 			else
 				server.createServer(argv[1]);
 			server.printServer();
-//			std::cout << "server nbrServers pós: " << server.getNbrServers() << std::endl;
 /*
 			std::vector< ConfigFile > inter = server.getServers();
 			std::vector< ConfigFile >::iterator i = inter.begin();
@@ -58,9 +55,7 @@ int	main(int argc, char **argv)
 	}
 	catch ( std::exception &e )
 	{
-//		std::cout << "catch     | " << std::endl;
 		std::cerr << e.what() << std::endl;
 	}
-//	std::cout << "end       | main" << std::endl;
 	return (0);
 }

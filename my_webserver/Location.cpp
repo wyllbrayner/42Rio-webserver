@@ -18,8 +18,8 @@ Location	&Location::operator=(const Location & src)
 {
 	if (this != &src)
 	{
-		this->_path = src._path;
-		this->_allowed_methods = src._allowed_methods;
+		this->_path = src.getPath();
+		this->_allowedMethods = src.getMethods();
 	}
 	return (*this);
 }
@@ -39,29 +39,15 @@ const std::string &					Location::getPath(void) const
 
 const std::vector<std::string>		Location::getMethods(void) const
 {
-	return (this->_allowed_methods);
+	return (this->_allowedMethods);
 }
 
 void								Location::setPath(std::string & path)
 {
-//	std::cout << "int     de setPath: " << path << std::endl;
 	this->_path = path;
-//	std::cout << "end     de setPath: " << this->_path << std::endl;
 }
 
 void								Location::setMethods(std::vector<std::string> & vecLocation)
 {
-//	std::cout << "int     de setMethods: " << vecLocation[0] << std::endl;
-	this->_allowed_methods = vecLocation;
-/*
-	size_t j = 0;
-	std::cout << "setMethods: ";
-	while(j < this->_allowed_methods.size())
-	{
-		std::cout << this->_allowed_methods[j] << " ";
-		j++;
-	}
-	std::cout << std::endl;
-*/
-//	std::cout << "end     de setMethods: " << vecLocation[0] << std::endl;
+	this->_allowedMethods = vecLocation;
 }

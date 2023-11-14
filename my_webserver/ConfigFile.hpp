@@ -13,12 +13,9 @@
 #pragma	once
 
 # include <arpa/inet.h>
-
-# include <unistd.h> //getcwd na setroot
-# include <sys/types.h> //open/close dir na setroot
-# include <dirent.h> //open/close dir na setroot
-
 # include <vector>
+# include <algorithm>
+# include <set>
 # include "Error.hpp"
 # include "Utils.hpp"
 # include "Location.hpp"
@@ -29,35 +26,37 @@ typedef std::vector<std::string> 			myVecS;
 class	ConfigFile
 {
 	private:
-		int							_port;
-		in_addr_t					_host;
-		myVecS						_server_name;
-		myVecS						_index;
-		std::string					_root;
-		std::vector<Location>		_vec_location;
+		std::vector<int>		_port;
+		in_addr_t				_host;
+		myVecS					_server_name;
+		myVecS					_index;
+		std::string				_root;
+		std::vector<Location>	_vec_location;
 
-		bool		isTokenValid( std::string & _p );
-		bool		isHostValid( std::string & _parameter );
-		void		putVecString(myItVecS &i, std::vector<std::string> & sp_server, myVecS & _vecString );
-	
+		bool	isTokenValid( std::string & _p );
+		bool	isHostValid( std::string & _parameter );
+		void	putVecString(myItVecS &i, std::vector<std::string> & sp_server, myVecS & _vecString );
+		void	putVecInt(std::string & _parameter);
+		bool	portIsDuplic(void) const;
+
 	public:
-		ConfigFile( void );
-		~ConfigFile( void );
-		ConfigFile	&operator=( const ConfigFile &src );
-		ConfigFile( const ConfigFile& copy );
+		ConfigFile(void);
+		ConfigFile	&operator=(const ConfigFile &src);
+		ConfigFile(const ConfigFile& copy);
+		~ConfigFile(void);
 
-		const int 		&					getPort(void) const;
-		const in_addr_t &					getHost(void) const;
-		const myVecS &						getServerName(void) const;
-		const myVecS &						getIndex(void) const;
-		const std::string &					getRoot(void) const;
-		const std::vector<Location> &		getLocation(void) const;
-		void								setPort(std::string & _p);
-		void								setHost(std::string _parameter);
-		void								setServerName(myItVecS &i, myVecS & sp_server);
-		void								setServerNameSmart(std::string _parameter);
-		void								setIndex(myItVecS &i, myVecS & sp_server);
-		void								setIndexSmart(std::string _parameter);
-		void								setRoot(std::string _parameter);
-		void								setLocation(myItVecS &i, myVecS & sp_server);
+		const std::vector<int> &		getPort(void) const;
+		const in_addr_t &				getHost(void) const;
+		const myVecS &					getServerName(void) const;
+		const myVecS &					getIndex(void) const;
+		const std::string &				getRoot(void) const;
+		const std::vector<Location> &	getLocation(void) const;
+		void							setPort(myItVecS &i, myVecS & sp_server);
+		void							setHost(std::string _parameter);
+		void							setServerName(myItVecS &i, myVecS & sp_server);
+		void							setServerNameSmart(std::string _parameter);
+		void							setIndex(myItVecS &i, myVecS & sp_server);
+		void							setIndexSmart(std::string _parameter);
+		void							setRoot(std::string _parameter);
+		void							setLocation(myItVecS &i, myVecS & sp_server);
 };

@@ -12,7 +12,7 @@
 
 #pragma	once
 
-# include <fstream>
+# include <fstream> //temporário até apagar a leitura do arquivo request e parserRequest
 # include <string>
 # include <iostream> //confirmar se será necessário para a entrega
 # include "Error.hpp"

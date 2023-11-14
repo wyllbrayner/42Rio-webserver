@@ -12,13 +12,12 @@
 
 #include "ConfigFile.hpp"
 
-ConfigFile::ConfigFile( void )
+ConfigFile::ConfigFile(void)
 {
-	this->_port = -1; // o range de portas validas em um sistema vai de 0 a 65535, então inicializo com -1 para saber que nada foi inserido nela.
 	this->_host = 0;
 }
 
-ConfigFile	&ConfigFile::operator=( const ConfigFile &src )
+ConfigFile	&ConfigFile::operator=(const ConfigFile &src)
 {
 	if (this != &src)
 	{
@@ -32,22 +31,18 @@ ConfigFile	&ConfigFile::operator=( const ConfigFile &src )
 	return (*this);
 }
 
-ConfigFile::ConfigFile( const ConfigFile& copy )
+ConfigFile::ConfigFile(const ConfigFile& copy)
 {
 	*this = copy;
 	return ;
 }
 
-ConfigFile::~ConfigFile( void )
+ConfigFile::~ConfigFile(void)
 {
-	this->_port = 0;
 	this->_host = 0;
-	this->_server_name.clear();
-	this->_index.clear();
 }
 
-
-const int &	ConfigFile::getPort(void) const 
+const std::vector<int> &	ConfigFile::getPort(void) const 
 {
 	return (this->_port);
 }
@@ -77,35 +72,21 @@ const std::vector<Location>		& ConfigFile::getLocation(void) const
 	return (this->_vec_location);
 }
 
-void					ConfigFile::setPort(std::string & _parameter)
+void					ConfigFile::setPort(myItVecS &i, myVecS & sp_server)
 {
-	int 				nbr_port;
-	unsigned short int	i;
-	
-	nbr_port = 0;
-	i = 0;
-	if (this->isTokenValid(_parameter))
-	{
-		while (i < _parameter.size())
-		{
-			if (!std::isdigit(_parameter[i]))
-				throw Error::InvalidParameter();
-			i++;
-		}
-		if (i > 5) // 0 maior valor para uma porta válida é 65535, logo possui, no máximo, 5 dígitos.
-			throw Error::InvalidParameter();
-		nbr_port = Utils::atoi(_parameter);
-		if (nbr_port > 65535 || nbr_port < 0)
-			throw Error::InvalidParameter();
-		else
-			this->_port = nbr_port;
-		nbr_port = 0;
-	}
+	myVecS	tmp;
+	size_t	j;
+
+	j = 0;
+	this->putVecString(i, sp_server, tmp);
+	while (j < tmp.size())
+		putVecInt(tmp[j++]);
+	if (portIsDuplic())
+		throw Error::InvalidParameter();
 }
 
 void					ConfigFile::setHost(std::string _parameter)
 {
-//	std::cout << "início de setHost: " << _parameter << std::endl;
 	if (this->isTokenValid(_parameter))
 	{
 		if (_parameter.compare(0, 9, "localhost") == 0)
@@ -113,14 +94,11 @@ void					ConfigFile::setHost(std::string _parameter)
 		if (this->isHostValid(_parameter))
 			this->_host = inet_addr(_parameter.c_str());
 	}
-//	std::cout << "fim    de setHost: " << _parameter << std::endl;
 }
 
 void					ConfigFile::setServerName(myItVecS &i, myVecS & sp_server)
 {
-//	std::cout << "início de setServerName: " << *(i) << std::endl;
 	this->putVecString(i, sp_server, this->_server_name);
-//	std::cout << "fim    de setServerName: " << *(i) << std::endl;
 }
 
 void					ConfigFile::setServerNameSmart(std::string _parameter)
@@ -131,9 +109,7 @@ void					ConfigFile::setServerNameSmart(std::string _parameter)
 
 void					ConfigFile::setIndex(myItVecS &i, myVecS & sp_server)
 {
-//	std::cout << "início de setIndex: " << *(i) << std::endl;
 	this->putVecString(i, sp_server, this->_index);
-//	std::cout << "fim    de setIndex: " << *(i) << std::endl;
 }
 
 void					ConfigFile::setIndexSmart(std::string _parameter)
@@ -144,37 +120,19 @@ void					ConfigFile::setIndexSmart(std::string _parameter)
 
 void					ConfigFile::setRoot(std::string _parameter)
 {
-//	std::cout << "início de setRoot: " << _parameter << std::endl;
-	char path[4096];
-	std::string fullPath;
-//	DIR *directory;
-
-//	directory = NULL;
 	if (this->isTokenValid(_parameter))
 	{
-		if (getcwd(path, 4096))
+		if (_parameter.compare(0, 1, "/") != 0)
 		{
-			fullPath = path;
-			fullPath.append("/");
-//			fullPath.append("/").append(_parameter);
-//			directory = opendir(fullPath.c_str());
-//			if (!directory)
-//				throw Error::InvalidParameter();
-//			else
-//			{
-				this->_root = fullPath;
-//				closedir(directory);
-//			}
+			if ((_parameter.rfind("/") + 1) != _parameter.size())
+				_parameter.append("/");
 		}
-		else
-			throw Error::InvalidParameter();
+		this->_root = _parameter;
 	}
-//	std::cout << "fim    de setRoot: " << _parameter << std::endl;
 }
 
 void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 {
-//	std::cout << "init    de setLocation: " << *i << std::endl;
 	myVecS		vecLocation;
 	Location	indorLocation;
 
@@ -183,7 +141,6 @@ void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 	indorLocation.setPath(*i++);
 	if ((*i++).compare(0, 1, "{") != 0)
 		throw Error::InvalidParameter();
-//	std::cout << "palavra: " << *i << std::endl;
 	while((i != sp_server.end()) && ((*i).compare(0, 1, "}") != 0))
 	{
 		if (((*i).compare(0, 13, "allow_methods") == 0) || ((*i).compare(0, 7, "methods") == 0))
@@ -191,24 +148,20 @@ void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 			i++;
 			while((i != sp_server.end()))
 			{
-				if (((*i).find(";")) != std::string::npos)
+				if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
 				{
-					this->isTokenValid(*i);
-					if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
+					if (((*i).find(";")) != std::string::npos)
+					{
+						this->isTokenValid(*i);
 						vecLocation.push_back(*i++);
+						break ;
+					}
 					else
-						throw Error::InvalidParameter();
-					break ;
+						vecLocation.push_back(*i++);
 				}
 				else
-				{
-					if (((*i).compare(0, 6, "DELETE") == 0) || ((*i).compare(0, 3, "GET") == 0) || ((*i).compare(0, 4, "POST") == 0))
-						vecLocation.push_back(*i++);
-					else
 						throw Error::InvalidParameter();
-				}
 			}
-	//		std::cout << "Location: " << *i << std::endl;
 			if (!vecLocation.size())
 				throw Error::InvalidParameter();
 			indorLocation.setMethods(vecLocation);
@@ -221,26 +174,22 @@ void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 	}
 	if (vecLocation.size())
 		this->_vec_location.push_back(indorLocation);
-//	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
 
 bool					ConfigFile::isTokenValid( std::string & _parameter)
 {
 	size_t	pos;
-//	std::cout << " pré _p: " << _p << std::endl;
 
 	pos = _parameter.find(";");
 	if(pos != (_parameter.size() - 1))
 		throw Error::InvalidParameter();
 	else
 		_parameter.erase(pos);
-//	std::cout << " pós _p: " << _p << std::endl;
 	return (true);
 }
 
 bool					ConfigFile::isHostValid(std::string & _parameter)
 {
-//	std::cout << "início de isHostValid: " << _parameter << std::endl;
 	int 				nbr;
 	unsigned short int	i;
 	unsigned short int	j;
@@ -263,18 +212,14 @@ bool					ConfigFile::isHostValid(std::string & _parameter)
 		nbr = Utils::atoi(_parameter.substr(i, j));
 		if ((nbr > 255) || (nbr < 0))
 			throw Error::InvalidParameter();
-//		std::cout << "nbr: " << nbr << std::endl;
 		i += (j + 1);
 	}
-//	std::cout << "fim    de isHostValid: " << _parameter << std::endl;
 	return (true);
 }
 
 void					ConfigFile::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
 {
-//	std::cout << "início de putVecString: " << *(i) << std::endl;
-	std::string tmp;
-//	size_t j = 0;
+	std::string	tmp;
 
 	while(i != sp_server.end())
 	{
@@ -283,23 +228,46 @@ void					ConfigFile::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vec
 		{
 			this->isTokenValid(tmp);
 			_vecString.push_back(tmp);
-//			std::cout << "putVecString: " << tmp << std::endl;
-//			std::cout << "VecString: " ;
-//			while (j < _vecString.size())
-//			{
-//				std::cout << _vecString[j] << " ";
-//				j++;
-//			}
-//			std::cout << std::endl;
 			break ;
 		}
 		else
-		{
 			_vecString.push_back(tmp);
-//			std::cout << "putVecString: " << tmp << std::endl;
-		}
 		i++;
 	}
-//	std::cout << "fim    de putVecString: " << std::endl;
-	tmp.clear();
+}
+
+void					ConfigFile::putVecInt(std::string & _parameter)
+{
+	int 				nbr_port;
+	unsigned short int	i;
+	
+	nbr_port = 0;
+	i = 0;
+	if (_parameter.size() > 5) // 0 maior valor para uma porta válida é 65535, logo possui, no máximo, 5 dígitos.
+		throw Error::InvalidParameter();
+	while (i < _parameter.size())
+	{
+		if (!std::isdigit(_parameter[i]))
+			throw Error::InvalidParameter();
+		i++;
+	}
+	nbr_port = Utils::atoi(_parameter);
+	if (nbr_port > 65535 || nbr_port <= 0)
+		throw Error::InvalidParameter();
+	else
+		this->_port.push_back(nbr_port);
+	nbr_port = 0;
+	i = 0;
+}
+
+bool					ConfigFile::portIsDuplic(void) const
+{
+	std::set<int>	tmp;
+
+	if (this->_port.size() == 1)
+		return (false);
+	tmp.insert(this->_port.begin(), this->_port.end());
+	if (this->_port.size() != tmp.size())
+		return (true);
+	return (false);
 }

@@ -13,8 +13,7 @@
 #pragma	once
 
 # include <fstream>
-# include <string>
-# include <iostream> //confirmar se será necessário para a entrega
+# include <iostream>
 # include "Error.hpp"
 # include "Utils.hpp"
 # include "ConfigFile.hpp"
@@ -22,10 +21,10 @@
 class	ParserConfigFile
 {
 	private:
-		ParserConfigFile(const ParserConfigFile& copy);
-		ParserConfigFile	&operator=(const ParserConfigFile &src);
 		std::vector<ConfigFile>	_servers;
 		size_t					_nbrServers;
+		ParserConfigFile(const ParserConfigFile& copy);
+		ParserConfigFile	&	operator=(const ParserConfigFile &src);
 
 		void  	removeComents(std::string & line);
 		void	splitServers(std::string & servers);
@@ -38,7 +37,7 @@ class	ParserConfigFile
 		~ParserConfigFile(void);
 
 		const	std::vector<ConfigFile>	&	getServers(void) const;
-		const	size_t				&		getNbrServers(void) const;
+		const	size_t					&	getNbrServers(void) const;
 		void								createServer(const std::string & config_path);
 		void								printServer(void);
 };

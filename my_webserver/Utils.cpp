@@ -30,50 +30,48 @@ Utils::Utils( const Utils& copy )
 
 Utils::~Utils( void ) {}
 
-void	Utils::trim( std::string & line )
+void	Utils::ltrim(std::string & line, std::string c)
 {
 	short unsigned int	i;
 
 	i = 0;
 	if (line.size())
 	{
-//		while (line[i] && std::isspace(line[i]))
-		while (i < line.size() && std::isspace(line[i]))
+		while (i < line.size() && line[i] == c[0])
 			i++;
 		line.erase(0, i);
-		if (line.size())
-		{
-			i = (line.size() - 1);
-			while (i != 0 && std::isspace(line[i]))
-				i--;
-			i++;
-			line.erase(i , (line.size() - i));
-		}
 	}
 }
 
-/*
-size_t						Utils::strrchr(const std::string line, int c)
+void	Utils::rtrim(std::string & line, std::string c)
 {
-	size_t	len;
+	short int	i;
 
-	len = (line.size() - 1);
-	while (len != 0)
+	i = 0;
+	if (line.size())
 	{
-		if (line[len] == c)
-			return (len);
-
-		len--;
+		i = (line.size() - 1);
+		while (i != 0 && line[i] == c[0])
+			i--;
+		if ((i == 0) && (line[i] == c[0]))
+			i--;
+		i++;
+		line.erase(i , (line.size() - i));
 	}
-	if (line[len] == c)
-		return (len);
-	return (std::string::npos);
 }
-*/
+
+
+void	Utils::trim(std::string & line, std::string c)
+{
+	if (line.size())
+	{
+		Utils::ltrim(line, c);
+		Utils::rtrim(line, c);
+	}
+}
 
 std::vector<std::string>	Utils::split( const std::string line, std::string sep )
 {
-//	std::cout << "line in split: " << line << " sep: " << sep << std::endl;
 	std::vector<std::string>	str;
 	size_t						start;
 	size_t						end;
@@ -82,20 +80,12 @@ std::vector<std::string>	Utils::split( const std::string line, std::string sep )
 	end = 0;
 	if (line.size())
 	{
-		while (end < line.size()) //new!!!!!
+		while (end < line.size())
 		{
 			end = line.find_first_of(sep, start);
 			str.push_back(line.substr(start, (end - start)));
 			start = line.find_first_not_of(sep, end);
 		}
-/*
-		end = 0;
-		while (end < str.size())
-		{
-			std::cout << "split: " << str[end] << std::endl;
-			end++;
-		}
-*/
 	}
 	return (str);
 }
@@ -105,10 +95,11 @@ int	Utils::atoi(const std::string line)
 	int		signal;
 	int		nbr;
 	size_t	i;
-//	std::cout << "line in atoi: string " << line << std::endl;
+
 	signal = 1;
 	i = 0;
-	while ( (i < line.size()) && (std::isspace(line[i])) )
+	nbr = 0;
+	while ((i < line.size()) && (std::isspace(line[i])))
 		i++;
 	if ((line[i] == '+') || (line[i] == '-'))
 	{
@@ -116,12 +107,45 @@ int	Utils::atoi(const std::string line)
 			signal = -1;
 		i++;
 	}
-	nbr = 0;
 	while ((i < line.size()) && std::isdigit(line[i]))
 	{
 		nbr = (10 * nbr) + (line[i] - '0');
 		i++;
 	}
-//	std::cout << "line in atoi: int    " << (nbr * signal) << std::endl;
 	return (nbr * signal);
+}
+
+short int	Utils::getTypePath(const std::string & path)
+{
+	struct stat	buffer;
+	short int	ret;
+
+	ret = stat(path.c_str(), &buffer);
+	if (ret == 0)
+	{
+		if (S_ISREG(buffer.st_mode))
+			return (1);
+		else if (S_ISDIR(buffer.st_mode))
+			return (2);
+		else if (S_ISSOCK(buffer.st_mode))
+			return (3);
+		else
+			return (4);
+	}
+	else
+		return (-1);
+}
+
+short int	Utils::checkFile(const std::string & path, short int mode)
+{
+	return (access(path.c_str(), mode));
+}
+
+bool	Utils::isFileExistAndReadable(const std::string & path, const std::string & file)
+{
+	if ((Utils::getTypePath(file) == 1) && (Utils::checkFile(file, R_OK) == 0))
+		return (true);
+	if ((Utils::getTypePath(path + file) == 1) && (Utils::checkFile(path + file, R_OK) == 0))
+		return (true);
+	return (false);
 }

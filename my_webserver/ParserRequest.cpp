@@ -19,10 +19,10 @@ ParserRequest	&ParserRequest::operator=(const ParserRequest & src)
 {
 	if (this != &src)
 	{
-		this->_method = src._method;
-		this->_location = src._location;
-		this->_requestedInf = src._requestedInf;
-		this->_contentType = src._contentType;
+		this->_method = src.getMethod();
+		this->_location = src.getLocation();
+		this->_requestedInf = src.getRequestedInf();
+		this->_contentType = src.getContentType();
 	}
 	return (*this);
 }
@@ -57,7 +57,6 @@ const std::string &		ParserRequest::getContentType(void) const
 
 void 	ParserRequest::parserRequest(const std::string & request)
 {
-//	std::cout << "start | parserRequest: " << request << std::endl;
 	std::ifstream	ifs;//	temporário até utilização com a string da requisição original
 	std::string		line;//	temporário até utilização com a string da requisição original
 	std::string		fullRequest; //	temporário até utilização com a string da requisição original
@@ -75,13 +74,11 @@ void 	ParserRequest::parserRequest(const std::string & request)
 		std::cout << "Erro na requisição" << std::endl;
 	else
 		this->splitRequest(fullRequest, pos);
-//	std::cout << "end   | parserRequest" << std::endl;
 }
 
 void	ParserRequest::splitRequest(std::string & fullRequest, size_t & pos)
 {
-//	std::cout << "start | splitRequest | fullRequest: " << fullRequest << " pos: " << pos << std::endl;
-	std::vector<std::string>	splitHeadRequest;
+	std::vector<std::string>			splitHeadRequest;
 	std::vector<std::string>::iterator	i;
 	size_t								j;
 
@@ -93,5 +90,4 @@ void	ParserRequest::splitRequest(std::string & fullRequest, size_t & pos)
 	this->_requestedInf = (*i).substr((j + 1), ((*i).size() - (j + 1)));
 	j = fullRequest.find("Content-Type:");
 	this->_contentType = fullRequest.substr(j, (fullRequest.size() - j));
-//	std::cout << "end   | splitRequest Content-Type: " << j << " contentType: " << this->_contentType << std::endl;
 }
