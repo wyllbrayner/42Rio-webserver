@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConfigFile.cpp                                     :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ConfigFile.hpp"
+#include "Server.hpp"
 
-ConfigFile::ConfigFile(void)
+Server::Server(void)
 {
 	this->_host = 0;
 }
 
-ConfigFile	&ConfigFile::operator=(const ConfigFile &src)
+Server	&Server::operator=(const Server &src)
 {
 	if (this != &src)
 	{
@@ -27,52 +27,83 @@ ConfigFile	&ConfigFile::operator=(const ConfigFile &src)
 		this->_index = src.getIndex();
 		this->_root = src.getRoot();
 		this->_vec_location = src.getLocation();
+		this->_fdListen = src.getFDListen();
 	}
 	return (*this);
 }
 
-ConfigFile::ConfigFile(const ConfigFile& copy)
+Server::Server(const Server& copy)
 {
 	*this = copy;
 	return ;
 }
 
-ConfigFile::~ConfigFile(void)
+Server::~Server(void)
 {
 	this->_host = 0;
 }
 
-const std::vector<int> &	ConfigFile::getPort(void) const 
+const std::vector<int>	&	Server::getPort(void) const 
 {
 	return (this->_port);
 }
 
-const in_addr_t &	ConfigFile::getHost(void) const 
+const int				&	Server::getPort(const size_t & _port) const
+{
+	return (this->getPort()[_port]);
+}
+
+const in_addr_t &	Server::getHost(void) const 
 {
 	return (this->_host);
 }
 
-const myVecS &	ConfigFile::getServerName(void) const
+const myVecS &	Server::getServerName(void) const
 {
 	return (this->_server_name);
 }
 
-const myVecS &	ConfigFile::getIndex(void) const
+const std::string &	Server::getServerName(const size_t & _i) const
+{
+	return (this->_server_name[_i]);
+}
+
+const myVecS &	Server::getIndex(void) const
 {
 	return (this->_index);
 }
 
-const std::string &					ConfigFile::getRoot(void) const
+const std::string &	Server::getIndex(const size_t & _i) const
+{
+	return (this->_index[_i]);
+}
+
+const std::string &					Server::getRoot(void) const
 {
 	return (this->_root);
 }
 
-const std::vector<Location>		& ConfigFile::getLocation(void) const
+const std::vector<Location>		&	Server::getLocation(void) const
 {
 	return (this->_vec_location);
 }
 
-void					ConfigFile::setPort(myItVecS &i, myVecS & sp_server)
+const Location 					&	Server::getLocation(const size_t & _i) const
+{
+	return (this->_vec_location[_i]);
+}
+
+const std::vector<int> &		Server::getFDListen(void) const
+{
+	return (this->_fdListen);
+}
+
+const std::vector<struct sockaddr_in> &		Server::getServerAddress(void) const
+{
+	return (this->_serverAddress);
+}
+
+void					Server::setPort(myItVecS &i, myVecS & sp_server)
 {
 	myVecS	tmp;
 	size_t	j;
@@ -85,7 +116,7 @@ void					ConfigFile::setPort(myItVecS &i, myVecS & sp_server)
 		throw Error::InvalidParameter();
 }
 
-void					ConfigFile::setHost(std::string _parameter)
+void					Server::setHost(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
 	{
@@ -96,29 +127,29 @@ void					ConfigFile::setHost(std::string _parameter)
 	}
 }
 
-void					ConfigFile::setServerName(myItVecS &i, myVecS & sp_server)
+void					Server::setServerName(myItVecS &i, myVecS & sp_server)
 {
 	this->putVecString(i, sp_server, this->_server_name);
 }
 
-void					ConfigFile::setServerNameSmart(std::string _parameter)
+void					Server::setServerNameSmart(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
 		this->_server_name.push_back(_parameter);
 }
 
-void					ConfigFile::setIndex(myItVecS &i, myVecS & sp_server)
+void					Server::setIndex(myItVecS &i, myVecS & sp_server)
 {
 	this->putVecString(i, sp_server, this->_index);
 }
 
-void					ConfigFile::setIndexSmart(std::string _parameter)
+void					Server::setIndexSmart(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
 		this->_index.push_back(_parameter);
 }
 
-void					ConfigFile::setRoot(std::string _parameter)
+void					Server::setRoot(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
 	{
@@ -131,7 +162,7 @@ void					ConfigFile::setRoot(std::string _parameter)
 	}
 }
 
-void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
+void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 {
 	myVecS		vecLocation;
 	Location	indorLocation;
@@ -176,7 +207,7 @@ void					ConfigFile::setLocation(myItVecS &i, myVecS & sp_server)
 		this->_vec_location.push_back(indorLocation);
 }
 
-bool					ConfigFile::isTokenValid( std::string & _parameter)
+bool					Server::isTokenValid( std::string & _parameter)
 {
 	size_t	pos;
 
@@ -188,7 +219,7 @@ bool					ConfigFile::isTokenValid( std::string & _parameter)
 	return (true);
 }
 
-bool					ConfigFile::isHostValid(std::string & _parameter)
+bool					Server::isHostValid(std::string & _parameter)
 {
 	int 				nbr;
 	unsigned short int	i;
@@ -217,7 +248,7 @@ bool					ConfigFile::isHostValid(std::string & _parameter)
 	return (true);
 }
 
-void					ConfigFile::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
+void					Server::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vecString )
 {
 	std::string	tmp;
 
@@ -236,7 +267,7 @@ void					ConfigFile::putVecString(myItVecS &i, myVecS & sp_server, myVecS & _vec
 	}
 }
 
-void					ConfigFile::putVecInt(std::string & _parameter)
+void					Server::putVecInt(std::string & _parameter)
 {
 	int 				nbr_port;
 	unsigned short int	i;
@@ -260,7 +291,7 @@ void					ConfigFile::putVecInt(std::string & _parameter)
 	i = 0;
 }
 
-bool					ConfigFile::portIsDuplic(void) const
+bool					Server::portIsDuplic(void) const
 {
 	std::set<int>	tmp;
 
@@ -270,4 +301,33 @@ bool					ConfigFile::portIsDuplic(void) const
 	if (this->_port.size() != tmp.size())
 		return (true);
 	return (false);
+}
+
+void					Server::setupServer(void)
+{
+	size_t				i;
+	int					tmpFD;
+	int					value;
+	struct sockaddr_in	tmpAddrIn;
+
+	i = 0;
+	value = 1;
+	while (i < this->_port.size())
+	{
+		tmpFD = socket(AF_INET, SOCK_STREAM, 0); // cria um socket associando o IPV4 ao TCP). 
+		if (tmpFD == -1)
+			throw Error::InvalidSocket();
+		this->_fdListen.push_back(tmpFD);
+	    setsockopt(this->_fdListen[i], SOL_SOCKET, SO_REUSEADDR, &value, \
+					sizeof(int)); //useful for quickly reusing a port in case of server failure. 
+		bzero(&tmpAddrIn, sizeof(tmpAddrIn));
+	    tmpAddrIn.sin_family = AF_INET;
+	    tmpAddrIn.sin_addr.s_addr = this->getHost();
+    	tmpAddrIn.sin_port = htons(this->getPort(i));
+		this->_serverAddress.push_back(tmpAddrIn);
+	    if (bind(this->_fdListen[i], (struct sockaddr *) &this->_serverAddress[i], \
+					sizeof(this->_serverAddress[i])) == -1) //associa o socket à port e host do servidor.
+			throw Error::ImpossibleToBind();
+		i++;
+	}
 }

@@ -36,3 +36,13 @@ const char *	Error::InvalidParameter::what( void ) const throw()
 {
 	return ("Error: Invalid parameter.");
 }
+
+const char *	Error::InvalidSocket::what( void ) const throw()
+{
+	return ("Error: Impossible to create an socket.");
+}
+
+const char *	Error::ImpossibleToBind::what( void ) const throw()
+{
+	return ("Error: Impossible to bind the socket.");
+}

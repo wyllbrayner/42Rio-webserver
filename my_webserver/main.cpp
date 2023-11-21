@@ -12,7 +12,6 @@
 
 #include "Error.hpp"
 #include "ParserConfigFile.hpp"
-#include "ParserRequest.hpp"
 
 #include <iostream>
 
@@ -29,9 +28,9 @@ int	main(int argc, char **argv)
 		else
 		{
 			if (argc == 1)
-				server.createServer(DB);
+				server.parserConfigFile(DB);
 			else
-				server.createServer(argv[1]);
+				server.parserConfigFile(argv[1]);
 			server.printServer();
 /*
 			std::vector< ConfigFile > inter = server.getServers();
@@ -51,7 +50,6 @@ int	main(int argc, char **argv)
 			std::cout << "ContentType: " << requestParser.getContentType() << std::endl;
 */
 		}
-
 	}
 	catch ( std::exception &e )
 	{

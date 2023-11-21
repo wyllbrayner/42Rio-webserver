@@ -38,7 +38,7 @@ ParserConfigFile::~ParserConfigFile(void)
 	this->_nbrServers = 0;
 }
 
-const std::vector<ConfigFile> &	ParserConfigFile::getServers(void) const
+const std::vector<Server> &	ParserConfigFile::getServers(void) const
 {
 	return (this->_servers);
 }
@@ -48,7 +48,7 @@ const size_t 					&	ParserConfigFile::getNbrServers(void) const
 	return (this->_nbrServers);
 }
 
-void 	ParserConfigFile::createServer(const std::string & config_path)
+void 	ParserConfigFile::parserConfigFile(const std::string & config_path)
 {
 	std::ifstream	ifs;
 	std::string		line;
@@ -63,8 +63,9 @@ void 	ParserConfigFile::createServer(const std::string & config_path)
 			servers += line;
 		}
 		ifs.close();
-		splitServers(servers);
+		this->splitServers(servers);
 		this->_nbrServers = this->_servers.size();
+		this->setupServers();
 	}
 	else
 		throw Error::InvalidPathServer();
@@ -132,7 +133,7 @@ void	ParserConfigFile::findEndServer(const std::string & servers, size_t & end)
 void		ParserConfigFile::buildServer(const std::string & server)
 {
 	std::vector< std::string >				splitted_server;
-	ConfigFile									_server;
+	Server									_server;
 	std::vector< std::string >::iterator	i;
 
 	splitted_server = Utils::split(server, std::string(" \n\t"));
@@ -199,7 +200,30 @@ void		ParserConfigFile::buildServer(const std::string & server)
 		throw Error::InvalidParameter();
 }
 
-void	ParserConfigFile::printServer(void)
+void	ParserConfigFile::setupServers(void)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	while(i < this->_nbrServers)
+	{
+		j = 0;
+		this->_servers[i].setupServer();
+		std::cout << "Server n: " << (i + 1) << " Created in port: ";
+		while (j < this->_servers[i].getPort().size())
+		{
+			std::cout << this->_servers[i].getPort(static_cast<int>(j));
+			j++;
+			if (j < this->_servers[i].getPort().size())
+				std::cout << ", ";
+		}
+		std::cout << std::endl;
+		i++;
+	}
+}
+
+void	ParserConfigFile::printServer(void) const
 {
 	size_t		i;
 	size_t		tmp0;

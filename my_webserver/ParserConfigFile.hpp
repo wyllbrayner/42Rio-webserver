@@ -16,12 +16,12 @@
 # include <iostream>
 # include "Error.hpp"
 # include "Utils.hpp"
-# include "ConfigFile.hpp"
+# include "Server.hpp"
 
 class	ParserConfigFile
 {
 	private:
-		std::vector<ConfigFile>	_servers;
+		std::vector<Server>		_servers;
 		size_t					_nbrServers;
 		ParserConfigFile(const ParserConfigFile& copy);
 		ParserConfigFile	&	operator=(const ParserConfigFile &src);
@@ -36,8 +36,9 @@ class	ParserConfigFile
 		ParserConfigFile(void);
 		~ParserConfigFile(void);
 
-		const	std::vector<ConfigFile>	&	getServers(void) const;
-		const	size_t					&	getNbrServers(void) const;
-		void								createServer(const std::string & config_path);
-		void								printServer(void);
+		const	std::vector<Server>	&	getServers(void) const;
+		const	size_t				&	getNbrServers(void) const;
+		void							parserConfigFile(const std::string & config_path);
+		void							setupServers(void);
+		void							printServer(void) const;
 };
