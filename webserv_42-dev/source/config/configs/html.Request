@@ -1,0 +1,21 @@
+POST http://www.exemplo.com/index.html?chave1=valor1&chave2=valor2 HTTP/1.1
+Host: example.com
+User-Agent: curl/7.46.0
+Accept: /
+Content-Length: 313
+Expect: 100-continue
+Content-Type: multipart/form-data; boundary=------------------------d74496d66958873e
+
+--------------------------d74496d66958873e
+Content-Disposition: form-data; name="person"
+
+anonymous
+--------------------------d74496d66958873e
+Content-Disposition: form-data; name="secret"; filename="file.txt"
+Content-Type: text/plain
+
+contents of the file
+--------------------------d74496d66958873e--";
+
+
+/casa/dasasd/submit.cgi HTTP/1.1
