@@ -61,4 +61,16 @@ class	Error
 			public:
 				virtual const char* what( void ) const throw();
 		};
+
+		class	ImpossibleToListen : public std::exception
+		{
+			public:
+				virtual const char* what( void ) const throw();
+		};
+
+		class	ImpossibleToNonblock : public std::exception
+		{
+			public:
+				virtual const char* what( void ) const throw();
+		};
 };

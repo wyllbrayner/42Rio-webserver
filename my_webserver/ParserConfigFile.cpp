@@ -65,7 +65,6 @@ void 	ParserConfigFile::parserConfigFile(const std::string & config_path)
 		ifs.close();
 		this->splitServers(servers);
 		this->_nbrServers = this->_servers.size();
-		this->setupServers();
 	}
 	else
 		throw Error::InvalidPathServer();
@@ -130,7 +129,7 @@ void	ParserConfigFile::findEndServer(const std::string & servers, size_t & end)
 		throw Error::InvalidConfigurationServer();
 }
 
-void		ParserConfigFile::buildServer(const std::string & server)
+void	ParserConfigFile::buildServer(const std::string & server)
 {
 	std::vector< std::string >				splitted_server;
 	Server									_server;
@@ -198,72 +197,4 @@ void		ParserConfigFile::buildServer(const std::string & server)
 	}
 	else
 		throw Error::InvalidParameter();
-}
-
-void	ParserConfigFile::setupServers(void)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	while(i < this->_nbrServers)
-	{
-		j = 0;
-		this->_servers[i].setupServer();
-		std::cout << "Server n: " << (i + 1) << " Created in port: ";
-		while (j < this->_servers[i].getPort().size())
-		{
-			std::cout << this->_servers[i].getPort(static_cast<int>(j));
-			j++;
-			if (j < this->_servers[i].getPort().size())
-				std::cout << ", ";
-		}
-		std::cout << std::endl;
-		i++;
-	}
-}
-
-void	ParserConfigFile::printServer(void) const
-{
-	size_t		i;
-	size_t		tmp0;
-	size_t		tmp1;
-
-	i = 0;
-	while (i < this->_servers.size())
-	{
-		std::cout << "servidor n: " << (i + 1) << std::endl;
-		tmp0 = 0;
-		std::cout << "listen port: " << (this->_servers[i].getPort())[tmp0];
-		while (++tmp0 != (this->_servers[i].getPort()).size())
-			std::cout << ", "<< (this->_servers[i].getPort())[tmp0];
-		std::cout << std::endl;
-		std::cout << "host: " << this->_servers[i].getHost() << std::endl;
-		tmp0 = 0;
-		std::cout << "server_name: " << (this->_servers[i].getServerName())[tmp0];
-		while (++tmp0 != (this->_servers[i].getServerName()).size())
-			std::cout << ", "<< (this->_servers[i].getServerName())[tmp0];
-		std::cout << std::endl;
-		tmp0 = 0;
-		std::cout << "index: " << (this->_servers[i].getIndex())[tmp0];
-		while (++tmp0 != (this->_servers[i].getIndex()).size())
-			std::cout << ", " << (this->_servers[i].getIndex())[tmp0];
-		std::cout << std::endl;
-		std::cout << "root: " << this->_servers[i].getRoot() << std::endl;
-		tmp0 = 0;
-		std::vector<Location> indorloc = this->_servers[i].getLocation();
-		while(tmp0 < (this->_servers[i].getLocation()).size())
-		{
-			std::cout << "Location n: " << (tmp0 + 1) << " {" << std::endl;
-			std::cout << "Path: " << ((this->_servers[i].getLocation())[tmp0]).getPath() << std::endl;
-			tmp1 = 0;
-			std::cout << "method: " << (((this->_servers[i].getLocation())[tmp0]).getMethods())[tmp1];
-			while(tmp1 < (((this->_servers[i].getLocation())[tmp0]).getMethods()).size())
-				std::cout << ", " << (((this->_servers[i].getLocation())[tmp0]).getMethods())[tmp1++];
-			std::cout << std::endl;
-			std::cout << "}" << std::endl;
-			tmp0++;
-		}
-		i++;
-	}
 }

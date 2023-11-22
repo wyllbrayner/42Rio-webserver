@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "WebServer.hpp"
 #include "Error.hpp"
-#include "ParserConfigFile.hpp"
-
 #include <iostream>
 
 #define DB "./configs/default.conf"
@@ -20,7 +19,7 @@
 
 int	main(int argc, char **argv)
 {
-	ParserConfigFile	server;
+	WebServer	webServer;
 	try
 	{
 		if (argc > 2)
@@ -28,27 +27,9 @@ int	main(int argc, char **argv)
 		else
 		{
 			if (argc == 1)
-				server.parserConfigFile(DB);
+				webServer.manager(DB);
 			else
-				server.parserConfigFile(argv[1]);
-			server.printServer();
-/*
-			std::vector< ConfigFile > inter = server.getServers();
-			std::vector< ConfigFile >::iterator i = inter.begin();
-			size_t									j = 0;
-			while (j < server.getNbrServers())
-			{
-				std::cout << "servidor n: " << (j + 1) << " porta: " << i->getPort() << std::endl;
-				j++;
-				i++;
-			}
-			ParserRequest	requestParser;
-			requestParser.parserRequest(REQUEST);
-			std::cout << "Method     : " << requestParser.getMethod() << std::endl;
-			std::cout << "Location   : " << requestParser.getLocation() << std::endl;
-			std::cout << "RequestInf : " << requestParser.getRequestedInf() << std::endl;
-			std::cout << "ContentType: " << requestParser.getContentType() << std::endl;
-*/
+				webServer.manager(argv[1]);
 		}
 	}
 	catch ( std::exception &e )

@@ -23,11 +23,11 @@ Server	&Server::operator=(const Server &src)
 	{
 		this->_port = src.getPort();
 		this->_host = src.getHost();
-		this->_server_name = src.getServerName();
+		this->_serverName = src.getServerName();
 		this->_index = src.getIndex();
 		this->_root = src.getRoot();
-		this->_vec_location = src.getLocation();
-		this->_fdListen = src.getFDListen();
+		this->_vecLocation = src.getLocation();
+		this->_socket = src.getSocket();
 	}
 	return (*this);
 }
@@ -48,6 +48,11 @@ const std::vector<int>	&	Server::getPort(void) const
 	return (this->_port);
 }
 
+const int				&	Server::getPortUnic(void) const 
+{
+	return (this->getPort()[0]);
+}
+
 const int				&	Server::getPort(const size_t & _port) const
 {
 	return (this->getPort()[_port]);
@@ -60,12 +65,17 @@ const in_addr_t &	Server::getHost(void) const
 
 const myVecS &	Server::getServerName(void) const
 {
-	return (this->_server_name);
+	return (this->_serverName);
 }
 
 const std::string &	Server::getServerName(const size_t & _i) const
 {
-	return (this->_server_name[_i]);
+	return (this->getServerName()[_i]);
+}
+
+const std::string &	Server::getServerNameUnic(void) const
+{
+	return (this->getServerName()[0]);
 }
 
 const myVecS &	Server::getIndex(void) const
@@ -75,7 +85,12 @@ const myVecS &	Server::getIndex(void) const
 
 const std::string &	Server::getIndex(const size_t & _i) const
 {
-	return (this->_index[_i]);
+	return (this->getIndex()[_i]);
+}
+
+const std::string &	Server::getIndexUnic(void) const
+{
+	return (this->getIndex()[0]);
 }
 
 const std::string &					Server::getRoot(void) const
@@ -85,17 +100,17 @@ const std::string &					Server::getRoot(void) const
 
 const std::vector<Location>		&	Server::getLocation(void) const
 {
-	return (this->_vec_location);
+	return (this->_vecLocation);
 }
 
 const Location 					&	Server::getLocation(const size_t & _i) const
 {
-	return (this->_vec_location[_i]);
+	return (this->_vecLocation[_i]);
 }
 
-const std::vector<int> &		Server::getFDListen(void) const
+const std::vector<int> &		Server::getSocket(void) const
 {
-	return (this->_fdListen);
+	return (this->_socket);
 }
 
 const std::vector<struct sockaddr_in> &		Server::getServerAddress(void) const
@@ -116,6 +131,11 @@ void					Server::setPort(myItVecS &i, myVecS & sp_server)
 		throw Error::InvalidParameter();
 }
 
+void					Server::setPort(const int & _port)
+{
+	this->_port.push_back(_port);
+}
+
 void					Server::setHost(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
@@ -127,15 +147,30 @@ void					Server::setHost(std::string _parameter)
 	}
 }
 
+void					Server::setHost(const in_addr_t & host)
+{
+	this->_host = host;
+}
+
+void					Server::setServerName(const myVecS _sn)
+{
+	this->_serverName = _sn;
+}
+
 void					Server::setServerName(myItVecS &i, myVecS & sp_server)
 {
-	this->putVecString(i, sp_server, this->_server_name);
+	this->putVecString(i, sp_server, this->_serverName);
 }
 
 void					Server::setServerNameSmart(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
-		this->_server_name.push_back(_parameter);
+		this->_serverName.push_back(_parameter);
+}
+
+void					Server::setIndex(const myVecS & _idx)
+{
+	this->_index = _idx;
 }
 
 void					Server::setIndex(myItVecS &i, myVecS & sp_server)
@@ -147,6 +182,11 @@ void					Server::setIndexSmart(std::string _parameter)
 {
 	if (this->isTokenValid(_parameter))
 		this->_index.push_back(_parameter);
+}
+
+void					Server::setRootUnic(const std::string & _rt)
+{
+	this->_root = _rt;
 }
 
 void					Server::setRoot(std::string _parameter)
@@ -204,7 +244,12 @@ void					Server::setLocation(myItVecS &i, myVecS & sp_server)
 		}
 	}
 	if (vecLocation.size())
-		this->_vec_location.push_back(indorLocation);
+		this->_vecLocation.push_back(indorLocation);
+}
+
+void					Server::setLocation(const std::vector<Location> & _loc)
+{
+	this->_vecLocation = _loc;
 }
 
 bool					Server::isTokenValid( std::string & _parameter)
@@ -305,29 +350,33 @@ bool					Server::portIsDuplic(void) const
 
 void					Server::setupServer(void)
 {
-	size_t				i;
-	int					tmpFD;
-	int					value;
-	struct sockaddr_in	tmpAddrIn;
+	size_t	i;
+	int		tmpSocket;
+	int		value;
 
 	i = 0;
 	value = 1;
 	while (i < this->_port.size())
 	{
-		tmpFD = socket(AF_INET, SOCK_STREAM, 0); // cria um socket associando o IPV4 ao TCP). 
-		if (tmpFD == -1)
+		tmpSocket = socket(AF_INET, SOCK_STREAM, 0); // cria um socket associando o IPV4 ao TCP). 
+		if (tmpSocket == -1)
 			throw Error::InvalidSocket();
-		this->_fdListen.push_back(tmpFD);
-	    setsockopt(this->_fdListen[i], SOL_SOCKET, SO_REUSEADDR, &value, \
+		this->_socket.push_back(tmpSocket);
+	    setsockopt(this->_socket[i], SOL_SOCKET, SO_REUSEADDR, &value, \
 					sizeof(int)); //useful for quickly reusing a port in case of server failure. 
+		struct sockaddr_in	tmpAddrIn;
 		bzero(&tmpAddrIn, sizeof(tmpAddrIn));
 	    tmpAddrIn.sin_family = AF_INET;
 	    tmpAddrIn.sin_addr.s_addr = this->getHost();
     	tmpAddrIn.sin_port = htons(this->getPort(i));
 		this->_serverAddress.push_back(tmpAddrIn);
-	    if (bind(this->_fdListen[i], (struct sockaddr *) &this->_serverAddress[i], \
+	    if (bind(this->_socket[i], (struct sockaddr *) &this->_serverAddress[i], \
 					sizeof(this->_serverAddress[i])) == -1) //associa o socket à port e host do servidor.
 			throw Error::ImpossibleToBind();
+		if (listen(this->_socket[i], 1024) < 0) //determina que o socket ficará escutando até 1024 chamadas pendentes.
+			throw Error::ImpossibleToListen();
+        if (fcntl(this->_socket[i], F_SETFL, O_NONBLOCK) < 0)
+			throw Error::ImpossibleToNonblock();
 		i++;
 	}
 }

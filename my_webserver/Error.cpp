@@ -46,3 +46,13 @@ const char *	Error::ImpossibleToBind::what( void ) const throw()
 {
 	return ("Error: Impossible to bind the socket.");
 }
+
+const char *	Error::ImpossibleToListen::what( void ) const throw()
+{
+	return ("Error: Impossible to listen.");
+}
+
+const char *	Error::ImpossibleToNonblock::what( void ) const throw()
+{
+	return ("Error: Impossible to set as NONBLOCK.");
+}

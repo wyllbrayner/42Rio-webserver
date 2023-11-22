@@ -31,7 +31,7 @@ class	ParserConfigFile
 		void	findStartServer(const std::string & servers, size_t & start);
 		void	findEndServer(const std::string & servers, size_t & end);
 		void	buildServer(const std::string & server);
-	
+
 	public:
 		ParserConfigFile(void);
 		~ParserConfigFile(void);
@@ -39,6 +39,4 @@ class	ParserConfigFile
 		const	std::vector<Server>	&	getServers(void) const;
 		const	size_t				&	getNbrServers(void) const;
 		void							parserConfigFile(const std::string & config_path);
-		void							setupServers(void);
-		void							printServer(void) const;
 };
