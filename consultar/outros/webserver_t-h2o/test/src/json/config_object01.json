@@ -1,9 +1,0 @@
-{
-  "object": {
-    "string" : "my string"
-  },
-
-  "anotherObject": {
-    "anotherString" : "my another string"
-  }
-}

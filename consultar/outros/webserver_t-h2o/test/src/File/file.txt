@@ -1,5 +1,0 @@
-Hello World !
-I very like C++98...
-
-
-...IMAO
