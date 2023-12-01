@@ -26,10 +26,9 @@ class	WebServer
         fd_set					_writeSocketSet;
 		std::map<int, Server>	_mapServers;
 
-		const std::vector<Server> &	buildCluster(const std::vector<Server> & _servers);
+		void						buildCluster(const std::vector<Server> & _servers);
 		void						setupCluster(void);
-		void						fillServer(std::vector<Server> & cluster, \
-		const Server & _server, const size_t & _j);
+		void						fillServer(const Server & _server, const size_t & _j);
 		void						initSets(void);
 		void						runCluster(void);
 		void						addToSet(const int & port, fd_set & recvSocket);

@@ -3,7 +3,8 @@ OBJS		= $(SRCS:.cpp=.o)
 INCLUDE		= $(wildcard *.hpp)
 NAME		= webserver
 FLAG		= -Wall -Wextra -Werror -std=c++98
-COMP		=  c++
+COMP		=  g++
+#COMP		=  c++
 
 all: $(NAME)
 

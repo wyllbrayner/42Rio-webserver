@@ -46,21 +46,21 @@ void	WebServer::manager(const std::string & config_path)
 {
 	this->_configFile.parserConfigFile(config_path);
 	this->_nbrServers = this->_configFile.getNbrServers();
-	this->_cluster = this->buildCluster(this->_configFile.getServers());
+	this->buildCluster(this->_configFile.getServers());
+//	this->_cluster = this->buildCluster(this->_configFile.getServers());
 /*
 //	this->_cluster = this->_configFile.getServers();
 	this->setupCluster();
 	this->initSets();
 	this->runCluster();
-	this->printCluster();
 */
+	this->printCluster();
 }
 
-const std::vector<Server> &	WebServer::buildCluster(const std::vector<Server> & _servers)
+void	WebServer::buildCluster(const std::vector<Server> & _servers)
 {
 	size_t					i;
 	size_t					j;
-	std::vector<Server>		cluster;
 
 	i = 0;
 	while (i < this->_nbrServers)
@@ -68,17 +68,15 @@ const std::vector<Server> &	WebServer::buildCluster(const std::vector<Server> & 
 		j = 0;
 		while (j < _servers[i].getPort().size())
 		{
-			std::cout << "servidor: " << i << " porta: " << _servers[i].getPort()[j] << std::endl; this->fillServer(cluster, _servers[i], j);
+			std::cout << "servidor: " << i << " porta: " << _servers[i].getPort()[j] << std::endl; this->fillServer(_servers[i], j);
 			j++;
 		}
 		i++;
 	}
-	std::cout << "size: " << cluster.size() << std::endl;
-	return (_servers);
+	std::cout << "size: " << this->_cluster.size() << std::endl;
 }
 
-void	WebServer::fillServer(std::vector<Server> & cluster, \
-		const Server & _server, const size_t & _j)
+void	WebServer::fillServer(const Server & _server, const size_t & _j)
 {
 	Server	serverIndor;
 
@@ -95,8 +93,7 @@ void	WebServer::fillServer(std::vector<Server> & cluster, \
 	std::cout << "root			: " << _server.getRoot() << "	|	indorRoot: " << serverIndor.getRoot() << std::endl;
 	serverIndor.setLocation(_server.getLocation());
 	std::cout << "location		: " << _server.getLocation()[0].getPath() << "	|	indorlocation: " << serverIndor.getLocation()[0].getPath() << std::endl;
-
-	cluster.push_back(serverIndor);
+	this->_cluster.push_back(serverIndor);
 }
 
 void	WebServer::setupCluster(void)
