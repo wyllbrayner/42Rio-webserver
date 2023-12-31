@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requisição DELETE</title>
+</head>
+<body>
+
+    <h1>Lista de Compras Escolares (index1)</h1>
+
+    <hr>
+
+    <script>
+        function excluirPost(postId) {
+            fetch(`http://127.0.0.42:8001/delete/index1.html?id=${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Post ${postId} excluído com sucesso.`);
+                    return fetch('http://127.0.0.42:8001/delete/index1.html');
+                } else {
+                    console.error(`Falha ao excluir o post ${postId}.`);
+                }
+            })
+            .then(updatedResponse => {
+                if (updatedResponse.ok) {
+                    console.log('Dados atualizados com sucesso.');
+                    location.reload();
+                } else {
+                    console.error('Falha ao obter dados atualizados.');
+                }
+            })
+            .catch(error => console.error('Erro na requisição DELETE:', error));
+        }
+    </script>    
+</body>
+</html>
