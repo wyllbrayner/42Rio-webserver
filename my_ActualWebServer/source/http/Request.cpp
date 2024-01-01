@@ -11,7 +11,7 @@ Request::Request(int newClient, ConfigFile _configFile) {
 	this->reset();
 //	this->_ready = false;
 //	this->_contentLength = 0;
-//	this->_serverConf.printConfigFile();
+	this->_serverConf.printConfigFile();
 /*
 	std::cout << "construtor da Request port: " << this->_serverConf.getPort() << " path: " << this->_serverConf.getRoot() << " getIndex: " << this->_serverConf.getIndex()[0] << std::endl;
 	std::cout << "tamanho do location: " << this->_serverConf.getLocation().size() << std::endl;
@@ -223,7 +223,7 @@ void	Request::getContentType(void)
 
 void	Request::splitRequest(std::string urlRequest, std::string root)
 {
-//	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
+	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>			splitHeadRequest;
 	std::vector<std::string>::iterator	i;
 	ssize_t								j;
@@ -265,6 +265,7 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 			{
 //				std::cout << "em j: " << j << " é não printável" << std::endl;
 				this->_requestedInf.clear();
+				this->_requestedInf = this->_serverConf.getIndex()[0];
 			}
 //			else
 //				std::cout << "em j: " << j << " é printável" << std::endl;
@@ -272,6 +273,7 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 		}
 	}
 /*
+*/
 	std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf << " possiu tamanho: " << this->_requestedInf.size();
 	std::map<std::string, std::string>::iterator a = this->_queryString.begin();
 	std::map<std::string, std::string>::iterator z = this->_queryString.end();
@@ -284,7 +286,6 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 	}
 	std::cout << std::endl;
 	std::cout << "fim    | splitRequest" << std::endl;
-*/
 }
 
 void	Request::fixeUrlRequest(std::string & urlRequest)
