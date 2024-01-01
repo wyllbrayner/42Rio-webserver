@@ -12,12 +12,14 @@
 
 #include "ConfigFile.hpp"
 
-ConfigFile::ConfigFile(void) : _host(0), _maxBodySize(-1) {}
+ConfigFile::ConfigFile(void) : _serverDefault(false), _host(0), \
+_maxBodySize(-1) {}
 
 ConfigFile					&	ConfigFile::operator=(const ConfigFile & src)
 {
 	if (this != &src)
 	{
+		this->_serverDefault = src.getIsServerDefault();
 		this->_port = src.getPort();
 		this->_root = src.getRoot();
 		this->_serverName = src.getServerName();
@@ -39,6 +41,11 @@ ConfigFile::ConfigFile(const ConfigFile & copy)
 ConfigFile::~ConfigFile(void)
 {
 	this->clearConfFile();
+}
+
+const bool					&	ConfigFile::getIsServerDefault(void) const
+{
+	return (this->_serverDefault);
 }
 
 const std::vector<int>		&	ConfigFile::getPort(void) const
@@ -79,6 +86,11 @@ const myVecS				&	ConfigFile::getErrorPage(void) const
 const std::vector<Location>	&	ConfigFile::getLocation(void) const
 {
 	return (this->_vecLocation);
+}
+
+void							ConfigFile::setServerDefaultSmart(bool _parameter)
+{
+	this->_serverDefault = _parameter;
 }
 
 void							ConfigFile::setPort(myItVecS & i, myVecS & sp_server)
@@ -243,7 +255,7 @@ void							ConfigFile::setErrorPage(const myVecS & _parameter)
 }
 
 void							ConfigFile::setLocation(myItVecS & i, \
-			myVecS & sp_server, const std::string & root)
+			myVecS & sp_server, const std::string & root, const std::string & index)
 {
 //	std::cout << "init    de setLocation: " << *i << " com root: " << root << std::endl;
 	myVecS		vecIndex;
@@ -337,7 +349,7 @@ void							ConfigFile::setLocation(myItVecS & i, \
 		indorLocation.setDefaultMethods();
 	}
 	if (indorLocation.getIndex().empty())
-		indorLocation.setIndexSmart("index.html");
+		indorLocation.setIndexSmart(index);
 	this->_vecLocation.push_back(indorLocation);
 //	std::cout << "fim     de setLocation: " << *i << std::endl;
 }
@@ -509,6 +521,10 @@ void							ConfigFile::printConfigFile(void) const
 {
 	size_t	i;
 
+	if (this->getIsServerDefault())
+		std::cout << "Type\t\t: Default" << std::endl;
+	else
+		std::cout << "Type\t\t: Not Default" << std::endl;
 	this->printVec(this->getPort(), "port\t\t: ");
 	std::cout << "root\t\t: " << this->getRoot() << std::endl;
 	this->printVec(this->getServerName(), "Server Name\t: ");
@@ -573,7 +589,7 @@ void							ConfigFile::findLastReturn(void)
 //				this->_vecLocation[i].setPath(tmp);
 			}
 			else
-				this->_vecLocation[i].setReturnSmart("Error502");
+				this->_vecLocation[i].setReturnSmart("Error500");
 		}
 //		else
 //			std::cout << "Return igual ao Path!!!" << std::endl;

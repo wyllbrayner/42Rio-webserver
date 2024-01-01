@@ -27,6 +27,7 @@ typedef std::vector<std::string>			myVecS;
 class	ConfigFile
 {
 	private:
+		bool							_serverDefault;
 		std::vector<int>				_port;
 		std::string						_root;
 		myVecS							_serverName;
@@ -49,6 +50,7 @@ class	ConfigFile
 		ConfigFile(const ConfigFile & copy);
 		ConfigFile					&	operator=(const ConfigFile & src);
 		~ConfigFile(void);
+		const bool					&	getIsServerDefault(void) const;
 		const std::vector<int>		&	getPort(void) const;
 		const in_addr_t				&	getHost(void) const;
 		const myVecS				&	getServerName(void) const;
@@ -57,6 +59,7 @@ class	ConfigFile
 		const int					&	getMaxBodySize(void) const;
 		const myVecS				&	getErrorPage(void) const;
 		const std::vector<Location>	&	getLocation(void) const;
+		void							setServerDefaultSmart(bool _parameter);
 		void							setPort(myItVecS & i, \
 										myVecS & sp_server);
 		void							setPortSmart(std::string _parameter);
@@ -78,7 +81,8 @@ class	ConfigFile
 		void							setErrorPageSmart(std::string _parameter);
 		void							setErrorPage(const myVecS & _parameter);
 		void							setLocation(myItVecS & i, \
-								myVecS & sp_server, const std::string & root);
+								myVecS & sp_server, const std::string & root, \
+								const std::string & index);
 		void							setLocation(\
 									const std::vector<Location> & _parameter);
 		void							fixeErrorPage(void);

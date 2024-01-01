@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
         else
             configServer.createServer(argv[1]);
 //        configServer.print();
+//        exit(1);
         std::vector<Server> servers;
         for (size_t i = 0; i < configServer.getNbrServers(); i++) {
             int port = configServer.getServers()[i].getPort()[0];

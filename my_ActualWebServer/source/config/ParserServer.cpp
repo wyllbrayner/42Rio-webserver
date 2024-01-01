@@ -67,13 +67,21 @@ void 	ParserServer::createServer(void)
 {
 //	std::cout << "start | createServer (void)" << std::endl;
 	ConfigFile	_server;
+	std::string	locationStr;
+	myVecS		locationVec;
+	myItVecS	i;
 
+	_server.setServerDefaultSmart(true);
 	_server.setPortSmart("4242;");
 	_server.setHost("127.42.42.42;");
 	_server.setServerNameSmart("webserver42;");
 	_server.setIndexSmart("index-example.html;");
 	_server.setRoot("/;");
 	_server.setMaxBodySize("1024;");
+	locationStr.append("/ { }");
+	locationVec = Utils::split(locationStr, std::string(" \n\t"));
+	i = locationVec.begin();
+	_server.setLocation(i, locationVec, _server.getRoot(), _server.getIndex()[0]);
 	_server.fixeErrorPage();
 	this->_servers.push_back(_server);
 	this->_nbrServers = this->_servers.size();
@@ -196,6 +204,7 @@ void	ParserServer::buildServer(const std::string & server)
 //	std::cout << "start | buildServer: server: " << server << std::endl;
 
 	std::vector< std::string >				splitted_server;
+	std::string								locationStr;
 	ConfigFile								_server;
 	std::vector< std::string >::iterator	i;
 
@@ -285,14 +294,15 @@ void	ParserServer::buildServer(const std::string & server)
 			}
 			else if (((*i).compare(0, 8, "location") == 0) && ((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "ini this is a location: " << *i << " com root: " << _server.getRoot() << std::endl;
-				if (!_server.getRoot().empty())
+//				std::cout << "ini this is a location: " << *i << std::endl;
+				if (!_server.getRoot().empty() && !_server.getIndex().empty())
 				{
-					_server.setLocation(++i, splitted_server, _server.getRoot());
+//					std::cout << "ini this is a location: " << *i << " com root: " << _server.getRoot() << " index[0]: " << _server.getIndex()[0] << std::endl;
+					_server.setLocation(++i, splitted_server, _server.getRoot(), _server.getIndex()[0]);
 				}
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "end this is a location: " << std::endl;
+//				std::cout << "end this is a location: " << *i << std::endl;
 			}
 			if (i != splitted_server.end())
 				i++;
@@ -309,6 +319,14 @@ void	ParserServer::buildServer(const std::string & server)
 			_server.setMaxBodySize("1024;");
 		if (_server.getIndex().empty()) //novo!!!!!
 			_server.setIndexSmart("index.html;"); //novo!!!!!
+		if (_server.getLocation().empty())
+		{
+			locationStr.append("/ { }");
+			splitted_server.clear();
+			splitted_server = Utils::split(locationStr, std::string(" \n\t"));
+			i = splitted_server.begin();
+			_server.setLocation(i, splitted_server, _server.getRoot(), _server.getIndex()[0]);
+		}
 		_server.fixeErrorPage();
 		this->_servers.push_back(_server);
 	}

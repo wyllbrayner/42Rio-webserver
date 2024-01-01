@@ -11,7 +11,7 @@ Request::Request(int newClient, ConfigFile _configFile) {
 	this->reset();
 //	this->_ready = false;
 //	this->_contentLength = 0;
-	//	this->_serverConf.printConfigFile();
+//	this->_serverConf.printConfigFile();
 /*
 	std::cout << "construtor da Request port: " << this->_serverConf.getPort() << " path: " << this->_serverConf.getRoot() << " getIndex: " << this->_serverConf.getIndex()[0] << std::endl;
 	std::cout << "tamanho do location: " << this->_serverConf.getLocation().size() << std::endl;
