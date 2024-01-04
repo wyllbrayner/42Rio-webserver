@@ -255,7 +255,9 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 	}
 //	else
 //		std::cout << "urlRequest: " << urlRequest << std::endl;
-	if (!this->_requestedInf.empty())
+	if (this->_requestedInf.empty())
+		this->_requestedInf = this->_serverConf.getIndex()[0];
+	else
 	{
 //		std::cout << "_requestedInf de tamanho " << this->_requestedInf.size() << std::endl;
 		j = 0;
@@ -273,9 +275,6 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 			j++;
 		}
 	}
-	else
-		this->_requestedInf = this->_serverConf.getIndex()[0];
-
 /*
 */
 	std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf << " possiu tamanho: " << this->_requestedInf.size();

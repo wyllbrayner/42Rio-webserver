@@ -147,11 +147,12 @@ std::string	Client::fileRequested(void)
 */
 //	else
 //	{
+
+/*
         std::cout << "Dentro do else fileRequested: " << fileRequested << std::endl;
         std::cout << "RequestedInf                : " << this->_request.getRequestedInf() << std::endl;
         std::cout << "RequestedMethod             : " << this->_request.getMethod() << std::endl;
         std::cout << "RequestedLocation           : " << this->_request.getLocation() << std::endl;
-/*
 */
 		i = 0;
 		while (i < this->_request.getServerConf().getLocation().size())
@@ -212,9 +213,22 @@ std::string	Client::fileRequested(void)
 		}
 //	}
    std::cout << "fileRequested: " << fileRequested << std::endl;
+    std::cout << "Verificar se configFile é Default " << std::endl;
+    if (this->_request.getServerConf().getIsServerDefault() && \
+                    fileRequested.compare(0, 5, "Error") != 0)
+    {
+        std::cout << "configFile é Default " << std::endl;
+        this->buildDefaultPage(fileRequested);
+    }
+    else
+    {
+        std::cout << "configFile não é Default " << std::endl;
+
+
+
 	if (fileRequested.find("autoindex") != std::string::npos)
     {
-        std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
+//        std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
         fileRequested.erase(fileRequested.find("autoindex"));
         if (fileRequested.compare(0, 5, "Error") != 0)
         {
@@ -234,7 +248,7 @@ std::string	Client::fileRequested(void)
     else if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
         (this->_request.getQueryString().size() > 0) && !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
     {
-        std::cout << "######This is a DELETE##################" << std::endl;
+//        std::cout << "######This is a DELETE##################" << std::endl;
         std::map<std::string, std::string> tmpMap;
         std::map<std::string, std::string>::iterator itMap;
         tmpMap = this->_request.getQueryString();
@@ -242,11 +256,11 @@ std::string	Client::fileRequested(void)
 //        std::cout << "o tamanho de tmpMap é: " << tmpMap.size() << " first: " << itMap->first << " second: " << itMap->second << std::endl;
         this->buildDeleteFile(fileRequested, itMap->second);
     }
-    else
-    {
-        std::cout << "a requisição é do método: " << this->_request.getMethod() << std::endl;
-        std::cout << "fileRequested is not autoindex: " << fileRequested << std::endl;
-    }
+//    else
+//    {
+//        std::cout << "a requisição é do método: " << this->_request.getMethod() << std::endl;
+//        std::cout << "fileRequested is not autoindex: " << fileRequested << std::endl;
+//    }
     std::cout << "fileRequested is empty or Error: " << fileRequested << std::endl;
 	if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0)
     {
@@ -256,21 +270,12 @@ std::string	Client::fileRequested(void)
         else
             this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
     }
-    std::cout << "Verificar se configFile é Default " << std::endl;
-    if (this->_request.getServerConf().getIsServerDefault())
-    {
-        std::cout << "configFile é Default " << std::endl;
-        this->buildDefaultPage(fileRequested);
-    }
-    else
-    {
-        std::cout << "configFile não é Default " << std::endl;
         std::cout << "Verificar se " << fileRequested << " exite no servidor quando i: " << i << std::endl;
         if ((fileRequested.find("keyPage") == std::string::npos) && \
                 (Utils::getTypePath(fileRequested) != 1) && \
                 (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
 	    {
-            std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
+//            std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
             if (fileRequested.compare(3, 7, "Default") != 0)
             {
                 this->searchErrorFile(fileRequested, "500");
@@ -280,13 +285,13 @@ std::string	Client::fileRequested(void)
                     this->searchErrorFile(fileRequested, "500");
                 }
             }
-            else
-            std::cout << "fileRequested is: " << fileRequested << std::endl;
+//            else
+//            std::cout << "fileRequested is: " << fileRequested << std::endl;
         }
-        std::cout << "fileRequested is keyPage?" << std::endl;
-        if (fileRequested.find("keyPage") != std::string::npos)
-            fileRequested.erase(fileRequested.find("keyPage"));
     }
+    std::cout << "fileRequested is keyPage?" << std::endl;
+    if (fileRequested.find("keyPage") != std::string::npos)
+        fileRequested.erase(fileRequested.find("keyPage"));
     std::cout << "final  | fileRequested: " << fileRequested << std::endl;
 	return (fileRequested);
 }
