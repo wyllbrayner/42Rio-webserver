@@ -19,6 +19,7 @@ std::string Client::getMethod(void)
     std::ostringstream page;
 
     pagePath = this->fileRequested();
+//    std::cout << "página\n" << pagePath << std::endl;
     if (pagePath.compare(0, 2, "./") == 0)
     {
         std::ifstream file(pagePath.c_str());
@@ -101,6 +102,7 @@ std::string	Client::fileRequested(void)
     size_t                              j;
     size_t                              k;
 
+/*
 	tmpVec00 = this->_request.getServerConf().getIndex();
 	it00 = find(tmpVec00.begin(), tmpVec00.end(), this->_request.getRequestedInf());
     if (this->_request.getRequestedInf().empty())
@@ -123,7 +125,6 @@ std::string	Client::fileRequested(void)
         std::cout << "    ACHOU\t index request: " << this->_request.getRequestedInf() << std::endl;
     else
         std::cout << "NÃO ACHOU\t index request: " << this->_request.getRequestedInf() << std::endl;
-/*
 
 	if ((this->_request.getLocation() == this->_request.getServerConf().getRoot()) && \
 		((it00 != tmpVec00.end()) || this->_request.getRequestedInf().empty()))
@@ -255,27 +256,37 @@ std::string	Client::fileRequested(void)
         else
             this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
     }
-    std::cout << "Verificar se " << fileRequested << " exite no servidor quando i: " << i << std::endl;
-    if ((fileRequested.find("keyPage") == std::string::npos) && \
+    std::cout << "Verificar se configFile é Default " << std::endl;
+    if (this->_request.getServerConf().getIsServerDefault())
+    {
+        std::cout << "configFile é Default " << std::endl;
+        this->buildDefaultPage(fileRequested);
+    }
+    else
+    {
+        std::cout << "configFile não é Default " << std::endl;
+        std::cout << "Verificar se " << fileRequested << " exite no servidor quando i: " << i << std::endl;
+        if ((fileRequested.find("keyPage") == std::string::npos) && \
                 (Utils::getTypePath(fileRequested) != 1) && \
                 (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
-	{
-        std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
-        if (fileRequested.compare(3, 7, "Default") != 0)
-        {
-            this->searchErrorFile(fileRequested, "500");
-            if (Utils::getTypePath(fileRequested) != 1)
+	    {
+            std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
+            if (fileRequested.compare(3, 7, "Default") != 0)
             {
-                std::cout << fileRequested << " também não exite no servidor" << std::endl;
                 this->searchErrorFile(fileRequested, "500");
+                if (Utils::getTypePath(fileRequested) != 1)
+                {
+//                std::cout << fileRequested << " também não exite no servidor" << std::endl;
+                    this->searchErrorFile(fileRequested, "500");
+                }
             }
-        }
-        else
+            else
             std::cout << "fileRequested is: " << fileRequested << std::endl;
-	}
-    std::cout << "fileRequested is keyPage?" << std::endl;
-    if (fileRequested.find("keyPage") != std::string::npos)
-        fileRequested.erase(fileRequested.find("keyPage"));
+        }
+        std::cout << "fileRequested is keyPage?" << std::endl;
+        if (fileRequested.find("keyPage") != std::string::npos)
+            fileRequested.erase(fileRequested.find("keyPage"));
+    }
     std::cout << "final  | fileRequested: " << fileRequested << std::endl;
 	return (fileRequested);
 }
@@ -393,26 +404,6 @@ void    Client::buildAutoindexPage(std::string & path)
 //    std::cout << "fim    | buildAutoindex" << std::endl;
 }
 
-void    Client::buildHeadOfPage(std::string & page, const std::string & delimeter, std::string status, const std::string & path)
-{
-    page.append("<!DOCTYPE html>").append(delimeter);
-    page.append("<html lang=\"pt-br\">").append(delimeter);
-    page.append("<head>").append(delimeter);
-    page.append("    <meta charset=\"UTF-8\">").append(delimeter);
-    page.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">").append(delimeter);
-    if (status.compare(0, status.size(), "autoIndex") == 0)
-        page.append("    <title>Index of ").append(path).append("</title>").append(delimeter);
-    else if (status.compare(0, status.size(), "404") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
-    else if (status.compare(0, status.size(), "405") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
-    else if (status.compare(0, status.size(), "408") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
-    else if (status.compare(0, status.size(), "500") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
-    page.append("</head>").append(delimeter);
-}
-
 void    Client::buildDefaultErrorPage(std::string & page, const std::string & errorCode)
 {
 //    std::cout << "Início | buildDefaultErrorPage: " << page << " and statusError: " << errorCode << std::endl;
@@ -463,4 +454,45 @@ void    Client::buildDefaultErrorPage(std::string & page, const std::string & er
     page.append("</html>").append(delimeter);
     page.append("keyPage").append(delimeter);
 //    std::cout << "final  | buildDefaultErrorPage: " << page << std::endl;
+}
+
+void    Client::buildHeadOfPage(std::string & page, const std::string & delimeter, std::string status, const std::string & path)
+{
+    page.append("<!DOCTYPE html>").append(delimeter);
+    page.append("<html lang=\"pt-br\">").append(delimeter);
+    page.append("<head>").append(delimeter);
+    page.append("    <meta charset=\"UTF-8\">").append(delimeter);
+    page.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">").append(delimeter);
+    if (status.compare(0, status.size(), "autoIndex") == 0)
+        page.append("    <title>Index of ").append(path).append("</title>").append(delimeter);
+    else if (status.compare(0, status.size(), "DefaultPage") == 0)
+        page.append("    <title>DefaultPage</title>").append(delimeter);
+    else if (status.compare(0, status.size(), "404") == 0)
+        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+    else if (status.compare(0, status.size(), "405") == 0)
+        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+    else if (status.compare(0, status.size(), "408") == 0)
+        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+    else if (status.compare(0, status.size(), "500") == 0)
+        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+    page.append("</head>").append(delimeter);
+}
+
+void    Client::buildDefaultPage(std::string & page)
+{
+//    std::cout << "Início | buildDefaultPage: " << page << std::endl;
+    std::string delimeter;
+
+    delimeter = "\r\n";
+    page.clear();
+    this->buildHeadOfPage(page, delimeter, "DefaultPage", "");
+    page.append("<body>").append(delimeter);
+    page.append("    <h1>Default Example Page</h1>").append(delimeter);
+    page.append("    <p>Esta é a página inicial do servidor padrão ")\
+            .append(" deste webserver</p>").append(delimeter);
+    page.append("    <p>Obrigado pela visita</p>").append(delimeter);
+    page.append("</body>").append(delimeter);
+    page.append("</html>").append(delimeter);
+//    page.append("keyPage").append(delimeter);
+//    std::cout << "Fim    | buildDefaultPage: " << page << std::endl;
 }

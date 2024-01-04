@@ -40,6 +40,7 @@ class Client
         void                buildHeadOfPage(std::string & page, const std::string & delimeter, std::string status, const std::string & path);
         void                buildDefaultErrorPage(std::string & page, \
         const std::string & errorCode);
+        void                buildDefaultPage(std::string & page);
 };
 
 #endif
