@@ -92,7 +92,7 @@ std::string Client::readFile(std::string name){
 
 std::string	Client::fileRequested(void)
 {
-//    std::cout << "inicio | fileRequested" << std::endl;
+    std::cout << "inicio | fileRequested" << std::endl;
     std::vector<std::string>::iterator  it00;
     std::vector<std::string>            tmpVec00;
     std::vector<std::string>            tmpVec01;
@@ -103,7 +103,6 @@ std::string	Client::fileRequested(void)
 
 	tmpVec00 = this->_request.getServerConf().getIndex();
 	it00 = find(tmpVec00.begin(), tmpVec00.end(), this->_request.getRequestedInf());
-/*
     if (this->_request.getRequestedInf().empty())
         std::cout << "\trequest Index: vazio" << std::endl;
     else
@@ -124,26 +123,34 @@ std::string	Client::fileRequested(void)
         std::cout << "    ACHOU\t index request: " << this->_request.getRequestedInf() << std::endl;
     else
         std::cout << "NÃO ACHOU\t index request: " << this->_request.getRequestedInf() << std::endl;
-*/
+/*
 
 	if ((this->_request.getLocation() == this->_request.getServerConf().getRoot()) && \
 		((it00 != tmpVec00.end()) || this->_request.getRequestedInf().empty()))
 	{
-//        std::cout << "Dentro do if fileRequested: " << fileRequested << std::endl;
+        std::cout << "Dentro do 1º if fileRequested: " << fileRequested << std::endl;
 		if (it00 != tmpVec00.end())
+        {
+            std::cout << "Dentro do 2º if" << std::endl;
 			fileRequested.append(".").append(this->_request.getLocation()).append(this->_request.getRequestedInf());
+            std::cout << "Após o 2º if fileRequested: " << fileRequested << std::endl;
+        }
 		else
+        {
+            std::cout << "Dentro do else" << std::endl;
 			fileRequested.append(".").append(this->_request.getLocation()).append(tmpVec00[0]);
+        }
         this->_statusCode = 200;
         this->_code = "200";
 	}
-	else
-	{
-/*
+*/
+//	else
+//	{
         std::cout << "Dentro do else fileRequested: " << fileRequested << std::endl;
         std::cout << "RequestedInf                : " << this->_request.getRequestedInf() << std::endl;
         std::cout << "RequestedMethod             : " << this->_request.getMethod() << std::endl;
         std::cout << "RequestedLocation           : " << this->_request.getLocation() << std::endl;
+/*
 */
 		i = 0;
 		while (i < this->_request.getServerConf().getLocation().size())
@@ -174,12 +181,12 @@ std::string	Client::fileRequested(void)
 //                        std::cout << "Achou RequestedInf(): " << this->_request.getRequestedInf() << std::endl;
                         fileRequested.append(".").append(this->_request.getServerConf().getLocation()[i].getReturn()).append(this->_request.getRequestedInf());
                     }
-                    else if (this->_request.getRequestedInf().empty())
+/*                   else if (this->_request.getRequestedInf().empty())
                     {
 //                        std::cout << "RequestedInf() está vazio: " << std::endl;
                         fileRequested.append(".").append(this->_request.getServerConf().getLocation()[i].getReturn()).append(this->_request.getServerConf().getLocation()[i].getIndex()[0]);
                     }
-                    else
+*/                    else
                     {
 //                        std::cout << "RequestedInf: " << this->_request.getRequestedInf() << " não identificado!" << std::endl;
                         fileRequested.append("Error404");
@@ -202,11 +209,11 @@ std::string	Client::fileRequested(void)
             }
 			i++;
 		}
-	}
-//    std::cout << "fileRequested: " << fileRequested << std::endl;
+//	}
+   std::cout << "fileRequested: " << fileRequested << std::endl;
 	if (fileRequested.find("autoindex") != std::string::npos)
     {
-//        std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
+        std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
         fileRequested.erase(fileRequested.find("autoindex"));
         if (fileRequested.compare(0, 5, "Error") != 0)
         {
@@ -226,7 +233,7 @@ std::string	Client::fileRequested(void)
     else if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
         (this->_request.getQueryString().size() > 0) && !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
     {
-//        std::cout << "######This is a DELETE##################" << std::endl;
+        std::cout << "######This is a DELETE##################" << std::endl;
         std::map<std::string, std::string> tmpMap;
         std::map<std::string, std::string>::iterator itMap;
         tmpMap = this->_request.getQueryString();
@@ -234,42 +241,42 @@ std::string	Client::fileRequested(void)
 //        std::cout << "o tamanho de tmpMap é: " << tmpMap.size() << " first: " << itMap->first << " second: " << itMap->second << std::endl;
         this->buildDeleteFile(fileRequested, itMap->second);
     }
-//    else
-//    {
-//        std::cout << "a requisição é do método: " << this->_request.getMethod() << std::endl;
-//        std::cout << "fileRequested is not autoindex: " << fileRequested << std::endl;
-//    }
-//    std::cout << "fileRequested is empty or Error: " << fileRequested << std::endl;
+    else
+    {
+        std::cout << "a requisição é do método: " << this->_request.getMethod() << std::endl;
+        std::cout << "fileRequested is not autoindex: " << fileRequested << std::endl;
+    }
+    std::cout << "fileRequested is empty or Error: " << fileRequested << std::endl;
 	if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0)
     {
-//        std::cout << "fileRequested is empty or Error" << std::endl;
+        std::cout << "fileRequested is empty or Error" << std::endl;
         if (fileRequested.empty())
             this->searchErrorFile(fileRequested, "404");
         else
             this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
     }
-//    std::cout << "Verificar se " << fileRequested << " exite no servidor" << std::endl;
+    std::cout << "Verificar se " << fileRequested << " exite no servidor quando i: " << i << std::endl;
     if ((fileRequested.find("keyPage") == std::string::npos) && \
                 (Utils::getTypePath(fileRequested) != 1) && \
                 (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
 	{
-//        std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
+        std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
         if (fileRequested.compare(3, 7, "Default") != 0)
         {
             this->searchErrorFile(fileRequested, "500");
             if (Utils::getTypePath(fileRequested) != 1)
             {
-//                std::cout << fileRequested << " também não exite no servidor" << std::endl;
+                std::cout << fileRequested << " também não exite no servidor" << std::endl;
                 this->searchErrorFile(fileRequested, "500");
             }
         }
-//        else
-//            std::cout << "fileRequested is: " << fileRequested << std::endl;
+        else
+            std::cout << "fileRequested is: " << fileRequested << std::endl;
 	}
+    std::cout << "fileRequested is keyPage?" << std::endl;
     if (fileRequested.find("keyPage") != std::string::npos)
         fileRequested.erase(fileRequested.find("keyPage"));
-//    std::cout << "final | fileRequested: " << fileRequested << std::endl;
-//    std::cout << "final  | fileRequested" << std::endl;
+    std::cout << "final  | fileRequested: " << fileRequested << std::endl;
 	return (fileRequested);
 }
 

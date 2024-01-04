@@ -257,21 +257,25 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 //		std::cout << "urlRequest: " << urlRequest << std::endl;
 	if (!this->_requestedInf.empty())
 	{
-//		std::cout << "_requestedInf de tamanho " << this->_requestedInf.size() << std::endl;
+		std::cout << "_requestedInf de tamanho " << this->_requestedInf.size() << std::endl;
 		j = 0;
 		while (j < this->_requestedInf.size())
 		{
 			if (!std::isprint(this->_requestedInf[j]))
 			{
-//				std::cout << "em j: " << j << " é não printável" << std::endl;
+				std::cout << "em j: " << j << " é não printável" << std::endl;
 				this->_requestedInf.clear();
 				this->_requestedInf = this->_serverConf.getIndex()[0];
+				break ;
 			}
-//			else
-//				std::cout << "em j: " << j << " é printável" << std::endl;
+			else
+				std::cout << "em j: " << j << " é printável" << std::endl;
 			j++;
 		}
 	}
+	else
+		this->_requestedInf = this->_serverConf.getIndex()[0];
+
 /*
 */
 	std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf << " possiu tamanho: " << this->_requestedInf.size();
