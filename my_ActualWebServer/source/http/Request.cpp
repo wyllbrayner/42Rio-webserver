@@ -119,7 +119,9 @@ bool		Request::getHeader(std::string const& buffer)
 		}
 		this->_header.append(buffer.begin(), buffer.begin() + pos);
 //		std::cout << "_header: " << this->_header << std::endl;
-		this->parseRequest();
+//		this->parseRequest();
+		if (!this->parseRequest())
+			return (false);
 //		std::cout << "fim    | getHeader " << std::endl;
 	// printYellow("header: " + this->_header);
 		return (true);
@@ -155,11 +157,13 @@ void        Request::appendTheBody(std::string const& buffer, int bytes)
 /*				Parse of HTTP request.					*/
 /*******************************************************/
 
-void 	Request::parseRequest()
+//void 	Request::parseRequest()
+bool	Request::parseRequest()
 {
 //	std::cout << "Início | parseRequest: " << this->_header << std::endl;
 	if (this->_header.empty() || !this->_method.empty())
-		return ;
+		return (true);
+//		return ;
 //	this->getContentLength();
 /*
 	pos = this->_header.find(" HTTP/");
@@ -172,11 +176,17 @@ void 	Request::parseRequest()
 */
 	this->getContentLength();
 	this->getContentType();
+/*
 	this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
 						this->_serverConf.getRoot());
+*/
+	if (!this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
+						this->_serverConf.getRoot()))
+		return (false);
 //	this->splitRequest(this->_header, this->_serverConf.getRoot());
 //	std::cout << "method: " << this->_method << " location: " << this->_location << " request inf: " << this->_requestedInf << std::endl;
 //	std::cout << "fim    | parseRequest: " << this->_header << std::endl;
+	return (true);
 }
 
 // Check back error handling
@@ -221,15 +231,22 @@ void	Request::getContentType(void)
 // 	std::cout << "fim    | getContentType: " << std::endl;
 }
 
-void	Request::splitRequest(std::string urlRequest, std::string root)
+//void	Request::splitRequest(std::string urlRequest, std::string root)
+bool	Request::splitRequest(std::string urlRequest, std::string root)
 {
 	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>			splitHeadRequest;
 	std::vector<std::string>::iterator	i;
 	ssize_t								j;
 
+/*
 	if (urlRequest.find("/favicon.ico") != std::string::npos || \
 			urlRequest.find("OPTIONS") != std::string::npos)
+		this->fixeUrlRequest(urlRequest);
+*/
+	if (urlRequest.find("/favicon.ico") != std::string::npos)
+		return (false);
+	if (urlRequest.find("OPTIONS") != std::string::npos)
 		this->fixeUrlRequest(urlRequest);
 	if (urlRequest.compare(0, 12, "requestError") != 0)
 	{
@@ -289,6 +306,7 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 	}
 	std::cout << std::endl;
 	std::cout << "fim    | splitRequest" << std::endl;
+	return (true);
 }
 
 void	Request::fixeUrlRequest(std::string & urlRequest)

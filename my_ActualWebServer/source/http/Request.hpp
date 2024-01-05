@@ -47,8 +47,10 @@ class	Request
         std::string                         _delimeter;
 		std::map<std::string, std::string>	_queryString;
 
-		void		            parseRequest(void);
-		void		            splitRequest(std::string header, std::string root);
+//		void		            parseRequest(void);
+//		void		            splitRequest(std::string header, std::string root);
+		bool		            parseRequest(void);
+		bool		            splitRequest(std::string header, std::string root);
 		void					fixeUrlRequest(std::string & urlRequest);
 		std::string				fixeUrlRequestAux(std::string & url, \
 								const std::string oldValue, const std::string toFind);
