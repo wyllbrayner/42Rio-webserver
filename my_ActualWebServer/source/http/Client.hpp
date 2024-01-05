@@ -34,12 +34,17 @@ class Client
         int                 _statusCode;
         std::string         _code;
         std::string	        fileRequested(void);
-        void                searchErrorFile(std::string & fileRequested, std::string errorCode);
-        void                buildDeleteFile(const std::string & path, const std::string & idValue);
+        void                selectContent(std::string & fileRequested, size_t & i);
+        void                searchErrorFile(std::string & fileRequested, \
+                            std::string errorCode);
+        void                buildDeleteFile(const std::string & path, \
+                            const std::string & idValue);
         void                buildAutoindexPage(std::string & path);
-        void                buildHeadOfPage(std::string & page, const std::string & delimeter, std::string status, const std::string & path);
+        void                buildHeadOfPage(std::string & page, \
+                            const std::string & delimeter, std::string status, \
+                            const std::string & path);
         void                buildDefaultErrorPage(std::string & page, \
-        const std::string & errorCode);
+                            const std::string & errorCode);
         void                buildDefaultPage(std::string & page);
 };
 
