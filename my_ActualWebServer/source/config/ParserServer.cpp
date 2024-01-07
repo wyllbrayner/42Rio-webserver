@@ -12,9 +12,9 @@
 
 #include "ParserServer.hpp"
 
-ParserServer::ParserServer(void)
+ParserServer::ParserServer(void) : _nbrServers(0)
 {
-	this->_nbrServers = 0;
+//	this->_nbrServers = 0;
 }
 
 ParserServer					&	ParserServer::operator=(const \
@@ -352,17 +352,27 @@ void								ParserServer::buildServer(\
 //	std::cout << "end   | buildServer: server: " << server << std::endl;
 }
 
-void								ParserServer::print(void) const
+void								ParserServer::findReturn(void)
 {
+//	std::cout << "Start | findReturn" <<  std::endl;
 	size_t	i;
 
 	i = 0;
 	while (i < this->_servers.size())
 	{
-		std::cout << "Server n\t: " << (i + 1) << std::endl;
-		this->getServers()[i++].printConfigFile();
-		std::cout << "###\t###\t###\t###\t###\t###\t###\t###\t###" << std::endl;
+//		std::cout << "Server n: " << i << std::endl;
+//		if (this->getServers()[i].getLocation().size() > 1)
+//		if (this->getServers()[i].getLocation().size())
+//		{
+//			std::cout << "Server n: " << i << " possui " << this->getServers()[i].getLocation().size() << " locations. if" << std::endl;
+//			this->getServersSmart()[i].findLastReturn();
+//		}
+//		else
+//			std::cout << "Server n: " << i << " possui " << this->getServers()[i].getLocation().size() << " locations. else" << std::endl;	
+//		i++;
+		this->getServersSmart()[i++].findLastReturn();
 	}
+//	std::cout << "End   | findReturn" <<  std::endl;
 }
 
 void								ParserServer::buildSingleServer(void)
@@ -395,28 +405,6 @@ void								ParserServer::buildSingleServer(void)
 	}
 	this->setServers(newServers);
 //	std::cout << "end   | buildSingleServer" << std::endl;
-}
-
-void								ParserServer::findReturn(void)
-{
-//	std::cout << "Start | findReturn" <<  std::endl;
-	size_t	i;
-
-	i = 0;
-	while (i < this->_servers.size())
-	{
-//		std::cout << "Server n: " << i << std::endl;
-//		if (this->getServers()[i].getLocation().size() > 1)
-		if (this->getServers()[i].getLocation().size())
-		{
-//			std::cout << "Server n: " << i << " possui " << this->getServers()[i].getLocation().size() << " locations. if" << std::endl;
-			this->getServersSmart()[i].findLastReturn();
-		}
-//		else
-//			std::cout << "Server n: " << i << " possui " << this->getServers()[i].getLocation().size() << " locations. else" << std::endl;	
-		i++;
-	}
-//	std::cout << "End   | findReturn" <<  std::endl;
 }
 
 void								ParserServer::removDuplic(void)
@@ -487,4 +475,17 @@ bool								ParserServer::equalServerName(\
 	}
 //	std::cout << "end   | equalServerName" << std::endl;
 	return (false);
+}
+
+void								ParserServer::print(void) const
+{
+	size_t	i;
+
+	i = 0;
+	while (i < this->_servers.size())
+	{
+		std::cout << "Server n\t: " << (i + 1) << std::endl;
+		this->getServers()[i++].printConfigFile();
+		std::cout << "###\t###\t###\t###\t###\t###\t###\t###\t###" << std::endl;
+	}
 }

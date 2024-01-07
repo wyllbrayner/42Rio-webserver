@@ -1,12 +1,11 @@
 #pragma once
 # include <iostream>
-# include <cstring>
 # include <unistd.h>
-# include <sys/socket.h>
+# include <sys/socket.h> // socket 
+/*
 # include <netinet/in.h>
-# include <cstdio> //perror
+*/
 # include <stdlib.h> //exit()
-//# include <fcntl.h> //fcntl()
 # include "../config/ConfigFile.hpp"
 
 class   Server
@@ -17,13 +16,14 @@ class   Server
         ConfigFile              _serverConf;
 
     public:
-        Server(void);
+//        Server(void);
         Server(int  port, ConfigFile server);
         Server(const Server & copy);
         Server &operator=(const Server & src);
         ~Server(void);
         
-        void                    initialize(void);
+//        void                    initialize(void);
+        bool                    initialize(void);
         int                     acceptCon(void) const;
         void                    closeCon(void);
         const int           &   getSocket(void) const;

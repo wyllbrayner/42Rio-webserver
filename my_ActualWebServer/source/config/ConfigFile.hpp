@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConfigFile.cpp.hpp                                 :+:      :+:    :+:   */
+/*   ConfigFile.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -39,7 +39,8 @@ class	ConfigFile
 		bool							isTokenValid(std::string & _p);
 		bool							isHostValid(std::string & _parameter);
 		void							putVecString(myItVecS & i, \
-					std::vector<std::string> & sp_server, myVecS & _vecString);
+										std::vector<std::string> & sp_server, \
+										myVecS & _vecString);
 		void							putVecInt(std::string & _parameter);
 		bool							portIsDuplic(void) const;
 		ssize_t							findReturn(\
@@ -81,10 +82,10 @@ class	ConfigFile
 		void							setErrorPageSmart(std::string _parameter);
 		void							setErrorPage(const myVecS & _parameter);
 		void							setLocation(myItVecS & i, \
-								myVecS & sp_server, const std::string & root, \
-								const std::string & index);
+										myVecS & sp_server, const std::string & root, \
+										const std::string & index);
 		void							setLocation(\
-									const std::vector<Location> & _parameter);
+										const std::vector<Location> & _parameter);
 		void							fixeErrorPage(void);
 		void							printConfigFile(void) const;
 		void							clearConfFile(void);

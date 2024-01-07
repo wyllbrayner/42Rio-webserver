@@ -26,7 +26,8 @@ class	Location
 		bool								_autoIndex;
 		std::string							_return;
 		void								printVecString(\
-			const std::vector<std::string> & content, std::string str) const;
+											const std::vector<std::string> & content, \
+											std::string str) const;
 	
 	public:
 		Location(void);
@@ -43,16 +44,15 @@ class	Location
 		void								setPath(std::string & path, std::string root);
 		void								setPathSmart(std::string & path);
 		void								setMethods(\
-									std::vector<std::string> & vecLocation);
+											std::vector<std::string> & vecLocation);
 		void								setDefaultMethods(void);
 		void								setIndex(\
-										std::vector<std::string> & vecIndex);
+											std::vector<std::string> & vecIndex);
 		void								setIndexSmart(std::string parameter);
 		void								setAutoIndex(bool flag);
 		void								setReturn(std::string path, std::string root);
 		void								setReturnSmart(std::string path);
 		void								fixeReturn(void);
-
 		void								printLocation(void) const;
 		void								clearLocation(void);
 };

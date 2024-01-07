@@ -517,54 +517,6 @@ void							ConfigFile::fixeErrorPage(void)
 //	std::cout << "fim    de fixeErrorPage" << std::endl;
 }
 
-void							ConfigFile::printConfigFile(void) const
-{
-	size_t	i;
-
-	if (this->getIsServerDefault())
-		std::cout << "Type\t\t: Default" << std::endl;
-	else
-		std::cout << "Type\t\t: Not Default" << std::endl;
-	this->printVec(this->getPort(), "port\t\t: ");
-	std::cout << "root\t\t: " << this->getRoot() << std::endl;
-	this->printVec(this->getServerName(), "Server Name\t: ");
-	std::cout << "host\t\t: " << this->getHost() << std::endl;
-	this->printVec(this->getIndex(), "Index\t\t: ");
-	std::cout << "Max Body Size\t: " << this->getMaxBodySize() << std::endl;
-	this->printVec(this->getErrorPage(), "Error Page\t: ");
-	if (this->getLocation().size())
-	{
-		i = 0;
-		while (i < this->getLocation().size())
-		{
-			std::cout << "Location n\t: " << (i + 1) << std::endl;
-			this->getLocation()[i++].printLocation();
-		}
-	}
-}
-
-void							ConfigFile::clearConfFile(void)
-{
-	size_t		i;
-	Location	loc;
-
-	i = 0;
-	this->_port.clear();
-	this->_root.clear();
-	this->_serverName.clear();
-	this->_host = 0;
-	this->_index.clear();
-	this->_maxBodySize = -1;
-	this->_errorPage.clear();
-	while (i < this->getLocation().size())
-	{
-		loc = this->getLocation()[i];
-		loc.clearLocation();
-		i++;
-	}
-	this->_vecLocation.clear();
-}
-
 void							ConfigFile::findLastReturn(void)
 {
 //	std::cout << "Start | findLastReturn" <<  std::endl;
@@ -622,4 +574,52 @@ ssize_t							ConfigFile::findReturn(const std::string & _return, const size_t &
 //	std::cout << "return: " << _return << " i: " << i <<  std::endl;
 //	std::cout << "End   | findReturn" <<  std::endl;
 	return (-1);
+}
+
+void							ConfigFile::clearConfFile(void)
+{
+	size_t		i;
+	Location	loc;
+
+	i = 0;
+	this->_port.clear();
+	this->_root.clear();
+	this->_serverName.clear();
+	this->_host = 0;
+	this->_index.clear();
+	this->_maxBodySize = -1;
+	this->_errorPage.clear();
+	while (i < this->getLocation().size())
+	{
+		loc = this->getLocation()[i];
+		loc.clearLocation();
+		i++;
+	}
+	this->_vecLocation.clear();
+}
+
+void							ConfigFile::printConfigFile(void) const
+{
+	size_t	i;
+
+	if (this->getIsServerDefault())
+		std::cout << "Type\t\t: Default" << std::endl;
+	else
+		std::cout << "Type\t\t: Not Default" << std::endl;
+	this->printVec(this->getPort(), "port\t\t: ");
+	std::cout << "root\t\t: " << this->getRoot() << std::endl;
+	this->printVec(this->getServerName(), "Server Name\t: ");
+	std::cout << "host\t\t: " << this->getHost() << std::endl;
+	this->printVec(this->getIndex(), "Index\t\t: ");
+	std::cout << "Max Body Size\t: " << this->getMaxBodySize() << std::endl;
+	this->printVec(this->getErrorPage(), "Error Page\t: ");
+	if (this->getLocation().size())
+	{
+		i = 0;
+		while (i < this->getLocation().size())
+		{
+			std::cout << "Location n\t: " << (i + 1) << std::endl;
+			this->getLocation()[i++].printLocation();
+		}
+	}
 }

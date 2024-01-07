@@ -14,6 +14,7 @@
 # include <fstream>
 # include <string>
 # include <iostream>
+# include <vector>
 # include "../Error.hpp"
 # include "../Utils.hpp"
 # include "ConfigFile.hpp"
