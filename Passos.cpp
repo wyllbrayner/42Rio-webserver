@@ -48,3 +48,11 @@ Delete:
 Método Não autorizado:
 	Implementar o método não autorizado no servidor. (STATUS: FINALIZADO)
 */
+
+/*
+Pendência!!!!!!
+após terminar de ler o body (corpo) da request, verificar se o tamanho do corpo supera o max size body permitido pelo servidor.
+Caso supere, enviar error 413?
+caso contrário, seguir com processo de leitura para envio ao cliente.  
+
+*/

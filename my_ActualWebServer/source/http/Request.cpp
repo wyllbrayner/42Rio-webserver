@@ -81,8 +81,10 @@ bool		Request::receiveFromClient(int client)
     if (this->checkBytesReceived(bytes) != 1)
 		return (false);
 	buffer[bytes] = '\0';
+/*
 	std::cout << "Round: Bodysize: " << this->_body.size() \
 				<< " | I read now: " << bytes << std::endl;
+*/
 	if (!this->getHeader(buffer))
 		return (false);
 	this->getBody(buffer, bytes);
@@ -232,7 +234,7 @@ void	Request::getContentType(void)
 }
 
 //void	Request::splitRequest(std::string urlRequest, std::string root)
-bool	Request::splitRequest(std::string urlRequest, std::string root)
+bool	Request::splitRequest(std::string urlRequest, std::string root)// para quê root aqui???
 {
 	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>			splitHeadRequest;
@@ -247,7 +249,7 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 	if (urlRequest.find("/favicon.ico") != std::string::npos)
 		return (false);
 	if (urlRequest.find("OPTIONS") != std::string::npos)
-		this->fixeUrlRequest(urlRequest);
+		this->fixeUrlRequest(urlRequest); ///retirar favicon.ico daqui!!!!!
 	if (urlRequest.compare(0, 12, "requestError") != 0)
 	{
 		splitHeadRequest = Utils::split(urlRequest, " \t\n");
