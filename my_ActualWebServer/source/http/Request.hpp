@@ -54,7 +54,7 @@ class	Request
 		void					fixeUrlRequest(std::string & urlRequest);
 		std::string				fixeUrlRequestAux(std::string & url, \
 								const std::string oldValue, const std::string toFind);
-		void					findStartEnd(ssize_t & start, ssize_t & end, \
+		void					findStartEnd(size_t & start, size_t & end, \
 								const std::string toFind, const std::string & place);
 		void		            parseQueryString(std::string queryString);
 		std::string	            urlDecoder(const std::string & url);

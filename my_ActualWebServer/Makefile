@@ -2,8 +2,7 @@ NAME = webserv
 
 # Compiler and flags
 CXX 		= g++
-CXXFLAGS	= 
-#CXXFLAGS	= -Wall -Werror -Wextra -std=c++98
+CXXFLAGS	= -Wall -Werror -Wextra -std=c++98
 
 #					Source and object file paths
 MAIN					=	main.cpp Utils.cpp Error.cpp
@@ -33,6 +32,7 @@ ALL_OBJ_DIR				=	$(sort $(dir $(OBJS)))
 all: $(ALL_OBJ_DIR) $(NAME)
 
 # Create the object directory if it doesn't exist
+
 $(ALL_OBJ_DIR):
 	@mkdir -p $(ALL_OBJ_DIR)
 

@@ -195,8 +195,8 @@ bool	Request::parseRequest()
 void	Request::getContentLength(void)
 {
 //	std::cout << "inicio | getContentLength: " << std::endl;
-	ssize_t	start;
-	ssize_t	end;
+	size_t	start;
+	size_t	end;
 
 	start = this->_header.find("Content-Length: ");
 	if (start == std::string::npos)
@@ -209,7 +209,7 @@ void	Request::getContentLength(void)
 		start = 0;
 		end = 0;
 		this->findStartEnd(start, end, "Content-Length: ", this->_header);
-		if (start > 0 && end > 0)
+		if (start != std::string::npos && end != std::string::npos)
 			this->_contentLength = \
 					Utils::atoi(this->_header.substr(start, (end - start + 1)));
 //		std::cout << "contentLength: " << this->_contentLength << std::endl;
@@ -220,13 +220,13 @@ void	Request::getContentLength(void)
 void	Request::getContentType(void)
 {
 //	std::cout << "inicio | getContentType: " << std::endl;
-	ssize_t	start;
-	ssize_t	end;
+	size_t	start;
+	size_t	end;
 
 	start = 0;
 	end = 0;
 	this->findStartEnd(start, end, "Content-Type: ", this->_header);
-	if (start > 0 && end > 0)
+	if (start != std::string::npos && end != std::string::npos)
 		this->_contentType = this->_header.substr(start, (end - start + 1));
 
 //	std::cout << "_contentType: " << this->_contentType << std::endl;
@@ -239,7 +239,7 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)// para quê
 	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>			splitHeadRequest;
 	std::vector<std::string>::iterator	i;
-	ssize_t								j;
+	size_t								j;
 
 /*
 	if (urlRequest.find("/favicon.ico") != std::string::npos || \
@@ -347,8 +347,8 @@ std::string Request::fixeUrlRequestAux(std::string & url, \
 {
 //	std::cout << "Início | fixeUrlRequestAux: url: |" << url << "| oldValue: |" << oldValue << "| toFind: |" << toFind << "|" << std::endl;
 	size_t		pos;
-	ssize_t		start;
-	ssize_t		end;
+	size_t		start;
+	size_t		end;
 	std::string	str;
 
 	pos = url.find(oldValue);
@@ -357,7 +357,7 @@ std::string Request::fixeUrlRequestAux(std::string & url, \
 	if (pos != std::string::npos)
 	{
 		this->findStartEnd(start, end, toFind, this->_header);
-		if (start > 0 && end > 0)
+		if (start != std::string::npos && end != std::string::npos)
 		{
 			if (oldValue.compare(0, oldValue.size(), "OPTIONS") == 0)
 			{
@@ -390,7 +390,7 @@ std::string Request::fixeUrlRequestAux(std::string & url, \
 	return (url);
 }
 
-void	Request::findStartEnd(ssize_t & start, ssize_t & end, \
+void	Request::findStartEnd(size_t & start, size_t & end, \
 					const std::string toFind, const std::string & place)
 {
 	start = place.find(toFind);
@@ -406,10 +406,10 @@ void	Request::findStartEnd(ssize_t & start, ssize_t & end, \
 				end++;
 		}
 		else
-			start = -1;
+			start = std::string::npos;
 	}
 	else
-		start = -1; 
+		start = std::string::npos;
 }
 
 void	Request::parseQueryString(std::string queryString)
