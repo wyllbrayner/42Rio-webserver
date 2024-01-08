@@ -1,6 +1,6 @@
 #include "./Webserv.hpp"
 
-Webserv::Webserv(std::vector<Server> const& newServers) : _servers(newServers)
+Webserv::Webserv(const std::vector<Server> & newServers) : _servers(newServers)
 {
 	this->_nbrServers = _servers.size();
 	this->start();
@@ -42,7 +42,8 @@ bool	Webserv::updateStatusPoll()
 	status = poll(this->_conn.getPollFd().data(), this->_conn.getPollFd().size(), -1);
 	if (status == -1)
 	{
-		printError("Error in poll: "); //tem de sair liberando os sockets?
+		printError("Error in poll: ");
+		this->_conn.closeAllConnections();
 		return (false);
 	}
 	return (true);
@@ -118,6 +119,6 @@ void    Webserv::sendDataClient(const int & i) {
         this->_conn.closeConnection(i);
 		this->_requests[idRequest].reset();
 		this->_requests.erase(this->_requests.begin() + idRequest);
-        std::cout << "I deleted the request after send it. There is " << this->_requests.size() << " requests now" << std::endl;
+//        std::cout << "I deleted the request after send it. There is " << this->_requests.size() << " requests now" << std::endl;
 	}
 }

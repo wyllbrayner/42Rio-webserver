@@ -1,8 +1,8 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
+# include <iostream>
 # include <vector>
-# include <cstring> //c_string()
 
 # include "./Server.hpp"
 # include "./Connection.hpp"
@@ -30,7 +30,7 @@ class   Webserv
         void    sendDataClient(const int & i);
 
     public:
-        Webserv(std::vector<Server> const& newServers);
+        Webserv(const std::vector<Server> & newServers);
         ~Webserv(void);
 };
 #endif

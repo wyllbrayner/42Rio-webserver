@@ -6,6 +6,7 @@
 # include <poll.h>
 # include <vector>
 # include <fcntl.h>
+# include <iostream>
 
 class Connection
 {
@@ -17,9 +18,10 @@ class Connection
         void    addClientSocket(int socket);
         void	addServersSockets(std::vector<Server> const& servers);
         void    closeConnection(int client);
+        void	closeAllConnections(void);
 
-        std::vector<pollfd>&  getPollFd();
-        pollfd const&               getFd(int i);
+        std::vector<pollfd> &   getPollFd(void);
+        const pollfd        &   getFd(int i);
 
     private:
         std::vector<pollfd> poolAllFd;
