@@ -250,7 +250,7 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 	if (urlRequest.find("/favicon.ico") != std::string::npos)
 		return (false);
 	if (urlRequest.find("OPTIONS") != std::string::npos)
-		this->fixeUrlRequest(urlRequest); ///retirar favicon.ico daqui!!!!!
+		this->fixeUrlRequest(urlRequest);
 	if (urlRequest.compare(0, 12, "requestError") != 0)
 	{
 		splitHeadRequest = Utils::split(urlRequest, " \t\n");
