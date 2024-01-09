@@ -4,7 +4,8 @@
 /*						Constructors.		           */
 /*******************************************************/
 
-Request::Request(int newClient, ConfigFile _configFile) {
+Request::Request(int newClient, ConfigFile _configFile)
+{
     this->_fromClient = newClient;
 	this->_delimeter = "\r\n\r\n";
 	this->_serverConf = _configFile;
@@ -234,9 +235,9 @@ void	Request::getContentType(void)
 }
 
 //void	Request::splitRequest(std::string urlRequest, std::string root)
-bool	Request::splitRequest(std::string urlRequest, std::string root)// para quê root aqui???
+bool	Request::splitRequest(std::string urlRequest, std::string root)
 {
-	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
+//	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>			splitHeadRequest;
 	std::vector<std::string>::iterator	i;
 	size_t								j;
@@ -295,7 +296,6 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)// para quê
 		}
 	}
 /*
-*/
 	std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf << " possiu tamanho: " << this->_requestedInf.size();
 	std::map<std::string, std::string>::iterator a = this->_queryString.begin();
 	std::map<std::string, std::string>::iterator z = this->_queryString.end();
@@ -307,7 +307,8 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)// para quê
 		a++;
 	}
 	std::cout << std::endl;
-	std::cout << "fim    | splitRequest" << std::endl;
+*/
+//	std::cout << "fim    | splitRequest" << std::endl;
 	return (true);
 }
 

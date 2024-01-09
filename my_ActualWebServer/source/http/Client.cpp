@@ -93,7 +93,7 @@ std::string Client::readFile(std::string name){
 
 std::string Client::fileRequested(void)
 {
-    std::cout << "inicio | fileRequested" << std::endl;
+//    std::cout << "inicio | fileRequested" << std::endl;
     std::string fileRequested;
     size_t      i;
 
@@ -175,13 +175,13 @@ std::string Client::fileRequested(void)
 //    std::cout << "fileRequested is keyPage?" << std::endl;
     if (fileRequested.find("keyPage") != std::string::npos)
         fileRequested.erase(fileRequested.find("keyPage"));
-    std::cout << "final  | fileRequested: " << fileRequested << std::endl;
+//    std::cout << "final  | fileRequested: " << fileRequested << std::endl;
 	return (fileRequested);
 }
 
 void        Client::selectContent(std::string & fileRequested, size_t & i)
 {
-//    std::cout << "inicio | selectContent" << std::endl;
+//    std::cout << "inicio | selectContent | fileRequested: " << fileRequested << std::endl;
     std::vector<std::string>::iterator  it00;
     std::vector<std::string>            tmpVec00;
     std::vector<std::string>            tmpVec01;
@@ -242,7 +242,9 @@ void        Client::selectContent(std::string & fileRequested, size_t & i)
         }
 		i++;
 	}
-//    std::cout << "Fim    | selectContent" << std::endl;
+    if (i == this->_request.getServerConf().getLocation().size())
+        fileRequested.append("Error404");
+//    std::cout << "Fim    | selectContent | fileRequested: " << fileRequested << std::endl;
 }
 
 void    Client::searchErrorFile(std::string & fileRequested, std::string errorCode)
