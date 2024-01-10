@@ -234,33 +234,35 @@ void	Request::getContentType(void)
 // 	std::cout << "fim    | getContentType: " << std::endl;
 }
 
-//void	Request::splitRequest(std::string urlRequest, std::string root)
 bool	Request::splitRequest(std::string urlRequest, std::string root)
 {
 //	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
-	std::vector<std::string>			splitHeadRequest;
 	std::vector<std::string>::iterator	i;
+	std::vector<std::string>			splitHeadRequest;
+	std::string							tmp;
 	size_t								j;
 
-/*
 	if (urlRequest.find("/favicon.ico") != std::string::npos || \
 			urlRequest.find("OPTIONS") != std::string::npos)
 		this->fixeUrlRequest(urlRequest);
-*/
+/*
 	if (urlRequest.find("/favicon.ico") != std::string::npos)
 		return (false);
 	if (urlRequest.find("OPTIONS") != std::string::npos)
 		this->fixeUrlRequest(urlRequest);
+*/
 	if (urlRequest.compare(0, 12, "requestError") != 0)
 	{
 		splitHeadRequest = Utils::split(urlRequest, " \t\n");
+		std::cout << "\t\turlRequest: " << urlRequest << std::endl;
 //		std::cout << "\t\tpassou da split sem segfalt com splitHeadRequest.size(): " << splitHeadRequest.size() << std::endl;
 		i = splitHeadRequest.begin();
-//		std::cout << "\t\tpassou do begin sem segfalt com splitHeadRequest.size(): " << splitHeadRequest.size() << std::endl;
+//		std::cout << "\t\tthis->_method: " << this->_method << std::endl;
 		if (this->_method.empty())
 			this->_method = *(i++);
 //		else
 //			std::cout << "método já preenchido com: " << this->_method << std::endl;
+//		std::cout << "\t\tthis->_method: " << this->_method << std::endl;
 //		std::cout << "\t\tpassou do _method sem segfalt com splitHeadRequest.size(): " << splitHeadRequest.size() << " this->_method: " << this->_method << std::endl;
 		j = (*i).rfind("/");
 //		std::cout << "\t\tpassou do rfind(\"/\") sem segfalt com splitHeadRequest.size(): " << splitHeadRequest.size() << " " << this->_method << std::endl;
@@ -272,11 +274,15 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 			this->parseQueryString(this->_requestedInf.substr((j + 1)));
 			this->_requestedInf = this->_requestedInf.substr(0, j);
 		}
+		std::cout << "\t\t_location: " << this->_location << " requestedInf: " << this->_requestedInf << std::endl;
 	}
 //	else
 //		std::cout << "urlRequest: " << urlRequest << std::endl;
 	if (this->_requestedInf.empty())
+	{
 		this->_requestedInf = this->_serverConf.getIndex()[0];
+//		std::cout << "_requestedInf estáva vazio e agora é: " << this->_requestedInf << std::endl;
+	}
 	else
 	{
 //		std::cout << "_requestedInf de tamanho " << this->_requestedInf.size() << std::endl;
@@ -286,12 +292,15 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 			if (!std::isprint(this->_requestedInf[j]))
 			{
 //				std::cout << "em j: " << j << " é não printável" << std::endl;
+				tmp = this->_requestedInf.substr(0, j);
+//				std::cout << "com size: " << tmp.size()<< " tmp: " << tmp << std::endl;
 				this->_requestedInf.clear();
-				this->_requestedInf = this->_serverConf.getIndex()[0];
+//				this->_requestedInf = this->_serverConf.getIndex()[0];
+				this->_requestedInf = tmp;
 				break ;
 			}
 //			else
-//				std::cout << "em j: " << j << " é printável" << std::endl;
+//				std::cout << "em j: " << j << " | caract: " << this->_requestedInf[j] << " é printável" << std::endl;
 			j++;
 		}
 	}
@@ -315,17 +324,6 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 void	Request::fixeUrlRequest(std::string & urlRequest)
 {
 //	std::cout << "início | fixeUrlRequest: " << urlRequest << std::endl;
-/*
-	this->_header.append("\r\n");
-	this->_header.append("Sec-Fetch-Dest: image").append("\r\n");
-	this->_header.append("Referer: http://127.0.0.1:8000/delete/index.html").append("\r\n");
-	this->_header.append("Accept-Encoding: gzip, deflate, br").append("\r\n");
-	this->_header.append("Access-Control-Request-Method: DELETE").append("\r\n");
-	this->_header.append("Access-Control-Request-Headers: content-type").append("\r\n");
-	this->_header.append("Content-Length: 1000").append("\r\n");
-	this->_header.append("Content-Type: minhaCasa42Rio").append("\r\n");
-	std::cout << "_header mok:\n" << this->_header << std::endl;
-*/
 	if (urlRequest.find("OPTIONS") != std::string::npos)
 	{
 //		std::cout << "Pré /OPTIONS     urlRequest: " << urlRequest << std::endl;

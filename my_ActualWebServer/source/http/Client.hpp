@@ -18,34 +18,35 @@ class Client
         Client(const Request &request, Response & response);
         ~Client();
 
-        int                     getStatusCode(void);
-        void                    choiceMethod(void);
-        void                    postMethod(void);
-        void                    deleteMethod(void);
-        std::string             getMethod(void);
+//        void                    choiceMethod(void);
+//        void                    postMethod(void);
+//        void                    deleteMethod(void);
 //        std::string             readFile(std::string name); 
         const std::string   &   getCode(void) const;
 
     private:
         Client(const Client &client);
         Client &operator=(const Client &Client);
-        Request const&      _request;
+        const Request   &   _request;
         Response &          _response;
-        int                 _statusCode;
-        std::string         _code;
+//        int                 _statusCode;
+        std::string         _statusCode;
+//        std::string         _code;
+        const std::string   &   getStatusCode(void);
+        void                buildMessage(void);
         std::string	        fileRequested(void);
         void                selectContent(std::string & fileRequested, size_t & i);
-        void                searchErrorFile(std::string & fileRequested, \
-                            std::string errorCode);
-        void                buildDeleteFile(const std::string & path, \
-                            const std::string & idValue);
-        void                buildAutoindexPage(std::string & path);
         void                buildHeadOfPage(std::string & page, \
                             const std::string & delimeter, std::string status, \
                             const std::string & path);
+        void                buildDefaultPage(std::string & page);
+        void                buildAutoindexPage(std::string & path);
+        void                buildDeleteFile(const std::string & path, \
+                            const std::string & idValue);
+        void                searchErrorFile(std::string & fileRequested, \
+                            std::string errorCode);
         void                buildDefaultErrorPage(std::string & page, \
                             const std::string & errorCode);
-        void                buildDefaultPage(std::string & page);
 };
 
 #endif
