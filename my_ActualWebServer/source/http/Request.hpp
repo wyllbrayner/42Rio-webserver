@@ -26,11 +26,12 @@ class	Request
 		const std::string	&	getRequestedInf(void) const;
 		const std::string	&	getContentType(void) const;
 		const ConfigFile	&	getServerConf(void) const;
-        int						getContentLength(void) const;
-		bool		            receiveFromClient(int client);
+		const std::map<std::string, std::string> &	getMapQueryString(void) const;
+		const std::string	&	getQueryString(void) const;
+        const size_t		&	getContentLength(void) const;
         bool                    isReady(void) const;
+		bool		            receiveFromClient(int client);
         void                    reset(void);
-		const std::map<std::string, std::string> &	getQueryString(void) const;
 
 	private:
         int                                 _fromClient;
@@ -45,23 +46,22 @@ class	Request
 		std::string							_requestedInf;
 		std::string							_contentType;
         std::string                         _delimeter;
-		std::map<std::string, std::string>	_queryString;
+		std::string                         _queryString;
+		std::map<std::string, std::string>	_mapQueryString;
 
-//		void		            parseRequest(void);
-//		void		            splitRequest(std::string header, std::string root);
+		void		            splitRequest(std::string header, std::string root);
 		bool		            parseRequest(void);
-		bool		            splitRequest(std::string header, std::string root);
 		void					fixeUrlRequest(std::string & urlRequest);
 		std::string				fixeUrlRequestAux(std::string & url, \
 								const std::string oldValue, const std::string toFind);
 		void					findStartEnd(size_t & start, size_t & end, \
 								const std::string toFind, const std::string & place);
-		void		            parseQueryString(std::string queryString);
+		std::map<std::string, std::string>	parseQueryString(std::string queryString);
 		std::string	            urlDecoder(const std::string & url);
         int                     checkBytesReceived(ssize_t bytes_received);
 		bool		            getHeader(std::string const& buffer);
-		void		            getContentLength(void);
-		void		            getContentType(void);
+		void		            findContentLength(void);
+		void		            findContentType(void);
 		void		            getBody(std::string const& buffer, int bytes);
         void                    appendTheBody(std::string const& buffer, int bytes);
 		void					printYellow(std::string const& str) const;

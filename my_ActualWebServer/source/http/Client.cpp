@@ -135,12 +135,12 @@ std::string Client::fileRequested(void)
 //            std::cout << "fileRequested is     autoindex pós: " << fileRequested << std::endl;
         }
         else if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
-            (this->_request.getQueryString().size() > 0) && !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
+            (this->_request.getMapQueryString().size() > 0) && !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
         {
 //            std::cout << "######This is a DELETE##################" << std::endl;
             std::map<std::string, std::string> tmpMap;
             std::map<std::string, std::string>::iterator itMap;
-            tmpMap = this->_request.getQueryString();
+            tmpMap = this->_request.getMapQueryString();
             itMap = tmpMap.begin();
 //            std::cout << "o tamanho de tmpMap é: " << tmpMap.size() << " first: " << itMap->first << " second: " << itMap->second << std::endl;
             this->buildDeleteFile(fileRequested, itMap->second);

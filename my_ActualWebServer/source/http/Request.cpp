@@ -56,7 +56,12 @@ const ConfigFile  &		Request::getServerConf(void) const
 	return (this->_serverConf);
 }
 
-const std::map<std::string, std::string> &		Request::getQueryString(void) const
+const std::map<std::string, std::string> &		Request::getMapQueryString(void) const
+{
+	return (this->_mapQueryString);
+}
+
+const std::string &		Request::getQueryString(void) const
 {
 	return (this->_queryString);
 }
@@ -66,14 +71,14 @@ bool    	Request::isReady(void) const
     return (this->_ready);
 }
 
-int			Request::getContentLength(void) const
+const size_t		&	Request::getContentLength(void) const
 {
     return (this->_contentLength);
 }
 
 bool		Request::receiveFromClient(int client)
 {
-//	std::cout << "inicio | receiveFromClient: " << client << std::endl;
+	std::cout << "inicio | receiveFromClient: " << client << std::endl;
 
 	char	buffer[BUFFER_SIZE];
 	int		bytes;
@@ -89,9 +94,36 @@ bool		Request::receiveFromClient(int client)
 	if (!this->getHeader(buffer))
 		return (false);
 	this->getBody(buffer, bytes);
-//	std::cout << "fim    | receiveFromClient: " << client << std::endl;
+	if (this->isReady() && this->getMethod().compare(0, 4, "POST") == 0 && \
+		getContentType().compare(0, 33 , "application/x-www-form-urlencoded") \
+		== 0 && this->getContentLength() != 0 && !this->_body.empty() && \
+		this->getMapQueryString().empty())
+	{
+		this->_queryString = this->_body;
+		this->_mapQueryString = this->parseQueryString(this->_queryString);
+/*
+		std::cout << "body isReady!!!!" << std::endl;
+		std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf;
+		std::map<std::string, std::string>::iterator a = this->_mapQueryString.begin();
+		std::map<std::string, std::string>::iterator z = this->_mapQueryString.end();
+		if (a != z)
+			std::cout << " queryString:";
+		while (a != z)
+		{
+			std::cout << " key: " << a->first << " value: " << a->second;
+			a++;
+		}
+		std::cout << std::endl;
+*/
+	}
+//	else
+//		std::cout << "body Falhou!!!!" << std::endl;
+//	std::cout << "queryString: " << this->getQueryString() << std::endl;
+	std::cout << "fim    | receiveFromClient: " << client << std::endl;
 	return (true);
 }
+
+
 
 int	Request::checkBytesReceived(ssize_t bytes_received)
 {
@@ -107,6 +139,7 @@ int	Request::checkBytesReceived(ssize_t bytes_received)
 
 bool		Request::getHeader(std::string const& buffer)
 {
+	std::cout << "inicio | getHeader buffer: " << std::endl;
 //	std::cout << "inicio | getHeader buffer: " << buffer << std::endl;
 	size_t	pos;
 
@@ -125,14 +158,15 @@ bool		Request::getHeader(std::string const& buffer)
 //		this->parseRequest();
 		if (!this->parseRequest())
 			return (false);
-//		std::cout << "fim    | getHeader " << std::endl;
-	// printYellow("header: " + this->_header);
+//		printYellow("header: " + this->_header);
+		std::cout << "fim    | getHeader " << std::endl;
 		return (true);
 	}
 }
 
 void		Request::getBody(std::string const& buffer, int bytes)
 {
+	std::cout << "Início | getBody" << std::endl;
     this->appendTheBody(buffer, bytes);
     if (this->_body.size() == this->_contentLength)
     {
@@ -141,6 +175,7 @@ void		Request::getBody(std::string const& buffer, int bytes)
 		printYellow("Reached the size");
 //		printYellow("BODY: " + this->_body);
     }
+	std::cout << "fim    | getBody " << this->_body << std::endl;
 }
 
 void        Request::appendTheBody(std::string const& buffer, int bytes)
@@ -160,42 +195,30 @@ void        Request::appendTheBody(std::string const& buffer, int bytes)
 /*				Parse of HTTP request.					*/
 /*******************************************************/
 
-//void 	Request::parseRequest()
 bool	Request::parseRequest()
 {
+	std::cout << "Início | parseRequest: " << std::endl;
 //	std::cout << "Início | parseRequest: " << this->_header << std::endl;
 	if (this->_header.empty() || !this->_method.empty())
 		return (true);
-//		return ;
-//	this->getContentLength();
+	this->findContentLength();
+	this->findContentType();
 /*
-	pos = this->_header.find(" HTTP/");
-	if (pos == std::string::npos)
-		std::cout << "Error in parseRequest" << std::endl;
-	else
-		this->splitRequest(this->_header.substr(0, pos), this->_serverConf.getRoot());
-	this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
-						this->_serverConf.getRoot());
-*/
-	this->getContentLength();
-	this->getContentType();
-/*
-	this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
-						this->_serverConf.getRoot());
-*/
 	if (!this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
 						this->_serverConf.getRoot()))
 		return (false);
-//	this->splitRequest(this->_header, this->_serverConf.getRoot());
+*/
+	this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
+						this->_serverConf.getRoot());
 //	std::cout << "method: " << this->_method << " location: " << this->_location << " request inf: " << this->_requestedInf << std::endl;
-//	std::cout << "fim    | parseRequest: " << this->_header << std::endl;
+	std::cout << "fim    | parseRequest: " << this->_header << std::endl;
 	return (true);
 }
 
 // Check back error handling
-void	Request::getContentLength(void)
+void	Request::findContentLength(void)
 {
-//	std::cout << "inicio | getContentLength: " << std::endl;
+	std::cout << "inicio | findContentLength: " << std::endl;
 	size_t	start;
 	size_t	end;
 
@@ -215,12 +238,12 @@ void	Request::getContentLength(void)
 					Utils::atoi(this->_header.substr(start, (end - start + 1)));
 //		std::cout << "contentLength: " << this->_contentLength << std::endl;
 	}
-// 	std::cout << "fim    | getContentLength: " << std::endl;
+ 	std::cout << "fim    | findContentLength: " << this->_contentLength << std::endl;
 }
 
-void	Request::getContentType(void)
+void	Request::findContentType(void)
 {
-//	std::cout << "inicio | getContentType: " << std::endl;
+	std::cout << "inicio | findContentType: " << std::endl;
 	size_t	start;
 	size_t	end;
 
@@ -229,14 +252,12 @@ void	Request::getContentType(void)
 	this->findStartEnd(start, end, "Content-Type: ", this->_header);
 	if (start != std::string::npos && end != std::string::npos)
 		this->_contentType = this->_header.substr(start, (end - start + 1));
-
-//	std::cout << "_contentType: " << this->_contentType << std::endl;
-// 	std::cout << "fim    | getContentType: " << std::endl;
+ 	std::cout << "fim    | findContentType: " << this->_contentType << std::endl;
 }
 
-bool	Request::splitRequest(std::string urlRequest, std::string root)
+void	Request::splitRequest(std::string urlRequest, std::string root)
 {
-//	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
+	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>::iterator	i;
 	std::vector<std::string>			splitHeadRequest;
 	std::string							tmp;
@@ -254,7 +275,7 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 	if (urlRequest.compare(0, 12, "requestError") != 0)
 	{
 		splitHeadRequest = Utils::split(urlRequest, " \t\n");
-		std::cout << "\t\turlRequest: " << urlRequest << std::endl;
+//		std::cout << "\t\turlRequest: " << urlRequest << std::endl;
 //		std::cout << "\t\tpassou da split sem segfalt com splitHeadRequest.size(): " << splitHeadRequest.size() << std::endl;
 		i = splitHeadRequest.begin();
 //		std::cout << "\t\tthis->_method: " << this->_method << std::endl;
@@ -271,10 +292,11 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 		j = this->_requestedInf.find("?");
 		if (j != std::string::npos)
 		{
-			this->parseQueryString(this->_requestedInf.substr((j + 1)));
+			this->_queryString = this->_requestedInf.substr((j + 1));
+			this->_mapQueryString = this->parseQueryString(this->_queryString);
 			this->_requestedInf = this->_requestedInf.substr(0, j);
 		}
-		std::cout << "\t\t_location: " << this->_location << " requestedInf: " << this->_requestedInf << std::endl;
+//		std::cout << "\t\t_location: " << this->_location << " requestedInf: " << this->_requestedInf << std::endl;
 	}
 //	else
 //		std::cout << "urlRequest: " << urlRequest << std::endl;
@@ -304,21 +326,20 @@ bool	Request::splitRequest(std::string urlRequest, std::string root)
 			j++;
 		}
 	}
-/*
 	std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf << " possiu tamanho: " << this->_requestedInf.size();
-	std::map<std::string, std::string>::iterator a = this->_queryString.begin();
-	std::map<std::string, std::string>::iterator z = this->_queryString.end();
+	std::map<std::string, std::string>::iterator a = this->_mapQueryString.begin();
+	std::map<std::string, std::string>::iterator z = this->_mapQueryString.end();
 	if (a != z)
-		std::cout << " queryString: ";
+		std::cout << " queryString:";
 	while (a != z)
 	{
-		std::cout << "key: " << a->first << " value: " << a->second;
+		std::cout << " key: " << a->first << " value: " << a->second;
 		a++;
 	}
 	std::cout << std::endl;
+/*
 */
-//	std::cout << "fim    | splitRequest" << std::endl;
-	return (true);
+	std::cout << "fim    | splitRequest" << std::endl;
 }
 
 void	Request::fixeUrlRequest(std::string & urlRequest)
@@ -411,14 +432,15 @@ void	Request::findStartEnd(size_t & start, size_t & end, \
 		start = std::string::npos;
 }
 
-void	Request::parseQueryString(std::string queryString)
+std::map<std::string, std::string>	Request::parseQueryString(std::string queryString)
 {
-//	std::cout << "início | parseQueryString" << std::endl;
-	std::vector<std::string>	splitQueryString;
-	size_t						i;
-	size_t						j;
-	std::string					key;
-	std::string					value;
+	std::cout << "início | parseQueryString: " << queryString << std::endl;
+	std::map<std::string, std::string>	mapQueryString;
+	std::vector<std::string>			splitQueryString;
+	size_t								i;
+	size_t								j;
+	std::string							key;
+	std::string							value;
 
 	splitQueryString = Utils::split(queryString, "&");
 	i = 0;
@@ -427,10 +449,11 @@ void	Request::parseQueryString(std::string queryString)
 		j = splitQueryString[i].find("=");
 		key = splitQueryString[i].substr(0, j);
 		value = splitQueryString[i].substr((j + 1));
-		this->_queryString[this->urlDecoder(key)] = this->urlDecoder(value);
+		mapQueryString[this->urlDecoder(key)] = this->urlDecoder(value);
 		i++;
 	}
-//	std::cout << "fim    | parseQueryString" << std::endl;
+	std::cout << "fim    | parseQueryString" << std::endl;
+	return (mapQueryString);
 }
 
 std::string	Request::urlDecoder(const std::string & url)
@@ -474,6 +497,7 @@ void        Request::reset(void)
 	this->_requestedInf.clear();
 	this->_contentType.clear();
 	this->_queryString.clear();
+	this->_mapQueryString.clear();
 }
 
 void		Request::printYellow(std::string const& str) const {
