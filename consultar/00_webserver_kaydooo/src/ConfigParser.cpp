@@ -195,7 +195,7 @@ std::vector<std::string> splitParametrs(std::string line, std::string sep)
 		if (end == std::string::npos)
 			break;
 		std::string tmp = line.substr(start, end - start);
-		std::cout << "splitParametrs: " << tmp << std::endl;
+//		std::cout << "splitParametrs: " << tmp << std::endl;
 		str.push_back(tmp);
 		start = line.find_first_not_of(sep, end);
 		if (start == std::string::npos)

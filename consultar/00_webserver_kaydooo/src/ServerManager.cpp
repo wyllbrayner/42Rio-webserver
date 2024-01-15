@@ -134,6 +134,7 @@ void    ServerManager::initializeSets()
 */
 void    ServerManager::acceptNewConnection(ServerConfig &serv)
 {
+    std::cout << "Inicio | acceptNewConnection" << std::endl;
     struct sockaddr_in client_address;
     long  client_address_size = sizeof(client_address);
     int client_sock;
@@ -161,18 +162,21 @@ void    ServerManager::acceptNewConnection(ServerConfig &serv)
     if (_clients_map.count(client_sock) != 0)
         _clients_map.erase(client_sock);
     _clients_map.insert(std::make_pair(client_sock, new_client));
+    std::cout << "Fim    | acceptNewConnection client: " << client_sock << std::endl;
 }
 
 
 /* Closes connection from fd i and remove associated client object from _clients_map */
 void    ServerManager::closeConnection(const int i)
 {
+    std::cout << "Inicio | closeConnection" << std::endl;
     if (FD_ISSET(i, &_write_fd_pool))
         removeFromSet(i, _write_fd_pool);
     if (FD_ISSET(i, &_recv_fd_pool))
         removeFromSet(i, _recv_fd_pool);
     close(i);
     _clients_map.erase(i);
+    std::cout << "Fim    | closeConnection client: " << i << std::endl;
 }
 
 /**
@@ -242,6 +246,7 @@ void    ServerManager::assignServer(Client &c)
  */
 void    ServerManager::readRequest(const int &i, Client &c)
 {
+    std::cout << "Inicio | readRequest" << std::endl;
     char    buffer[MESSAGE_BUFFER];
     int     bytes_read = 0;
     bytes_read = read(i, buffer, MESSAGE_BUFFER);
@@ -263,7 +268,8 @@ void    ServerManager::readRequest(const int &i, Client &c)
         c.request.feed(buffer, bytes_read);
         memset(buffer, 0, sizeof(buffer));
     }
-
+    std::cout << "################### menssage ###################" << std::endl;
+    c.request.printMessage();
     if (c.request.parsingCompleted() || c.request.errorCode()) // 1 = parsing completed and we can work on the response.
     {
         assignServer(c);
@@ -279,6 +285,7 @@ void    ServerManager::readRequest(const int &i, Client &c)
         removeFromSet(i, _recv_fd_pool);
         addToSet(i, _write_fd_pool);
     }
+    std::cout << "Fim    | readRequest client: " << i << std::endl;
 }
 
 void    ServerManager::handleReqBody(Client &c)

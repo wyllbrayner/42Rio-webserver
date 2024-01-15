@@ -25,6 +25,7 @@ class	Request
 		const std::string	&	getLocation(void) const;
 		const std::string	&	getRequestedInf(void) const;
 		const std::string	&	getContentType(void) const;
+		const std::string	&	getBoundary(void) const;
 		const ConfigFile	&	getServerConf(void) const;
 		const std::map<std::string, std::string> &	getMapQueryString(void) const;
 		const std::string	&	getQueryString(void) const;
@@ -45,6 +46,7 @@ class	Request
 		std::string							_location;
 		std::string							_requestedInf;
 		std::string							_contentType;
+		std::string							_boundary;
         std::string                         _delimeter;
 		std::string                         _queryString;
 		std::map<std::string, std::string>	_mapQueryString;
@@ -62,7 +64,9 @@ class	Request
 		bool		            getHeader(std::string const& buffer);
 		void		            findContentLength(void);
 		void		            findContentType(void);
+		void					findBoundary(void);
 		void		            getBody(std::string const& buffer, int bytes);
-        void                    appendTheBody(std::string const& buffer, int bytes);
+        void                    appendTheBody(std::string buffer, const int bytes);
+		void					fixebuffer(std::string & buffer);
 		void					printYellow(std::string const& str) const;
 };

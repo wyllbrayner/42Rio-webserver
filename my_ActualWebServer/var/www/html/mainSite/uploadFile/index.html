@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Arquivo</title>
+</head>
+<body>
+
+    <h1>Bom dia</h1>
+    <p>Esta é a página inicial do projeto webserver pertencente ao currículo básico do projeto de formação da 42Rio</p>
+    <form action="/cgi-bin/indexUpload.html" method="post" enctype="multipart/form-data">
+        <label for="arquivo">Escolha um arquivo:</label>
+        <input type="file" id="arquivo" name="arquivo" accept=".txt">
+        
+        <input type="submit" value="Enviar">
+    </form></body>
+</html>
