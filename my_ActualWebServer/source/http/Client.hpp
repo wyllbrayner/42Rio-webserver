@@ -32,7 +32,7 @@ class Client
         void                selectContent(std::string & fileRequested, size_t & i);
         void                buildGetfileRequested(std::string & fileRequested);
         void                buildDeletefileRequested(std::string & fileRequested);
-        void                buildErrorfileRequested(std::string & fileRequested, size_t & i);
+        void                buildErrorfileRequested(std::string & fileRequested, const size_t & i);
         void                buildHeadOfPage(std::string & page, \
                             const std::string & delimeter, std::string status, \
                             const std::string & path);

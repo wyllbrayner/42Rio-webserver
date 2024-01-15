@@ -15,7 +15,6 @@ void    Client::buildMessage(void)
     std::ostringstream page;
 
     pagePath = this->fileRequested();
-//    std::cout << "página\n" << pagePath << std::endl;
     if (pagePath.compare(0, 2, "./") == 0)
     {
         std::ifstream file(pagePath.c_str());
@@ -30,40 +29,25 @@ void    Client::buildMessage(void)
             pagePath.clear();
             this->buildDefaultErrorPage(pagePath, "404");
             page << pagePath;
-//            this->_response.httpMessage.append("HTTP/1.1 404 Not Found\r\n\r\n");
-//            return ;
         }
     }
     else
         page << pagePath;
 
-    /* std::ostringstream resp;
-    resp << "Content-Length: " << "19" << "\n";
-    resp << "<h1>webserver</h1>\n"; */
     page.flush();
     std::string text;
     int lenPage = page.str().size();
-//    std::cout << "StatusCode: " << this->getStatusCode() << std::endl;
     text.append("HTTP/1.1 ").append(this->getStatusCode()).append("\r\n");
-//    text.append("HTTP/1.1 200 OK\r\n");
     text.append("Content-Type: text/html\r\n");
     std::string content_len;
     std::stringstream sstream;
     sstream << lenPage;
-    content_len.append("Content-Length: ").append(sstream.str()); //para fazer funcinar na 42!
+    content_len.append("Content-Length: ").append(sstream.str());
     content_len += "\r\n\n";
     text.append(content_len);
     text.append(page.str());
-    /* text.append("<html>\n");
-    text.append("<body>\n");
-    text.append("<h1>Hello, World!</h1>\n");
-    text.append("</body>\n");
-    text.append("</html>\n" );*/
-    // std::cout << "Response client: \n" << text << "\n\n";
     this->_response.httpMessage = text;
     this->_statusCode.clear();
-//    _statusCode = 200;
-//    return (this->_response.httpMessage);
 }
 
 const std::string & Client::getStatusCode(void)
@@ -100,16 +84,30 @@ std::string Client::fileRequested(void)
     this->selectContent(fileRequested, i);
     if (this->_request.getMethod().compare(0, 3, "GET") == 0)
     {
-        std::cout << "MÈTODO GET" << std::endl;
-        this->buildGetfileRequested(fileRequested);
+        if (this->_request.getLocation().find("cgi-bin") != std::string::npos)
+        {
+            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI" << std::endl;
+        }
+        else
+        {
+            std::cout << "MÈTODO " << this->_request.getMethod() << " SEM CGI" << std::endl;
+            this->buildGetfileRequested(fileRequested);
+        }
     }
     else if (this->_request.getMethod().compare(0, 6, "DELETE") == 0)
     {
         std::cout << "MÈTODO " << this->_request.getMethod() << std::endl;
         this->buildDeletefileRequested(fileRequested);
     }
-    else
-        std::cout << "MÈTODO " << this->_request.getMethod() << std::endl;
+    else if (this->_request.getMethod().compare(0, 4, "POST") == 0)
+    {
+        if (this->_request.getRequestedInf().find("Concat") != std::string::npos)
+            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI CONCAT" << std::endl;
+        else if (this->_request.getRequestedInf().find("Upload") != std::string::npos)
+            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI UPLOAD" << std::endl;
+        else
+            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI NÂO IDENTIFICADO" << std::endl;
+    }
     if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0 || \
         (fileRequested.find("keyPage") == std::string::npos))
     {
@@ -123,187 +121,6 @@ std::string Client::fileRequested(void)
 //    std::cout << "final  | fileRequested code: " << this->_code << std::endl;
 	return (fileRequested);
 }
-
-void    Client::buildGetfileRequested(std::string & fileRequested)
-{
-    std::cout << "inicio | buildGetfileRequested" << std::endl;
-    std::cout << "fileRequested: " << fileRequested << std::endl;
-    if (this->_request.getServerConf().getIsServerDefault() && \
-                    fileRequested.compare(0, 5, "Error") != 0)
-    {
-//        std::cout << "configFile é Default " << std::endl;
-        this->buildDefaultPage(fileRequested);
-    }
-    else
-    {
-//        std::cout << "configFile não é Default " << std::endl;
-    	if (fileRequested.find("autoindex") != std::string::npos)
-        {
-//            std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
-            fileRequested.erase(fileRequested.find("autoindex"));
-            if (fileRequested.compare(0, 5, "Error") != 0)
-            {
-//                std::cout << "fileRequested is not a error page: " << fileRequested << std::endl;
-                if (Utils::getTypePath(fileRequested) != 1)
-                {
-//                    std::cout << fileRequested << " não exite no servidor | Chamar autoIndex!!!" << std::endl;
-                    this->buildAutoindexPage(fileRequested.erase(fileRequested.rfind("/") + 1));
-                }
-//                else
-//                    std::cout << fileRequested << "     exite no servidor" << std::endl;                
-            }
-//            else
-//                std::cout << "fileRequested is     a error page: " << fileRequested << std::endl;
-//            std::cout << "fileRequested is     autoindex pós: " << fileRequested << std::endl;
-        }
-    }
-    std::cout << "fim | buildGetfileRequested" << std::endl;
-}
-
-void    Client::buildDeletefileRequested(std::string & fileRequested)
-{
-    std::cout << "inicio | buildDeletefileRequested" << std::endl;
-    if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
-        (this->_request.getMapQueryString().size() > 0) && \
-        !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
-    {
-        std::map<std::string, std::string> tmpMap;
-        std::map<std::string, std::string>::iterator itMap;
-        tmpMap = this->_request.getMapQueryString();
-        itMap = tmpMap.begin();
-        this->buildDeleteFile(fileRequested, itMap->second);
-    }
-    std::cout << "inicio | buildDeletefileRequested" << std::endl;
-}
-
-void    Client::buildErrorfileRequested(std::string & fileRequested, size_t & i)
-{
-    std::cout << "Início | buildErrorfileRequested" << std::endl;
-   	if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0)
-    {
-//            std::cout << "fileRequested is empty or Error" << std::endl;
-        if (fileRequested.empty())
-            this->searchErrorFile(fileRequested, "404");
-        else
-            this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
-    }
-    if ((fileRequested.find("keyPage") == std::string::npos) && \
-            (Utils::getTypePath(fileRequested) != 1) && \
-            (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
-	{
-//            std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
-        if (fileRequested.compare(3, 7, "Default") != 0)
-        {
-            this->searchErrorFile(fileRequested, "500");
-            if (Utils::getTypePath(fileRequested) != 1)
-            {
-//                std::cout << fileRequested << " também não exite no servidor" << std::endl;
-                this->searchErrorFile(fileRequested, "500");
-            }
-        }
-//        else
-//            std::cout << "fileRequested is: " << fileRequested << std::endl;
-    }
-    std::cout << "Fim    | buildErrorfileRequested" << std::endl;
-}
-
-/*
-std::string Client::fileRequested(void)
-{
-//    std::cout << "inicio | fileRequested" << std::endl;
-    std::string fileRequested;
-    size_t      i;
-
-    this->selectContent(fileRequested, i);
-    if (this->_request.getMethod().compare(0, 3, "GET") == 0)
-    {
-        std::cout << "MÈTODO GET" << std::endl;
-    }
-    else
-        std::cout << "MÈTODO " << this->_request.getMethod() << std::endl;
-
-//    std::cout << "fileRequested: " << fileRequested << std::endl;
-//    std::cout << "Verificar se configFile é Default " << std::endl;
-    if (this->_request.getServerConf().getIsServerDefault() && \
-                    fileRequested.compare(0, 5, "Error") != 0)
-    {
-//        std::cout << "configFile é Default " << std::endl;
-        this->buildDefaultPage(fileRequested);
-    }
-    else
-    {
-//        std::cout << "configFile não é Default " << std::endl;
-    	if (fileRequested.find("autoindex") != std::string::npos)
-        {
-//            std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
-            fileRequested.erase(fileRequested.find("autoindex"));
-            if (fileRequested.compare(0, 5, "Error") != 0)
-            {
-//                std::cout << "fileRequested is not a error page: " << fileRequested << std::endl;
-                if (Utils::getTypePath(fileRequested) != 1)
-                {
-//                    std::cout << fileRequested << " não exite no servidor | Chamar autoIndex!!!" << std::endl;
-                    this->buildAutoindexPage(fileRequested.erase(fileRequested.rfind("/") + 1));
-                }
-//                else
-//                    std::cout << fileRequested << "     exite no servidor" << std::endl;                
-            }
-//            else
-//                std::cout << "fileRequested is     a error page: " << fileRequested << std::endl;
-//            std::cout << "fileRequested is     autoindex pós: " << fileRequested << std::endl;
-        }
-        else if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
-            (this->_request.getMapQueryString().size() > 0) && !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
-        {
-//            std::cout << "######This is a DELETE##################" << std::endl;
-            std::map<std::string, std::string> tmpMap;
-            std::map<std::string, std::string>::iterator itMap;
-            tmpMap = this->_request.getMapQueryString();
-            itMap = tmpMap.begin();
-//            std::cout << "o tamanho de tmpMap é: " << tmpMap.size() << " first: " << itMap->first << " second: " << itMap->second << std::endl;
-            this->buildDeleteFile(fileRequested, itMap->second);
-        }
-//        else
-//        {
-//            std::cout << "a requisição é do método: " << this->_request.getMethod() << std::endl;
-//            std::cout << "fileRequested is not autoindex: " << fileRequested << std::endl;
-//        }
-//        std::cout << "fileRequested is empty or Error: " << fileRequested << std::endl;
-    	if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0)
-        {
-//            std::cout << "fileRequested is empty or Error" << std::endl;
-            if (fileRequested.empty())
-                this->searchErrorFile(fileRequested, "404");
-            else
-                this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
-        }
-//        std::cout << "Verificar se " << fileRequested << " exite no servidor quando i: " << i << std::endl;
-        if ((fileRequested.find("keyPage") == std::string::npos) && \
-                (Utils::getTypePath(fileRequested) != 1) && \
-                (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
-	    {
-//            std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
-            if (fileRequested.compare(3, 7, "Default") != 0)
-            {
-                this->searchErrorFile(fileRequested, "500");
-                if (Utils::getTypePath(fileRequested) != 1)
-                {
-//                std::cout << fileRequested << " também não exite no servidor" << std::endl;
-                    this->searchErrorFile(fileRequested, "500");
-                }
-            }
-//            else
-//                std::cout << "fileRequested is: " << fileRequested << std::endl;
-        }
-    }
-//    std::cout << "fileRequested is keyPage?" << std::endl;
-    if (fileRequested.find("keyPage") != std::string::npos)
-        fileRequested.erase(fileRequested.find("keyPage"));
-//    std::cout << "final  | fileRequested: " << fileRequested << std::endl;
-//    std::cout << "final  | fileRequested code: " << this->_code << std::endl;
-	return (fileRequested);
-}
-*/
 
 void        Client::selectContent(std::string & fileRequested, size_t & i)
 {
@@ -372,7 +189,83 @@ void        Client::selectContent(std::string & fileRequested, size_t & i)
 //    std::cout << "Fim    | selectContent | fileRequested: " << fileRequested << std::endl;
 }
 
-void    Client::buildHeadOfPage(std::string & page, const std::string & delimeter, std::string status, const std::string & path)
+void    Client::buildGetfileRequested(std::string & fileRequested)
+{
+//    std::cout << "inicio | buildGetfileRequested" << std::endl;
+//    std::cout << "fileRequested: " << fileRequested << std::endl;
+    if (this->_request.getServerConf().getIsServerDefault() && \
+                    fileRequested.compare(0, 5, "Error") != 0)
+    {
+//        std::cout << "configFile é Default " << std::endl;
+        this->buildDefaultPage(fileRequested);
+    }
+    else if (fileRequested.find("autoindex") != std::string::npos)
+    {
+//        std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
+        fileRequested.erase(fileRequested.find("autoindex"));
+        if (fileRequested.compare(0, 5, "Error") != 0)
+        {
+//            std::cout << "fileRequested is not a error page: " << fileRequested << std::endl;
+            if (Utils::getTypePath(fileRequested) != 1)
+            {
+//                std::cout << fileRequested << " não exite no servidor | Chamar autoIndex!!!" << std::endl;
+                this->buildAutoindexPage(fileRequested.erase(fileRequested.rfind("/") + 1));
+            }
+//            else
+//                std::cout << fileRequested << "     exite no servidor" << std::endl;                
+        }
+    }
+//    std::cout << "fim    | buildGetfileRequested" << std::endl;
+}
+
+void    Client::buildDeletefileRequested(std::string & fileRequested)
+{
+    std::cout << "inicio | buildDeletefileRequested" << std::endl;
+    if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
+        (this->_request.getMapQueryString().size() > 0) && \
+        !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
+    {
+        std::map<std::string, std::string> tmpMap;
+        std::map<std::string, std::string>::iterator itMap;
+        tmpMap = this->_request.getMapQueryString();
+        itMap = tmpMap.begin();
+        this->buildDeleteFile(fileRequested, itMap->second);
+    }
+    std::cout << "Fim    | buildDeletefileRequested" << std::endl;
+}
+
+void    Client::buildErrorfileRequested(std::string & fileRequested, const size_t & i)
+{
+//    std::cout << "Início | buildErrorfileRequested" << std::endl;
+   	if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0)
+    {
+//        std::cout << "fileRequested is empty or Error" << std::endl;
+        if (fileRequested.empty())
+            this->searchErrorFile(fileRequested, "404");
+        else
+            this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
+    }
+    if ((fileRequested.find("keyPage") == std::string::npos) && \
+        (Utils::getTypePath(fileRequested) != 1) && \
+        (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
+	{
+//        std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
+        if (fileRequested.compare(3, 7, "Default") != 0)
+        {
+            this->searchErrorFile(fileRequested, "500");
+            if (Utils::getTypePath(fileRequested) != 1)
+            {
+//                std::cout << fileRequested << " também não exite no servidor" << std::endl;
+                this->searchErrorFile(fileRequested, "500");
+            }
+        }
+    }
+//    std::cout << "Fim    | buildErrorfileRequested" << std::endl;
+}
+
+void    Client::buildHeadOfPage(std::string & page, \
+        const std::string & delimeter, std::string status, \
+        const std::string & path)
 {
     std::string msgTagAi;
     std::string msgTagEr;
