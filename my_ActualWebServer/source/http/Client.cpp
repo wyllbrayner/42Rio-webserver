@@ -66,12 +66,6 @@ void    Client::buildMessage(void)
 //    return (this->_response.httpMessage);
 }
 
-/*
-const std::string & Client::getCode(void) const {
-    return this->_code;
-}
-*/
-
 const std::string & Client::getStatusCode(void)
 {
     return this->_statusCode;
@@ -104,6 +98,130 @@ std::string Client::fileRequested(void)
     size_t      i;
 
     this->selectContent(fileRequested, i);
+    if (this->_request.getMethod().compare(0, 3, "GET") == 0)
+    {
+        std::cout << "MÈTODO GET" << std::endl;
+        this->buildGetfileRequested(fileRequested);
+    }
+    else if (this->_request.getMethod().compare(0, 6, "DELETE") == 0)
+    {
+        std::cout << "MÈTODO " << this->_request.getMethod() << std::endl;
+        this->buildDeletefileRequested(fileRequested);
+    }
+    else
+        std::cout << "MÈTODO " << this->_request.getMethod() << std::endl;
+    if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0 || \
+        (fileRequested.find("keyPage") == std::string::npos))
+    {
+        std::cout << "Chama a página de erro!!!!!!" << std::endl;
+        this->buildErrorfileRequested(fileRequested, i);
+    }
+//    std::cout << "fileRequested is keyPage?" << std::endl;
+    if (fileRequested.find("keyPage") != std::string::npos)
+        fileRequested.erase(fileRequested.find("keyPage"));
+//    std::cout << "final  | fileRequested: " << fileRequested << std::endl;
+//    std::cout << "final  | fileRequested code: " << this->_code << std::endl;
+	return (fileRequested);
+}
+
+void    Client::buildGetfileRequested(std::string & fileRequested)
+{
+    std::cout << "inicio | buildGetfileRequested" << std::endl;
+    std::cout << "fileRequested: " << fileRequested << std::endl;
+    if (this->_request.getServerConf().getIsServerDefault() && \
+                    fileRequested.compare(0, 5, "Error") != 0)
+    {
+//        std::cout << "configFile é Default " << std::endl;
+        this->buildDefaultPage(fileRequested);
+    }
+    else
+    {
+//        std::cout << "configFile não é Default " << std::endl;
+    	if (fileRequested.find("autoindex") != std::string::npos)
+        {
+//            std::cout << "fileRequested is     autoindex pré: " << fileRequested << std::endl;
+            fileRequested.erase(fileRequested.find("autoindex"));
+            if (fileRequested.compare(0, 5, "Error") != 0)
+            {
+//                std::cout << "fileRequested is not a error page: " << fileRequested << std::endl;
+                if (Utils::getTypePath(fileRequested) != 1)
+                {
+//                    std::cout << fileRequested << " não exite no servidor | Chamar autoIndex!!!" << std::endl;
+                    this->buildAutoindexPage(fileRequested.erase(fileRequested.rfind("/") + 1));
+                }
+//                else
+//                    std::cout << fileRequested << "     exite no servidor" << std::endl;                
+            }
+//            else
+//                std::cout << "fileRequested is     a error page: " << fileRequested << std::endl;
+//            std::cout << "fileRequested is     autoindex pós: " << fileRequested << std::endl;
+        }
+    }
+    std::cout << "fim | buildGetfileRequested" << std::endl;
+}
+
+void    Client::buildDeletefileRequested(std::string & fileRequested)
+{
+    std::cout << "inicio | buildDeletefileRequested" << std::endl;
+    if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
+        (this->_request.getMapQueryString().size() > 0) && \
+        !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
+    {
+        std::map<std::string, std::string> tmpMap;
+        std::map<std::string, std::string>::iterator itMap;
+        tmpMap = this->_request.getMapQueryString();
+        itMap = tmpMap.begin();
+        this->buildDeleteFile(fileRequested, itMap->second);
+    }
+    std::cout << "inicio | buildDeletefileRequested" << std::endl;
+}
+
+void    Client::buildErrorfileRequested(std::string & fileRequested, size_t & i)
+{
+    std::cout << "Início | buildErrorfileRequested" << std::endl;
+   	if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0)
+    {
+//            std::cout << "fileRequested is empty or Error" << std::endl;
+        if (fileRequested.empty())
+            this->searchErrorFile(fileRequested, "404");
+        else
+            this->searchErrorFile(fileRequested, fileRequested.substr(5, 3));
+    }
+    if ((fileRequested.find("keyPage") == std::string::npos) && \
+            (Utils::getTypePath(fileRequested) != 1) && \
+            (!this->_request.getServerConf().getLocation()[i].getAutoIndex()))
+	{
+//            std::cout << fileRequested << " não exite no servidor e não é autoindex" << std::endl;
+        if (fileRequested.compare(3, 7, "Default") != 0)
+        {
+            this->searchErrorFile(fileRequested, "500");
+            if (Utils::getTypePath(fileRequested) != 1)
+            {
+//                std::cout << fileRequested << " também não exite no servidor" << std::endl;
+                this->searchErrorFile(fileRequested, "500");
+            }
+        }
+//        else
+//            std::cout << "fileRequested is: " << fileRequested << std::endl;
+    }
+    std::cout << "Fim    | buildErrorfileRequested" << std::endl;
+}
+
+/*
+std::string Client::fileRequested(void)
+{
+//    std::cout << "inicio | fileRequested" << std::endl;
+    std::string fileRequested;
+    size_t      i;
+
+    this->selectContent(fileRequested, i);
+    if (this->_request.getMethod().compare(0, 3, "GET") == 0)
+    {
+        std::cout << "MÈTODO GET" << std::endl;
+    }
+    else
+        std::cout << "MÈTODO " << this->_request.getMethod() << std::endl;
+
 //    std::cout << "fileRequested: " << fileRequested << std::endl;
 //    std::cout << "Verificar se configFile é Default " << std::endl;
     if (this->_request.getServerConf().getIsServerDefault() && \
@@ -185,6 +303,7 @@ std::string Client::fileRequested(void)
 //    std::cout << "final  | fileRequested code: " << this->_code << std::endl;
 	return (fileRequested);
 }
+*/
 
 void        Client::selectContent(std::string & fileRequested, size_t & i)
 {
@@ -255,23 +374,30 @@ void        Client::selectContent(std::string & fileRequested, size_t & i)
 
 void    Client::buildHeadOfPage(std::string & page, const std::string & delimeter, std::string status, const std::string & path)
 {
+    std::string msgTagAi;
+    std::string msgTagEr;
+    std::string msgTitle;
+
+    msgTagAi = "    <title>Index of ";
+    msgTagEr = "    <title>Erro ";
+    msgTitle = " - Default Erro Interno do Servidor</title>";
     page.append("<!DOCTYPE html>").append(delimeter);
     page.append("<html lang=\"pt-br\">").append(delimeter);
     page.append("<head>").append(delimeter);
     page.append("    <meta charset=\"UTF-8\">").append(delimeter);
     page.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">").append(delimeter);
     if (status.compare(0, status.size(), "autoIndex") == 0)
-        page.append("    <title>Index of ").append(path).append("</title>").append(delimeter);
+        page.append(msgTagAi).append(path).append("</title>").append(delimeter);
     else if (status.compare(0, status.size(), "DefaultPage") == 0)
         page.append("    <title>DefaultPage</title>").append(delimeter);
     else if (status.compare(0, status.size(), "404") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+        page.append(msgTagEr).append(status).append(msgTitle).append(delimeter);
     else if (status.compare(0, status.size(), "405") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+        page.append(msgTagEr).append(status).append(msgTitle).append(delimeter);
     else if (status.compare(0, status.size(), "408") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+        page.append(msgTagEr).append(status).append(msgTitle).append(delimeter);
     else if (status.compare(0, status.size(), "500") == 0)
-        page.append("    <title>Erro ").append(status).append(" - Default Erro Interno do Servidor</title>").append(delimeter);
+        page.append(msgTagEr).append(status).append(msgTitle).append(delimeter);
     page.append("</head>").append(delimeter);
 }
 
@@ -290,7 +416,7 @@ void    Client::buildDefaultPage(std::string & page)
     page.append("    <p>Obrigado pela visita</p>").append(delimeter);
     page.append("</body>").append(delimeter);
     page.append("</html>").append(delimeter);
-//    page.append("keyPage").append(delimeter);
+    page.append("keyPage").append(delimeter);
 //    std::cout << "Fim    | buildDefaultPage: " << page << std::endl;
 }
 
