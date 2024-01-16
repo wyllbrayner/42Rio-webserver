@@ -1,20 +1,26 @@
 #include "Client.hpp"
 
 Client::Client(const Request &request, Response &response) : \
-        _request(request), _response(response)
+        _request(request), _response(response), _isCGI(false)
 {
-//    std::cout << "inicio | Client" << std::endl;
-    this->buildMessage();
+    this->handleHTTPMethod();
 }
 
 Client::~Client() {}
 
-void    Client::buildMessage(void)
+void    Client::handleHTTPMethod(void)
 {
     std::string pagePath;
     std::ostringstream page;
 
     pagePath = this->fileRequested();
+    if (_isCGI){
+        CGI cgi(pagePath, this->_request);
+        this->_response.setBody(cgi.getBody());
+        this->_response.createHTTPHeader(200, "Content-Type: text/html; charset=utf-8", cgi.getBody().size());
+        this->_response.send();
+        return;
+    }
     if (pagePath.compare(0, 2, "./") == 0)
     {
         std::ifstream file(pagePath.c_str());
@@ -54,26 +60,6 @@ const std::string & Client::getStatusCode(void)
 {
     return this->_statusCode;
 }
-/*
-std::string Client::readFile(std::string name){
-    
-    std::ifstream file(name.c_str());
-
-    if (file.is_open()){
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        std::string contents = buffer.str();
-
-        std::cout << contents << "\n";
-        file.close();
-        _statusCode = 200;
-        return contents;
-    } else {
-        _statusCode = 404;
-        return "404 Not Found";
-    }
-}
-*/
 
 std::string Client::fileRequested(void)
 {
@@ -87,6 +73,7 @@ std::string Client::fileRequested(void)
         if (this->_request.getLocation().find("cgi-bin") != std::string::npos)
         {
             std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI" << std::endl;
+            this->_isCGI = true;
         }
         else
         {
@@ -101,17 +88,13 @@ std::string Client::fileRequested(void)
     }
     else if (this->_request.getMethod().compare(0, 4, "POST") == 0)
     {
-        if (this->_request.getRequestedInf().find("Concat") != std::string::npos)
-            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI CONCAT" << std::endl;
-        else if (this->_request.getRequestedInf().find("Upload") != std::string::npos)
-            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI UPLOAD" << std::endl;
-        else
-            std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI NÂO IDENTIFICADO" << std::endl;
+        this->_isCGI = true;
+        std::cout << "MÈTODO " << this->_request.getMethod() << " COM CGI" << std::endl;
     }
     if (fileRequested.empty() || fileRequested.compare(0, 5, "Error") == 0 || \
         (fileRequested.find("keyPage") == std::string::npos))
     {
-        std::cout << "Chama a página de erro!!!!!!" << std::endl;
+//        std::cout << "Chama a página de erro!!!!!!" << std::endl;
         this->buildErrorfileRequested(fileRequested, i);
     }
 //    std::cout << "fileRequested is keyPage?" << std::endl;
@@ -156,7 +139,6 @@ void        Client::selectContent(std::string & fileRequested, size_t & i)
 //                    std::cout << "índice[" << k << "]: |" << tmpVec01[k] << "|" << std::endl;
                     k++;
                 }
-//                    std::cout << "size de RequestedInf: " << this->_request.getRequestedInf() << " é: " << this->_request.getRequestedInf().size() << std::endl;
                 if (k < tmpVec01.size())
                 {
 //                    std::cout << "Achou RequestedInf(): " << this->_request.getRequestedInf() << std::endl;
@@ -220,7 +202,7 @@ void    Client::buildGetfileRequested(std::string & fileRequested)
 
 void    Client::buildDeletefileRequested(std::string & fileRequested)
 {
-    std::cout << "inicio | buildDeletefileRequested" << std::endl;
+//    std::cout << "inicio | buildDeletefileRequested" << std::endl;
     if ((this->_request.getMethod().compare(0, 6, "DELETE") == 0) && \
         (this->_request.getMapQueryString().size() > 0) && \
         !fileRequested.empty() && (fileRequested.compare(0, 5, "Error") != 0))
@@ -231,7 +213,7 @@ void    Client::buildDeletefileRequested(std::string & fileRequested)
         itMap = tmpMap.begin();
         this->buildDeleteFile(fileRequested, itMap->second);
     }
-    std::cout << "Fim    | buildDeletefileRequested" << std::endl;
+//    std::cout << "Fim    | buildDeletefileRequested" << std::endl;
 }
 
 void    Client::buildErrorfileRequested(std::string & fileRequested, const size_t & i)

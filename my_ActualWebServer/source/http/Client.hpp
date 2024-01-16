@@ -19,6 +19,7 @@ class Client
         ~Client();
 
         const std::string   &   getCode(void) const;
+        void        handleHTTPMethod(void); //PÙBLICO
 
     private:
         Client(const Client &client);
@@ -26,6 +27,7 @@ class Client
         const Request   &   _request;
         Response &          _response;
         std::string         _statusCode;
+        bool                _isCGI;
         const std::string   &   getStatusCode(void);
         void                buildMessage(void);
         std::string	    fileRequested(void);

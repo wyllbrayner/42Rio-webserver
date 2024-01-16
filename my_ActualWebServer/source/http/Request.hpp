@@ -26,9 +26,17 @@ class	Request
 		const std::string	&	getRequestedInf(void) const;
 		const std::string	&	getContentType(void) const;
 		const std::string	&	getBoundary(void) const;
+        int                     totalLength(void);
+		std::string 	    	totalLengthS(void) const;
+		const std::string &		returnBody(void) const;
+		const std::string &		getUserAgent(void) const;
+		const std::string &		getHost(void) const;
+		const std::string &		returnHeader(void) const;
+		const std::string 		returnPort(void) const;
+
 		const ConfigFile	&	getServerConf(void) const;
 		const std::map<std::string, std::string> &	getMapQueryString(void) const;
-		const std::string	&	getQueryString(void) const;
+		const std::string	&	getQueryStringS(void) const;
         const size_t		&	getContentLength(void) const;
         bool                    isReady(void) const;
 		bool		            receiveFromClient(int client);
@@ -40,6 +48,8 @@ class	Request
 		size_t								_contentLength;
     	ConfigFile							_serverConf;
 		std::string							_header;
+		std::string							_host;
+		std::string							_userAgent;
         std::string     			        _body;
 		std::string							_httpMessage;
 		std::string							_method;
@@ -48,7 +58,7 @@ class	Request
 		std::string							_contentType;
 		std::string							_boundary;
         std::string                         _delimeter;
-		std::string                         _queryString;
+		std::string                         _queryStringS;
 		std::map<std::string, std::string>	_mapQueryString;
 
 		void		            splitRequest(std::string header, std::string root);
@@ -64,6 +74,8 @@ class	Request
 		bool		            getHeader(std::string const& buffer);
 		void		            findContentLength(void);
 		void		            findContentType(void);
+		void					findHost(void);
+		void					findUserAgent(void);
 		void					findBoundary(void);
 		void		            getBody(std::string const& buffer, int bytes);
         void                    appendTheBody(std::string buffer, const int bytes);
