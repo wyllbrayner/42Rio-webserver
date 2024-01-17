@@ -12,9 +12,9 @@
 
 #include "Utils.hpp"
 
-Utils::Utils( void ) {}
+Utils::Utils(void) {}
 
-Utils	&Utils::operator=( const Utils &src )
+Utils					&	Utils::operator=(const Utils & src)
 {
 	if (this != &src)
 		return (*this);
@@ -22,22 +22,21 @@ Utils	&Utils::operator=( const Utils &src )
 		return (*this);
 }
 
-Utils::Utils( const Utils& copy )
+Utils::Utils(const Utils & copy)
 {
 	*this = copy;
 	return ;
 }
 
-Utils::~Utils( void ) {}
+Utils::~Utils(void) {}
 
-void	Utils::trim( std::string & line )
+void						Utils::trim(std::string & line)
 {
 	short unsigned int	i;
 
 	i = 0;
 	if (line.size())
 	{
-//		while (line[i] && std::isspace(line[i]))
 		while (i < line.size() && std::isspace(line[i]))
 			i++;
 		line.erase(0, i);
@@ -52,9 +51,9 @@ void	Utils::trim( std::string & line )
 	}
 }
 
-std::vector<std::string> Utils::split( const std::string line, std::string sep )
+std::vector<std::string>	Utils::split(const std::string line, \
+							std::string sep)
 {
-//	std::cout << "line in split: " << line << std::endl;
 	std::vector<std::string>	str;
 	size_t						start;
 	size_t						end;
@@ -69,27 +68,19 @@ std::vector<std::string> Utils::split( const std::string line, std::string sep )
 			str.push_back(line.substr(start, (end - start)));
 			start = line.find_first_not_of(sep, end);
 		}
-/*
-		end = 0;
-		while (end < str.size())
-		{
-			std::cout << "split: " << str[end] << std::endl;
-			end++;
-		}
-*/
 	}
 	return (str);
 }
 
-int	Utils::atoi(const std::string line)
+int							Utils::atoi(const std::string line)
 {
 	int		signal;
 	int		nbr;
 	size_t	i;
-//	std::cout << "line in atoi: string " << line << std::endl;
+
 	signal = 1;
 	i = 0;
-	while ( (i < line.size()) && (std::isspace(line[i])) )
+	while ((i < line.size()) && (std::isspace(line[i])))
 		i++;
 	if ((line[i] == '+') || (line[i] == '-'))
 	{
@@ -103,11 +94,10 @@ int	Utils::atoi(const std::string line)
 		nbr = (10 * nbr) + (line[i] - '0');
 		i++;
 	}
-//	std::cout << "line in atoi: int    " << (nbr * signal) << std::endl;
 	return (nbr * signal);
 }
 
-int	Utils::getTypePath(const std::string & path)
+int							Utils::getTypePath(const std::string & path)
 {
 	struct stat	buffer;
 
@@ -124,15 +114,13 @@ int	Utils::getTypePath(const std::string & path)
 		return (-1);
 }
 
-const std::string		Utils::setPlace(std::string path)
+const std::string			Utils::setPlace(std::string path)
 {
-//	std::cout << "int     de setPlace: " << path << std::endl;
 	if (path.find("/") == 0)
 		path.erase(0, 1);
 	if (path.rfind("/") != (path.size() - 1))
 		path.append("/");
-//	std::cout << "end     de setPlace: " << path << std::endl;
 	return (path);
 }
 
-bool	Utils::_serverRunning = true;
+bool						Utils::_serverRunning = true;

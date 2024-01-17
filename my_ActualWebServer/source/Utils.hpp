@@ -11,26 +11,23 @@
 /* ************************************************************************** */
 
 #pragma	once
-
 # include <string>
 # include <vector>
 # include <sys/stat.h>
-//# include <iostream> /*verificar se precisa imprimir alguma coisa na tela*/
-//# include "Error.hpp"/*verificar se precisa lançar exceção*/
 
 class	Utils
 {
 	private:
 		Utils(void);
 		Utils(const Utils& copy);
-		Utils	&	operator=(const Utils &src);
+		Utils						&	operator=(const Utils &src);
 		~Utils(void);
-	
 	public:
-		static void							trim(std::string & line);
-		static std::vector<std::string>		split(const std::string line, std::string sep);
-		static int							atoi(const std::string line);
-		static int							getTypePath(const std::string & path);
-		static const std::string			setPlace(std::string path);
-		static bool							_serverRunning;
+		static bool						_serverRunning;
+		static int						atoi(const std::string line);
+		static int						getTypePath(const std::string & path);
+		static void						trim(std::string & line);
+		static const std::string		setPlace(std::string path);
+		static std::vector<std::string>	split(const std::string line, \
+										std::string sep);
 };

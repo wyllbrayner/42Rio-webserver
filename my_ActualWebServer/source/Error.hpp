@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #pragma once
-
 # include <iostream>
 # include <string>
 
@@ -20,7 +19,7 @@ class	Error
 	private:
 
 	public:
-		class		InvalidArg : public std::exception
+		class	InvalidArg : public std::exception
 		{
 			public:
 				virtual const char* what( void ) const throw();
@@ -49,5 +48,4 @@ class	Error
 			public:
 				virtual const char* what( void ) const throw();
 		};
-
 };

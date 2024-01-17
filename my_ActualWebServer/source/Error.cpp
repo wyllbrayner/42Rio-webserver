@@ -12,12 +12,12 @@
 
 #include "Error.hpp"
 
-const char *	Error::InvalidArg::what( void ) const throw()
+const char *	Error::InvalidArg::what(void) const throw()
 {
 	return ("Error:Invalid arguments.\nPlease enter webserver <config file>");
 }
 
-const char *	Error::InvalidPathServer::what( void ) const throw()
+const char *	Error::InvalidPathServer::what(void) const throw()
 {
 	return ("Error: could not open config file.");
 }
