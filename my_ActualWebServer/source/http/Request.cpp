@@ -304,8 +304,14 @@ bool	Request::parseRequest()
 	this->findHost();
 	this->findUserAgent();
 	this->findBoundary();
+
+	if (!this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
+						this->_serverConf.getRoot()))
+		return (false);
+/*
 	this->splitRequest(this->_header.substr(0, this->_header.find(" HTTP/")), \
 						this->_serverConf.getRoot());
+*/
 //	std::cout << "method: " << this->_method << " location: " << this->_location << " request inf: " << this->_requestedInf << std::endl;
 //	std::cout << "fim    | parseRequest: " << this->_header << std::endl;
 	return (true);
@@ -342,11 +348,17 @@ void	Request::findContentType(void)
 	size_t	start;
 	size_t	end;
 
-	start = 0;
-	end = 0;
-	this->findStartEnd(start, end, "Content-Type: ", this->_header);
-	if (start != std::string::npos && end != std::string::npos)
-		this->_contentType = this->_header.substr(start, (end - start + 1));
+	start = this->_header.find("Content-Type:");
+	if (start != std::string::npos)
+	{
+		end = 0;
+		start += 13;
+		while (this->_header[start] == ' ')
+			start++;
+		while (this->_header[start + end] != '\r')
+			end++;
+		this->_contentType = this->_header.substr(start, end);
+	}
 // 	std::cout << "fim    | findContentType: |" << this->_contentType << "|" << std::endl;
 }
 
@@ -400,7 +412,8 @@ void	Request::findBoundary(void)
 // 	std::cout << "fim    | findBoundary: |" << this->_boundary << "|" << std::endl;
 }
 
-void	Request::splitRequest(std::string urlRequest, std::string root)
+//void	Request::splitRequest(std::string urlRequest, std::string root)
+bool	Request::splitRequest(std::string urlRequest, std::string root)
 {
 	std::cout << "início | splitRequest urlRequest: " << urlRequest << " e root: " << root << std::endl;
 	std::vector<std::string>::iterator	i;
@@ -408,15 +421,15 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 	std::string							tmp;
 	size_t								j;
 
+/*
 	if (urlRequest.find("/favicon.ico") != std::string::npos || \
 			urlRequest.find("OPTIONS") != std::string::npos)
 		this->fixeUrlRequest(urlRequest);
-/*
+*/
 	if (urlRequest.find("/favicon.ico") != std::string::npos)
 		return (false);
 	if (urlRequest.find("OPTIONS") != std::string::npos)
 		this->fixeUrlRequest(urlRequest);
-*/
 	if (urlRequest.compare(0, 12, "requestError") != 0)
 	{
 		splitHeadRequest = Utils::split(urlRequest, " \t\n");
@@ -485,6 +498,7 @@ void	Request::splitRequest(std::string urlRequest, std::string root)
 	}
 	std::cout << std::endl;
 	std::cout << "fim    | splitRequest" << std::endl;
+	return (true);
 }
 
 void	Request::fixeUrlRequest(std::string & urlRequest)

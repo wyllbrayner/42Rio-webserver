@@ -10,7 +10,7 @@ fileitem = form['file']
 if fileitem.filename:
    # strip leading path from file name to avoid
    # directory traversal attacks
-   open("cgi/tmp/" + fileitem.filename, "wb").write(fileitem.file.read())
+   open("var/www/html/mainSite/cgi-bin/tmp/" + fileitem.filename, "wb").write(fileitem.file.read())
    message = 'The file "' +fileitem.filename + '" was uploaded successfully'
  
 else:

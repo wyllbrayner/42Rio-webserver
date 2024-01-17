@@ -11,6 +11,8 @@
 #include "../Utils.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
+#include "CGI.hpp"
+
 
 class Client
 {
@@ -46,6 +48,7 @@ class Client
                             std::string errorCode);
         void                buildDefaultErrorPage(std::string & page, \
                             const std::string & errorCode);
+//        void                buildCGIPage(std::string & page, const std::string & cgiBody, const std::string & method);
 };
 
 #endif

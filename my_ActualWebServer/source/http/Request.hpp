@@ -61,7 +61,8 @@ class	Request
 		std::string                         _queryStringS;
 		std::map<std::string, std::string>	_mapQueryString;
 
-		void		            splitRequest(std::string header, std::string root);
+//		void		            splitRequest(std::string header, std::string root);
+		bool		            splitRequest(std::string header, std::string root);
 		bool		            parseRequest(void);
 		void					fixeUrlRequest(std::string & urlRequest);
 		std::string				fixeUrlRequestAux(std::string & url, \

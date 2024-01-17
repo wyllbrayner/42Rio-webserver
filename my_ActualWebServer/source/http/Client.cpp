@@ -11,36 +11,41 @@ Client::~Client() {}
 void    Client::handleHTTPMethod(void)
 {
     std::string pagePath;
-    std::ostringstream page;
+//    std::ostringstream page;
+    std::stringstream page;
 
     pagePath = this->fileRequested();
     if (_isCGI){
         CGI cgi(pagePath, this->_request);
         this->_response.setBody(cgi.getBody());
-        this->_response.createHTTPHeader(200, "Content-Type: text/html; charset=utf-8", cgi.getBody().size());
+        this->_response.createHTTPHeader2(this->getStatusCode(), "text/html; charset=utf-8");
         this->_response.send();
         return;
     }
-    if (pagePath.compare(0, 2, "./") == 0)
+    else
     {
-        std::ifstream file(pagePath.c_str());
-        if (file)
+        if (pagePath.compare(0, 2, "./") == 0)
         {
-            // Here execute	methods or CGI
-            page << file.rdbuf();
-            file.close();
+            std::ifstream file(pagePath.c_str());
+            if (file)
+            {
+                page << file.rdbuf();
+                file.close();
+            }
+            else
+            {
+                pagePath.clear();
+                this->buildDefaultErrorPage(pagePath, "404");
+                page << pagePath;
+            }
         }
         else
-        {
-            pagePath.clear();
-            this->buildDefaultErrorPage(pagePath, "404");
             page << pagePath;
-        }
+        page.flush();
+        this->_response.processFileForHTTPResponse2(page, this->getStatusCode());
+        this->_response.send();
     }
-    else
-        page << pagePath;
-
-    page.flush();
+/*
     std::string text;
     int lenPage = page.str().size();
     text.append("HTTP/1.1 ").append(this->getStatusCode()).append("\r\n");
@@ -52,7 +57,9 @@ void    Client::handleHTTPMethod(void)
     content_len += "\r\n\n";
     text.append(content_len);
     text.append(page.str());
+
     this->_response.httpMessage = text;
+*/
     this->_statusCode.clear();
 }
 
@@ -273,6 +280,9 @@ void    Client::buildHeadOfPage(std::string & page, \
         page.append(msgTagEr).append(status).append(msgTitle).append(delimeter);
     else if (status.compare(0, status.size(), "500") == 0)
         page.append(msgTagEr).append(status).append(msgTitle).append(delimeter);
+    else if ((status.find("POST") != std::string::npos) || \
+        (status.find("GET") != std::string::npos))
+        page.append("    <title>").append(status).append("</title>").append(delimeter);
     page.append("</head>").append(delimeter);
 }
 
@@ -467,3 +477,21 @@ void    Client::buildDefaultErrorPage(std::string & page, const std::string & er
     page.append("keyPage").append(delimeter);
 //    std::cout << "final  | buildDefaultErrorPage: " << page << std::endl;
 }
+
+/*
+void    Client::buildCGIPage(std::string & page, const std::string & cgiBody, const std::string & method)
+{
+    std::cout << "Início | buildCGIPage: " << page << " cgiBody: " << cgiBody << std::endl;
+    std::string delimeter;
+
+    delimeter = "\r\n";
+    this->buildHeadOfPage(page, delimeter, method, "");
+    page.append("<body>").append(delimeter);
+    page.append("    <div>").append(delimeter);
+    page.append("        ").append(cgiBody).append(delimeter);
+    page.append("    </div>").append(delimeter);
+    page.append("</body>").append(delimeter);
+    page.append("</html>").append(delimeter);
+    std::cout << "final  | buildCGIPage: " << page << std::endl;
+}
+*/
