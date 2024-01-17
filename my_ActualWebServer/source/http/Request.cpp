@@ -187,9 +187,11 @@ void											Request::getBody(std::string const& buffer, int bytes)
         this->_ready = true;
 		this->_httpMessage = this->_header + this->_body;
 		printYellow("Reached the size");
+/*
 		printYellow("body start");
 		std::cout << this->_body << std::endl;
 		printYellow("body end");
+*/
     }
 }
 
@@ -380,7 +382,6 @@ bool											Request::splitRequest(std::string urlRequest, std::string root)
 		}
 	}
 /*
-*/
 	std::cout << "method: " << this->_method << " _location: " << this->_location << " requestedInf: " << this->_requestedInf;
 	std::map<std::string, std::string>::iterator a = this->_mapQueryString.begin();
 	std::map<std::string, std::string>::iterator z = this->_mapQueryString.end();
@@ -392,6 +393,7 @@ bool											Request::splitRequest(std::string urlRequest, std::string root)
 		a++;
 	}
 	std::cout << std::endl;
+*/
 	return (true);
 }
 

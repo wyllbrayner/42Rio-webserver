@@ -25,7 +25,7 @@ void Response::createHTTPHeader2(std::string statusCode, std::string contentType
     header.append("\r\n").append("\r\n");
 
     this->_header = header;
-    std::cout << "createHTTPHeader2: this->_header: " << this->_header << std::endl;
+//    std::cout << "createHTTPHeader2: this->_header: " << this->_header << std::endl;
 }
 
 void Response::createHTTPHeader(int statusCode, std::string contentType, int contentLength) {
@@ -46,7 +46,7 @@ void Response::createHTTPHeader(int statusCode, std::string contentType, int con
     header.append("\r\n");
 
     this->_header = header;
-    std::cout << "createHTTPHeader: this->_header: " << this->_header << std::endl;
+//    std::cout << "createHTTPHeader: this->_header: " << this->_header << std::endl;
 }
 
 void Response::send() {
