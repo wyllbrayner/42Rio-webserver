@@ -1,65 +1,75 @@
 #include "Connection.hpp"
 
-Connection::Connection() {}
+Connection::Connection(void) {}
 
-Connection::~Connection() {}
-
-void	Connection::addServersSockets(std::vector<Server> const& servers)
+Connection			&	Connection::operator=(const Connection & src)
 {
-//	std::cout << "Adding servers sockets" << std::endl;
-	for (size_t i = 0; i < servers.size(); i++)
-	{
-		addNewSocket(servers[i].getSocket());
-	}
+	if (this != &src)
+		this->_poolAllFd = src._poolAllFd;
+	return (*this);
 }
 
-void	Connection::addClientSocket(int socket)
+Connection::Connection(const Connection & copy)
+{
+	*this = copy;
+	return ;
+}
+
+Connection::~Connection(void) {}
+
+void					Connection::addServersSockets(std::vector<Server> \
+						const& servers)
+{
+	for (size_t i = 0; i < servers.size(); i++)
+		addNewSocket(servers[i].getSocket());
+}
+
+void					Connection::addClientSocket(int socket)
 {
 	std::cout << "Creating conection with a new client" << std::endl;
 	this->addNewSocket(socket);
 }
 
-void	Connection::addNewSocket(int socket_fd)
+void					Connection::addNewSocket(int socket_fd)
 {
-	std::cout << "Adding new socket number " << socket_fd << std::endl;
-	// Set the socket to be non-blocking
-	pollfd pfd;
+	pollfd	pfd;
 
+	std::cout << "Adding new socket number " << socket_fd << std::endl;
 	fcntl(socket_fd, F_SETFL, O_NONBLOCK);
 	pfd.fd = socket_fd;
 	pfd.events = POLLIN | POLLOUT;
 	pfd.revents = 0;
-	this->poolAllFd.push_back(pfd);
+	this->_poolAllFd.push_back(pfd);
 }
 
-void	Connection::closeConnection(int index)
+void					Connection::closeConnection(int index)
 {
-	std::cout << "Closing the connection: " << this->poolAllFd[index].fd \
+	std::cout << "Closing the connection: " << this->_poolAllFd[index].fd \
 	<< std::endl;
-	close(this->poolAllFd[index].fd);
-	this->poolAllFd.erase(this->poolAllFd.begin() + index);
+	close(this->_poolAllFd[index].fd);
+	this->_poolAllFd.erase(this->_poolAllFd.begin() + index);
 }
 
-void	Connection::closeAllConnections(void)
+void					Connection::closeAllConnections(void)
 {
 	size_t	i;
 
 	i = 0;
-	while (i < this->poolAllFd.size())
+	while (i < this->_poolAllFd.size())
 	{
-		std::cout << "Closing the connection: " << this->poolAllFd[i].fd \
+		std::cout << "Closing the connection: " << this->_poolAllFd[i].fd \
 		<< std::endl;
-		close(this->poolAllFd[i++].fd);
+		close(this->_poolAllFd[i++].fd);
 	}
-	this->poolAllFd.clear();
+	this->_poolAllFd.clear();
 }
 
 std::vector<pollfd>	&	Connection::getPollFd(void)
 {
-    return (this->poolAllFd);
+	return (this->_poolAllFd);
 }
 
 const pollfd		&	Connection::getFd(int i)
 {
-    return (this->poolAllFd[i]);
+	return (this->_poolAllFd[i]);
 }
