@@ -48,7 +48,6 @@ class Client
                             std::string errorCode);
         void                buildDefaultErrorPage(std::string & page, \
                             const std::string & errorCode);
-//        void                buildCGIPage(std::string & page, const std::string & cgiBody, const std::string & method);
 };
 
 #endif
