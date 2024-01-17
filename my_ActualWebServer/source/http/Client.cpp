@@ -16,9 +16,21 @@ void                    Client::handleHTTPMethod(void)
     pagePath = this->fileRequested();
     if (_isCGI){
         CGI cgi(pagePath, this->_request);
-        this->_response.setBody(cgi.getBody());
-        this->_response.createHTTPHeader2(this->getStatusCode(), "text/html; charset=utf-8");
-        this->_response.send();
+        
+        if (cgi.executeCGI()){
+            this->_response.setBody(cgi.getBody());
+            this->_response.createHTTPHeader2(this->getStatusCode(), "text/html; charset=utf-8");
+            this->_response.send();
+        }
+        else {
+            pagePath.clear();
+            this->buildDefaultErrorPage(pagePath, "500");
+            if (pagePath.find("keyPage") != std::string::npos)
+            pagePath.erase(pagePath.find("keyPage"));
+            this->_response.setBody(pagePath);
+            this->_response.createHTTPHeader2("500 Internal Server Error", "text/html; charset=utf-8");
+            this->_response.send();
+        }
         return;
     }
     else

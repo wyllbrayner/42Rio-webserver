@@ -96,6 +96,7 @@ void			Webserv::readDataClient(const int & i)
 		this->openNewConnection(i);
 	else if (!this->_requests[idRequest].isReady())
 	{
+		this->_requests[idRequest].setStart_time(time(NULL));
 		clientWithMessage = this->_conn.getFd(i).fd;
 		if (!this->_requests[idRequest].receiveFromClient(clientWithMessage))
 		{

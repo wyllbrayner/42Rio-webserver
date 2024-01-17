@@ -18,7 +18,6 @@
   </br>
     <h2>Test Get CGI</h2>
 
-    <h2>action real do get ./cgi-bin/get.py       /cgi-bin/indexConcat.html</h2>
     <form method="get" action="/cgi-bin/get.py">
       <p>
         <label>Primeiro número:</label>
@@ -40,12 +39,16 @@
       <input type="submit" value="Calcular" />
     </form>
 
-    <h2>action real do Upload./cgi-bin/post.py /cgi-bin/indexUpload.html</h2>
     <form method="post" action="/cgi-bin/post.py" enctype="multipart/form-data">
       <p>
         <label>Primeiro número:</label>
         <input type="file" name="file" required />
       </p>
+      <input type="submit" value="Submit" />
+    </form>
+
+    <form method="get" action="/cgi-bin/loop.py">
+      <p>Test</p>
       <input type="submit" value="Submit" />
     </form>
   </body>

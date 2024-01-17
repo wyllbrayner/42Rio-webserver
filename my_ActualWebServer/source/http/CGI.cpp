@@ -3,18 +3,6 @@
 CGI::CGI(std::string path, const Request & request): \
     _path(path), _request(request)
 {
-    if (_request.getMethod() == "GET")
-    {
-        initEnvGET(_request.getQueryStringS());
-        executeGET();
-        //start timer
-    }
-    else if (_request.getMethod() == "POST")
-    {
-        initEnvPOST(_request.getQueryStringS());
-        executePOST();
-        //start timer
-    }
 }
 
 /*
@@ -72,21 +60,41 @@ void        CGI::initEnvPOST(std::string queryString)
     _env.push_back(NULL);
 }
 
-void        CGI::executeGET(void)
+bool CGI::executeCGI(){
+    if (_request.getMethod() == "GET")
+    {
+        initEnvGET(_request.getQueryStringS());
+        int result = executeGET();
+        if (result == 1)
+            return true;
+        else if (result == -1)
+            return false;
+    } else if (_request.getMethod() == "POST"){
+        initEnvPOST(_request.getQueryStringS());
+        int result = executePOST();
+        if (result == 1)
+            return true;
+        else if (result == -1)
+            return false;
+    }
+    return false;
+}
+
+int        CGI::executeGET(void)
 {
     int pipefd[2];
 
     if(pipe(pipefd) == -1){
         std::cerr << "Erro ao criar o pipe" << std::endl;
-        return ;
+        return 0;
     }
-    pid_t pid = fork();
+    this->_cgi_pid= fork();
     this->_isActive = true;
-    if (pid == -1){
+    if (this->_cgi_pid == -1){
         std::cerr << "Error no fork" << std::endl;
-        return ;
+        return 0;
     }
-    else if (pid == 0){
+    else if (this->_cgi_pid == 0){
         close(pipefd[0]);
         dup2(pipefd[1], STDOUT_FILENO);
         close(pipefd[1]);
@@ -95,38 +103,43 @@ void        CGI::executeGET(void)
         args[1] = NULL;
         execve(_path.c_str(), args, _env.data());
         free(args[0]);
+        this->_isActive = false;
         std::cerr << "Error ao executar execve" << std::endl;
-        return ;
+        return 0;
     } else {
         close(pipefd[1]);
-        readFD(pipefd[0]);
-        wait(NULL);
+        int bytes = readFD(pipefd[0]);
+        if (bytes <= 0){
+            routineCheck(bytes, pipefd[0]);
+            return -1;
+        }
+       return 1;
     }
-    return ;
+    return 0;
 }
 
-void        CGI::executePOST(void)
+int        CGI::executePOST(void)
 {
     int responseFD[2];
 
     if(pipe(_requestFD) == -1){
         std::cerr << "Erro ao criar o pipe" << std::endl;
-        return ;
+        return 0;
     }
     if(pipe(responseFD) == -1){
         std::cerr << "Erro ao criar o pipe" << std::endl;
-        return ;
+        return 0;
     }
     if(!writeFD(_request.returnBody()))
-        return;
-    pid_t pid = fork();
+        return 0;
+    this->_cgi_pid = fork();
     
     this->_isActive = true;
-    if (pid == -1){
+    if (this->_cgi_pid == -1){
         std::cerr << "Error no fork" << std::endl;
-        return ;
+        return 0;
     }
-    else if (pid == 0){
+    else if (this->_cgi_pid == 0){
         close(_requestFD[1]);
         close(responseFD[0]);
         dup2(_requestFD[0], STDIN_FILENO);
@@ -139,16 +152,21 @@ void        CGI::executePOST(void)
         execve(_path.c_str(), args, _env.data());
         free(args[0]);
         std::cerr << "Error ao executar execve" << std::endl;
-        return;
+        return 0;
     } else {
         close(_requestFD[0]);
         close(responseFD[1]);
-        readFD(responseFD[0]);
-        waitpid(pid, NULL, 0);
+        int bytes =   readFD(responseFD[0]);
+        if (bytes <= 0){
+           routineCheck(bytes, responseFD[0]);
+           return -1;
+        }
+       return 1;
     }
+    return 0;
 }
 
-void        CGI::readFD(int fd)
+int        CGI::readFD(int fd)
 {
     char    buffer[BUFFER_SIZE_CGI];
     int     bytesRead;
@@ -157,36 +175,18 @@ void        CGI::readFD(int fd)
     if (bytesRead > 0)
     {
         this->_response.append(buffer, bytesRead);
-/*
-        std::cout << "Read: ";
-        std::cout << this->_response << std::endl;
-        std::cout << std::endl;
-*/
+        return bytesRead;
     }
     else
     {
         std::cerr << "Erro na leitura da resposta do filho" << std::endl;
-        //fazer uma classe de log
+        return 0;
     }
 }
 
 std::string CGI::getBody(void) const
 {
     return this->_response;
-}
-
-void        CGI::routineCheck(void)
-{
-    time_t  current_time = time(NULL);
-
-    while(_isActive)
-    {
-        if(current_time - this->_start_time >= TIME_LIMIT)
-        {
-            kill(this->_cgi_pid, SIGKILL);
-            this->_isActive = false;
-        }
-    }
 }
 
 bool        CGI::writeFD(std::string body)
@@ -208,3 +208,19 @@ bool        CGI::writeFD(std::string body)
     }
     return (true);
 }
+
+void CGI::routineCheck(int bytes, int pipefd){
+    time_t now = time(NULL);
+
+    while (bytes <= 0 || !this->_isActive){
+        bytes = readFD(pipefd);
+        if (difftime(now, this->_request.getStartTime()) >= TIME_LIMIT){
+            kill(this->_cgi_pid, SIGKILL);
+            this->_isActive = false;
+            return;
+        }
+        now = time(NULL);
+    }
+    return;
+}
+

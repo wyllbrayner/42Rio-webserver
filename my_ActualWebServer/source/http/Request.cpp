@@ -18,6 +18,16 @@ Request::~Request(void) {}
 /*				Getters of HTTP request.               */
 /*******************************************************/
 
+void					Request::setStart_time(time_t start_time)
+{
+	this->_start_time = start_time;
+}
+
+const time_t &			Request::getStartTime(void) const
+{
+	return (this->_start_time);
+}
+
 const std::string							&	Request::getMethod(void) const
 {
 	return (this->_method);

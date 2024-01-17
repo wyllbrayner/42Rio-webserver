@@ -11,7 +11,7 @@
 #include "Request.hpp"
 
 #define BUFFER_SIZE_CGI 64 * 1024  // 64 KB
-#define TIME_LIMIT 30
+#define TIME_LIMIT 3
 
 class   CGI
 {
@@ -25,13 +25,13 @@ class   CGI
         std::string         _response;
         const Request   &   _request;
         std::vector<char*>  _env;
-        void                executeGET(void);
-        void                executePOST(void);
+        int                 executeGET(void);
+        int                executePOST(void);
         void                initEnvGET(std::string queryString);
         void                initEnvPOST(std::string queryString);
-        void                readFD(int fd);
+        int                readFD(int fd);
         bool                writeFD(std::string body);
-        void                routineCheck(void);
+        void                routineCheck(int bytes, int pipefd);
     
     public:
         CGI(std::string path, const Request & request);
@@ -41,4 +41,6 @@ class   CGI
 */
         ~CGI(void);
         std::string         getBody(void) const;
+        bool                executeCGI();
+        
 };

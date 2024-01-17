@@ -39,6 +39,8 @@ class	Request
 		const std::string							&	returnHeader(void) const;
 		const std::string							&	getQueryStringS(void) const;
 		const std::map<std::string, std::string>	&	getMapQueryString(void) const;
+		const time_t 								&	getStartTime(void) const;
+		void											setStart_time(time_t start_time);
 
 	private:
 		int				                                 _fromClient;
@@ -79,4 +81,5 @@ class	Request
 		std::string										fixeUrlRequestAux(std::string & url, const std::string oldValue, const std::string toFind);
 		std::map<std::string, std::string>				parseQueryString(std::string queryString);
 		std::string				            			urlDecoder(const std::string & url);
+		time_t											_start_time;
 };
