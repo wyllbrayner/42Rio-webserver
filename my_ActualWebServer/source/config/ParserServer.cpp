@@ -12,10 +12,7 @@
 
 #include "ParserServer.hpp"
 
-ParserServer::ParserServer(void) : _nbrServers(0)
-{
-//	this->_nbrServers = 0;
-}
+ParserServer::ParserServer(void) : _nbrServers(0) {}
 
 ParserServer					&	ParserServer::operator=(const \
 									ParserServer & src)
@@ -67,7 +64,6 @@ void								ParserServer::setServers(\
 
 void								ParserServer::createServer(void)
 {
-//	std::cout << "start | createServer (void)" << std::endl;
 	ConfigFile	_server;
 	std::string	locationStr;
 	myVecS		locationVec;
@@ -88,13 +84,11 @@ void								ParserServer::createServer(void)
 	_server.fixeErrorPage();
 	this->_servers.push_back(_server);
 	this->_nbrServers = this->_servers.size();
-//	std::cout << "end   | createServer (void)" << std::endl;
 }
 
 void								ParserServer::createServer(const \
 									std::string & config_path)
 {
-//	std::cout << "start | createServer" << std::endl;
 	std::ifstream	ifs;
 	std::string		line;
 	std::string		servers;
@@ -104,53 +98,39 @@ void								ParserServer::createServer(const \
 	{
 		while(std::getline(ifs, line))
 		{
-//			std::cout << "file config: " << line << std::endl;
 			this->removeComents(line);
-//			Utils::trim( line );
 			servers += line;
 		}
 		ifs.close();
-//		std::cout << "servers final:" << servers << std::endl;
 		splitServers(servers);
-//		this->_nbrServers = this->_servers.size();
 		this->findReturn();
 		if ((this->getServers().size() > 1) || \
 				(this->getServers()[0].getPort().size() > 1))
 			this->buildSingleServer();
-//		this->_nbrServers = this->_servers.size();
 		this->removDuplic();
 		this->_nbrServers = this->_servers.size();
 	}
 	else
 		throw Error::InvalidPathServer();
-//	std::cout << "end   | createServer" << std::endl;
 }
 
 void								ParserServer::removeComents(\
 									std::string & line)
 {
-//	std::cout << "start | removeComents" << std::endl;
 	size_t	pos;
 
 	pos = line.find('#', 0);
 	if (pos != std::string::npos)
-	{
-//		std::cout << "possui comentário!! Pré => line: " << line << std::endl;
 		line.erase(pos, (std::string::npos - pos));
-//		std::cout << "possui comentário!! Pós => line: " << line << std::endl;
-	}
-//	std::cout << "end   | removeComents" << std::endl;
 }
 
 void								ParserServer::splitServers(std::string \
 									& servers)
 {
-//	std::cout << "start | splitServers" << std::endl;
 	size_t	start;
 	size_t	end;
 
 	start = 0;
-//	std::string					tmp; // apenas para teste
 	while (start < servers.size())
 	{
 		while ((start < servers.size()) && (std::isspace(servers[start])))
@@ -161,37 +141,30 @@ void								ParserServer::splitServers(std::string \
 		this->findStartServer(servers, start);
 		end = start;
 		this->findEndServer(servers, end);
-//		tmp = servers.substr(start, (end - start + 1)); // apenas para teste
-//		std::cout << "start: " << start << " end: " << end << " substr:" << tmp << std::endl;  // apenas para teste
 		this->buildServer(servers.substr(start, (end - start + 1)));
 		start = end + 1;
 	}
-//	std::cout << "end   | splitServers" << std::endl;
 }
 
 void								ParserServer::findStartServer(\
 									const std::string & servers, \
 									size_t & start)
 {
-//	std::cout << "start | findStartServer | start: " << start << std::endl;
 	while ((start < servers.size()) && std::isspace(servers[start]))
 		start++;
 	if (servers[start] != '{')
 		throw Error::InvalidConfigurationServer();
-//	std::cout << "end   | findStartServer | start: " << start << std::endl;
 }
 
 void								ParserServer::findEndServer(\
 									const std::string & servers, \
 									size_t & end)
 {
-//	std::cout << "start | findEndtServer  | end  : " << end << std::endl;
 	short unsigned int	scope;
 	
 	scope = 0;
 	while (end < servers.size())
 	{
-//		std::cout << "start | findEndtServer  | end  : " << end << " while: c "<< servers[end] << " scope: " << scope << std::endl;
 		if (servers[end] == '{')
 			scope++;
 		else if (servers[end] == '}')
@@ -202,16 +175,13 @@ void								ParserServer::findEndServer(\
 		}
 		end++;
 	}
-//	std::cout << "pré final da findEndServer" << std::endl;
 	if ((end == servers.size()) && scope)
 		throw Error::InvalidConfigurationServer();
-//	std::cout << "end   | findEndServer   | end  : " << end<< std::endl;
 }
 
 void								ParserServer::buildServer(\
 									const std::string & server)
 {
-//	std::cout << "start | buildServer: server: " << server << std::endl;
 	std::vector<std::string>::iterator	i;
 	std::vector<std::string>			splitted_server;
 	std::string							locationStr;
@@ -223,102 +193,72 @@ void								ParserServer::buildServer(\
 		i = splitted_server.begin();
 		while(i != splitted_server.end())
 		{
-//			std::cout << "splitted_server: " << *i << std::endl;
 			if (((*i).compare(0 , 6, "listen") == 0) && \
 				((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a listen!: " << *i << std::endl;
 				if (_server.getPort().empty())
 					_server.setPort(++i, splitted_server);
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a listen!: " << *i << std::endl;
 			}
 			else if (((*i).compare(0 , 4, "host") == 0) && \
 				((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a host!: " << *i << std::endl;
 				if (_server.getHost() == 0)
 					_server.setHost(*(++i));
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a host!: " << *i << std::endl;
 			}
 			else if (((*i).compare(0, 11, "server_name") == 0) && \
 					((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a server_name!: " << *i << std::endl;
 				if (_server.getServerName().empty())
 					_server.setServerName(++i, splitted_server);
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a server_name!: " << std::endl;
 			}
 			else if (((*i).compare(0, 5, "index") == 0) && \
 					((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a index!: " << *i << std::endl;
 				if (_server.getIndex().empty())
-				{
-//					std::cout << "index  " << *(i + 1) << std::endl;
 					_server.setIndex(++i, splitted_server);
-				}
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a index!: " << std::endl;
 			}
 			else if (((*i).compare(0, 13, "max_body_size") == 0) && \
 					((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a max_body_size!: " << *i << std::endl;
 				if (_server.getMaxBodySize() == -1)
-				{
-//					std::cout << "max_body_size  " << *(i + 1) << std::endl;
 					_server.setMaxBodySize(*(++i));
-				}
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a max_body_size!: " << std::endl;
 			}
 			else if (((*i).compare(0, 4, "root") == 0) && \
 					((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a root: " << *i << std::endl;
 				if (_server.getRoot().empty())
-				{
-//					std::cout << "root  " << *(i + 1) << std::endl;
 					_server.setRoot(*(++i));
-				}
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a root: " << std::endl;
 			}
 			else if (((*i).compare(0, 10, "error_page") == 0) && \
 					((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "this is a error_page: " << *i << std::endl;
 				if (_server.getErrorPage().empty())
-				{
-//					std::cout << "error_page  " << *(i + 1) << std::endl;
 					_server.setErrorPage(++i, splitted_server);
-				}
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "this is a error_page: " << std::endl;
 			}
 			else if (((*i).compare(0, 8, "location") == 0) && \
 					((i + 1) != splitted_server.end()))
 			{
-//				std::cout << "ini this is a location: " << *i << std::endl;
 				if (!_server.getRoot().empty() && !_server.getIndex().empty())
 				{
-//					std::cout << "ini this is a location: " << *i << " com root: " << _server.getRoot() << " index[0]: " << _server.getIndex()[0] << std::endl;
 					_server.setLocation(++i, splitted_server, \
 						_server.getRoot(), _server.getIndex()[0]);
 				}
 				else
 					throw Error::InvalidParameter();
-//				std::cout << "end this is a location: " << *i << std::endl;
 			}
 			if (i != splitted_server.end())
 				i++;
@@ -349,35 +289,19 @@ void								ParserServer::buildServer(\
 	}
 	else
 		throw Error::InvalidParameter();
-//	std::cout << "end   | buildServer: server: " << server << std::endl;
 }
 
 void								ParserServer::findReturn(void)
 {
-//	std::cout << "Start | findReturn" <<  std::endl;
 	size_t	i;
 
 	i = 0;
 	while (i < this->_servers.size())
-	{
-//		std::cout << "Server n: " << i << std::endl;
-//		if (this->getServers()[i].getLocation().size() > 1)
-//		if (this->getServers()[i].getLocation().size())
-//		{
-//			std::cout << "Server n: " << i << " possui " << this->getServers()[i].getLocation().size() << " locations. if" << std::endl;
-//			this->getServersSmart()[i].findLastReturn();
-//		}
-//		else
-//			std::cout << "Server n: " << i << " possui " << this->getServers()[i].getLocation().size() << " locations. else" << std::endl;	
-//		i++;
 		this->getServersSmart()[i++].findLastReturn();
-	}
-//	std::cout << "End   | findReturn" <<  std::endl;
 }
 
 void								ParserServer::buildSingleServer(void)
 {
-//	std::cout << "start | buildSingleServer" << std::endl;
 	size_t					i;
 	size_t					j;
 	ConfigFile				newConfFile;
@@ -404,12 +328,10 @@ void								ParserServer::buildSingleServer(void)
 		i++;
 	}
 	this->setServers(newServers);
-//	std::cout << "end   | buildSingleServer" << std::endl;
 }
 
 void								ParserServer::removDuplic(void)
 {
-//	std::cout << "Start | removDuplic" << std::endl;
 	std::vector<ConfigFile>	newServers;
 	bool					equal;
 	size_t					i;
@@ -419,44 +341,27 @@ void								ParserServer::removDuplic(void)
 	while (i < this->_servers.size())
 	{
 		equal = true;
-//		std::cout << "Server n: " << (i + 1) << std::endl;
 		j = 0;
 		while (j < newServers.size())
 		{
-//			std::cout << "newServer n: " << (j + 1) << std::endl;
-//			if ((this->getServers()[i].getPort()[0] == newServers[j].getPort()[0]) && (this->getServers()[i].getHost() == newServers[j].getHost()) && (this->equalServerName(i, j))) // sem Root
-//			if ((this->getServers()[i].getPort()[0] == newServers[j].getPort()[0])) // com Porta
 			if ((this->getServers()[i].getPort()[0] == newServers[j].getPort()[0]) \
 				&& (this->getServers()[i].getHost() == newServers[j].getHost()) \
 				&& (this->equalServerName(i, j)) && \
 				(this->getServers()[i].getRoot() == newServers[j].getRoot())) // com Root
-			{
-/*
-				std::cout << "Porta de i[" << i + 1 << "]: " << this->getServers()[i].getPort()[0] << " igual à Porta de j[" << j + 1 <<"]: " << newServers[j].getPort()[0] << std::endl;
-				std::cout << "Host de i[" << i + 1 << "]: " << this->getServers()[i].getHost() << " igual ao Host de j[" << j + 1 <<"]: " << newServers[j].getHost() << std::endl;
-				std::cout << "Host de i[" << i + 1 << "]: " << this->getServers()[i].getHost() << " igual ao Host de j[" << j + 1 <<"]: " << newServers[j].getHost() << std::endl;
-				std::cout << "ServerName de i[" << i + 1 << "] igual à ServerName de j[" << j + 1 << "]" << std::endl;
-				std::cout << "Root de i[" << i + 1 << "]: " << this->getServers()[i].getRoot() << " igual ao Root de j[" << j + 1 <<"]: " << newServers[j].getRoot() << std::endl;
-*/
 				equal = false;
-			}
 			j++;
 		}
 		if (equal)
 			newServers.push_back(this->getServers()[i]);
 		i++;
 	}
-//	std::cout << "pré\toriginal size: " << this->_servers.size() << " newServers size: " << newServers.size() << std::endl;
 	if (!newServers.empty())
 		this->setServers(newServers);
-//	std::cout << "pós\toriginal size: " << this->_servers.size() << " newServers size: " << newServers.size() << std::endl;
-//	std::cout << "end   | removDuplic" << std::endl;
 }
 
 bool								ParserServer::equalServerName(\
 									const size_t & i, const size_t & j) const
 {
-//	std::cout << "start | equalServerName" << std::endl;
 	size_t	k;
 	size_t	l;
 
@@ -473,7 +378,6 @@ bool								ParserServer::equalServerName(\
 		}
 		k++;
 	}
-//	std::cout << "end   | equalServerName" << std::endl;
 	return (false);
 }
 

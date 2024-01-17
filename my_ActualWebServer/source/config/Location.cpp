@@ -76,9 +76,7 @@ const std::string				&	Location::getReturn(void) const
 
 void								Location::setPath(std::string & path, std::string root)
 {
-//	std::cout << "int     de setPath: " << path << " com Root: " << root << std::endl;
 	this->_path = root.append(Utils::setPlace(path));
-//	std::cout << "end     de setPath: " << this->_path << std::endl;
 }
 
 void								Location::setPathSmart(std::string & path)
@@ -89,28 +87,14 @@ void								Location::setPathSmart(std::string & path)
 void								Location::setMethods(\
 									std::vector<std::string> & vecMethods)
 {
-//	std::cout << "int     de setMethods: " << vecMethods[0] << std::endl;
 	this->_methods = vecMethods;
-/*
-	size_t j = 0;
-//	std::cout << "setMethods: ";
-	while(j < this->_allowed_methods.size())
-	{
-		std::cout << this->_allowed_methods[j] << " ";
-		j++;
-	}
-	std::cout << std::endl;
-*/
-//	std::cout << "end     de setMethods: " << vecMethods[0] << std::endl;
 }
 
 void								Location::setDefaultMethods(void)
 {
-//	std::cout << "int     de setMethods: " << vecMethods[0] << std::endl;
 	this->_methods.push_back("GET");
 	this->_methods.push_back("DELETE");
 	this->_methods.push_back("POST");
-//	std::cout << "end     de setMethods: " << vecMethods[0] << std::endl;
 }
 
 void								Location::setIndex(\
@@ -131,27 +115,13 @@ void								Location::setAutoIndex(bool flag)
 
 void								Location::setReturn(std::string path, std::string root)
 {
-//	std::cout << "int     de setReturn: " << path << " com Root: " << root << std::endl;
 	this->_return = root.append(Utils::setPlace(path));
-//	std::cout << "end     de setReturn: " << this->_return << std::endl;
 }
 
 void								Location::setReturnSmart(std::string path)
 {
 	this->_return = path;
 }
-/*
-const std::string				&	Location::setPlace(std::string & path)
-{
-//	std::cout << "int     de setPlace: " << path << std::endl;
-	if (path.find("/") == 0)
-		path.erase(0, 1);
-	if (path.rfind("/") != (path.size() - 1))
-		path.append("/");
-//	std::cout << "end     de setPlace: " << path << std::endl;
-	return (path);
-}
-*/
 
 void								Location::fixeReturn(void)
 {
@@ -161,7 +131,6 @@ void								Location::fixeReturn(void)
 
 void								Location::printLocation(void) const
 {
-//	std::cout << "init printLocation" << std::endl;
 	std::cout << "  => path\t: " << this->getPath() << std::endl;
 	this->printVecString(this->getMethods(), "  => methods\t: ");
 	this->printVecString(this->getIndex(), "  => index\t: ");
@@ -170,7 +139,6 @@ void								Location::printLocation(void) const
 	else
 		std::cout << "  => autoIndex\t: " << "false" << std::endl;
 	std::cout << "  => return\t: " << this->getReturn() << std::endl;
-//	std::cout << "fim  printLocation" << std::endl;
 }
 
 void								Location::printVecString(\
