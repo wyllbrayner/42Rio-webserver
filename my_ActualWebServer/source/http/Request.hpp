@@ -20,66 +20,63 @@ class	Request
 	public:
 		Request(int newClient, ConfigFile _configFile);
 		~Request(void);
-
-		const std::string	&	getMethod(void) const;
-		const std::string	&	getLocation(void) const;
-		const std::string	&	getRequestedInf(void) const;
-		const std::string	&	getContentType(void) const;
-		const std::string	&	getBoundary(void) const;
-        int                     totalLength(void);
-		std::string 	    	totalLengthS(void) const;
-		const std::string &		returnBody(void) const;
-		const std::string &		getUserAgent(void) const;
-		const std::string &		getHost(void) const;
-		const std::string &		returnHeader(void) const;
-		const std::string 		returnPort(void) const;
-
-		const ConfigFile	&	getServerConf(void) const;
-		const std::map<std::string, std::string> &	getMapQueryString(void) const;
-		const std::string	&	getQueryStringS(void) const;
-        const size_t		&	getContentLength(void) const;
-        bool                    isReady(void) const;
-		bool		            receiveFromClient(int client);
-        void                    reset(void);
+        int												totalLength(void);
+        bool											isReady(void) const;
+		bool											receiveFromClient(int client);
+        void											reset(void);
+		std::string										totalLengthS(void) const;
+        const size_t								&	getContentLength(void) const;
+		const ConfigFile							&	getServerConf(void) const;
+		const std::string								returnPort(void) const;
+		const std::string							&	getMethod(void) const;
+		const std::string							&	getLocation(void) const;
+		const std::string							&	getRequestedInf(void) const;
+		const std::string							&	getContentType(void) const;
+		const std::string							&	getBoundary(void) const;
+		const std::string							&	returnBody(void) const;
+		const std::string							&	getUserAgent(void) const;
+		const std::string							&	getHost(void) const;
+		const std::string							&	returnHeader(void) const;
+		const std::string							&	getQueryStringS(void) const;
+		const std::map<std::string, std::string>	&	getMapQueryString(void) const;
 
 	private:
-        int                                 _fromClient;
-        bool                                _ready;
-		size_t								_contentLength;
-    	ConfigFile							_serverConf;
-		std::string							_header;
-		std::string							_host;
-		std::string							_userAgent;
-        std::string     			        _body;
-		std::string							_httpMessage;
-		std::string							_method;
-		std::string							_location;
-		std::string							_requestedInf;
-		std::string							_contentType;
-		std::string							_boundary;
-        std::string                         _delimeter;
-		std::string                         _queryStringS;
-		std::map<std::string, std::string>	_mapQueryString;
-
-//		void		            splitRequest(std::string header, std::string root);
-		bool		            splitRequest(std::string header, std::string root);
-		bool		            parseRequest(void);
-		void					fixeUrlRequest(std::string & urlRequest);
-		std::string				fixeUrlRequestAux(std::string & url, \
-								const std::string oldValue, const std::string toFind);
-		void					findStartEnd(size_t & start, size_t & end, \
-								const std::string toFind, const std::string & place);
-		std::map<std::string, std::string>	parseQueryString(std::string queryString);
-		std::string	            urlDecoder(const std::string & url);
-        int                     checkBytesReceived(ssize_t bytes_received);
-		bool		            getHeader(std::string const& buffer);
-		void		            findContentLength(void);
-		void		            findContentType(void);
-		void					findHost(void);
-		void					findUserAgent(void);
-		void					findBoundary(void);
-		void		            getBody(std::string const& buffer, int bytes);
-        void                    appendTheBody(std::string buffer, const int bytes);
-		void					fixebuffer(std::string & buffer);
-		void					printYellow(std::string const& str) const;
+		int				                                 _fromClient;
+		bool											_ready;
+		size_t											_contentLength;
+		ConfigFile										_serverConf;
+		std::string										_header;
+		std::string										_host;
+		std::string										_userAgent;
+		std::string     			    			    _body;
+		std::string										_httpMessage;
+		std::string										_method;
+		std::string										_location;
+		std::string										_requestedInf;
+		std::string										_contentType;
+		std::string										_boundary;
+		std::string				                         _delimeter;
+		std::string             			            _queryStringS;
+		std::map<std::string, std::string>				_mapQueryString;
+		int                 			    			checkBytesReceived(ssize_t bytes_received);
+		bool					            			splitRequest(std::string header, std::string root);
+		bool		    			        			parseRequest(void);
+		bool		            						getHeader(std::string const& buffer);
+		void											fixeUrlRequest(std::string & urlRequest);
+		void											findStartEnd(size_t & start, size_t & end, \
+			const std::string toFind, const std::string & place);
+		void					            			findContentLength(void);
+		void		    			        			findContentType(void);
+		void											findHost(void);
+		void											findUserAgent(void);
+		void											findBoundary(void);
+		void		            						getBody(std::string const& buffer, \
+			int bytes);
+		void			                    			appendTheBody(std::string buffer, \
+			const int bytes);
+		void											fixebuffer(std::string & buffer);
+		void											printYellow(const std::string & str) const;
+		std::string										fixeUrlRequestAux(std::string & url, const std::string oldValue, const std::string toFind);
+		std::map<std::string, std::string>				parseQueryString(std::string queryString);
+		std::string				            			urlDecoder(const std::string & url);
 };
