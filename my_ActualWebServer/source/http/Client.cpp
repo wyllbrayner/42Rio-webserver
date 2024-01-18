@@ -19,7 +19,7 @@ void                    Client::handleHTTPMethod(void)
         
         if (cgi.executeCGI()){
             this->_response.setBody(cgi.getBody());
-            this->_response.createHTTPHeader2(this->getStatusCode(), "text/html; charset=utf-8");
+            this->_response.createHTTPHeader(this->getStatusCode(), "text/html; charset=utf-8");
             this->_response.send();
         }
         else {
@@ -28,7 +28,7 @@ void                    Client::handleHTTPMethod(void)
             if (pagePath.find("keyPage") != std::string::npos)
             pagePath.erase(pagePath.find("keyPage"));
             this->_response.setBody(pagePath);
-            this->_response.createHTTPHeader2("500 Internal Server Error", "text/html; charset=utf-8");
+            this->_response.createHTTPHeader("500 Internal Server Error", "text/html; charset=utf-8");
             this->_response.send();
         }
         return;
@@ -53,7 +53,7 @@ void                    Client::handleHTTPMethod(void)
         else
             page << pagePath;
         page.flush();
-        this->_response.processFileForHTTPResponse2(page, this->getStatusCode());
+        this->_response.processFileForHTTPResponse(page, this->getStatusCode());
         this->_response.send();
     }
     this->_statusCode.clear();
@@ -98,6 +98,9 @@ void                    Client::selectContent(std::string & fileRequested, \
     size_t                              j;
     size_t                              k;
 
+    this->validRequest(fileRequested);
+    if (!fileRequested.empty())
+        return ;
     i = 0;
     while (i < this->_request.getServerConf().getLocation().size())
     {
@@ -135,6 +138,29 @@ void                    Client::selectContent(std::string & fileRequested, \
 	}
     if (i == this->_request.getServerConf().getLocation().size())
         fileRequested.append("Error404");
+}
+
+void                    Client::validRequest(std::string & fileRequested)
+{
+    int                         j;
+    int                         k;
+    size_t                      i;
+    std::string                 tmpString;
+    std::vector<std::string>    tmpVec00;
+
+    i = this->_request.getHost().find(":");
+    if (i != std::string::npos)
+    {
+        j = this->_request.getServerConf().getMaxBodySize();
+        k = this->_request.getContentLength();
+        tmpString = this->_request.getHost().substr(0, i);
+        tmpVec00 = this->_request.getServerConf().getServerName();
+        if (((inet_addr(tmpString.c_str()) != \
+                this->_request.getServerConf().getHost()) \
+            && (std::find(tmpVec00.begin(), tmpVec00.end(), tmpString) == \
+                tmpVec00.end())) || (j < k))
+            fileRequested.append("Error500");
+    }
 }
 
 void                    Client::buildGetfileRequested(std::string & \
@@ -357,6 +383,8 @@ void                    Client::searchErrorFile(std::string & fileRequested, \
         this->_statusCode.append(errorCode).append(" Request Timeout");
     else if (errorCode.compare(0, 3, "500") == 0)
         this->_statusCode.append(errorCode).append(" Internal Server Error");
+    if (this->_isCGI)
+        this->_isCGI = false;
 }
 
 void                    Client::buildDefaultErrorPage(std::string & page, \
