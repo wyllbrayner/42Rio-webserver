@@ -123,26 +123,38 @@ const size_t								&	Request::getContentLength(void) const
 
 bool											Request::receiveFromClient(int client)
 {
+//	std::cout << "Início | receiveFromClient: " << client << std::endl;
 	char	buffer[BUFFER_SIZE];
 	int		bytes;
+//	std::string	endBoundary;
 
+//	if (!this->getBoundary().empty())
+//	{
+//		endBoundary = this->getBoundary();
+//		endBoundary.append("--");
+//	}
 	bytes = recv(client, buffer, BUFFER_SIZE - 1, 0);
     if (this->checkBytesReceived(bytes) != 1)
 	{
-		std::cout << "fim    | receiveFromClient: " << client << std::endl;
+//		std::cout << "fim    | receiveFromClient0: " << client << std::endl;
 		return (false);
 	}
 	buffer[bytes] = '\0';
-/*
 	std::cout << "Round: Bodysize: " << this->_body.size() \
 				<< " | I read now: " << bytes << " bytes." << std::endl;
+/*
 	printYellow("content start");
 	std::cout << buffer << std::endl;
+	std::cout << endBoundary << " endBoundary" <<std::endl;
 	printYellow("content end");
 */
 	if (!this->getHeader(buffer))
+	{
+//		std::cout << "fim    | receiveFromClient1: " << client << std::endl;
 		return (false);
+	}
 	this->getBody(buffer, bytes);
+//	std::cout << "fim    | receiveFromClient2: " << client << std::endl;
 	return (true);
 }
 
@@ -181,18 +193,39 @@ bool											Request::getHeader(std::string const& buffer)
 
 void											Request::getBody(std::string const& buffer, int bytes)
 {
+//	std::cout << "inicio | getBody bytes: " << bytes << " lenght: " << this->getContentLength() << std::endl;
+	std::string	endBoundary;
+
     this->appendTheBody(buffer, bytes);
+	if (!this->getBoundary().empty())
+	{
+		endBoundary = this->getBoundary();
+		endBoundary.append("--");
+		if (this->_body.find(endBoundary) != std::string::npos)
+		{
+			printYellow("    Achou endBoundary");
+			this->_ready = true;
+			this->_httpMessage = this->_header + this->_body;
+	//		printYellow("Reached the size");
+		printYellow("body start");
+		std::cout << this->_body << std::endl;
+		printYellow("body end");
+	/*
+	*/
+		}
+	}
     if (this->_body.size() == this->_contentLength)
     {
         this->_ready = true;
 		this->_httpMessage = this->_header + this->_body;
-		printYellow("Reached the size");
+//		printYellow("Reached the size");
+//		printYellow("body start");
+//		std::cout << this->_body << std::endl;
+//		printYellow("body end");
 /*
-		printYellow("body start");
-		std::cout << this->_body << std::endl;
-		printYellow("body end");
 */
     }
+//	std::cout << "fim    | getBody" << std::endl;
 }
 
 void											Request::appendTheBody(std::string buffer, const int bytes)

@@ -12,17 +12,20 @@ void                    Client::handleHTTPMethod(void)
 {
     std::string pagePath;
     std::stringstream page;
-
+    std::cout << "entrou no cliente" << std::endl;
     pagePath = this->fileRequested();
     if (_isCGI){
         CGI cgi(pagePath, this->_request);
+        std::cout << "entrou no CGI do cliente" << std::endl;
         
         if (cgi.executeCGI()){
+            std::cout << "O CGI do cliente retornou OK" << std::endl;
             this->_response.setBody(cgi.getBody());
             this->_response.createHTTPHeader(this->getStatusCode(), "text/html; charset=utf-8");
             this->_response.send();
         }
         else {
+            std::cout << "O CGI do cliente retornou NOK" << std::endl;
             pagePath.clear();
             this->buildDefaultErrorPage(pagePath, "500");
             if (pagePath.find("keyPage") != std::string::npos)
