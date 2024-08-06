@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GetPost Page</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="./calc.html">Calculador</a></li>
+      <li><a href="https://www.google.com/">search</a></li>
+    </ul>
+    <h1>Web Server</h1>
+
+  </br>
+  </br>
+    <h2>Test Get CGI</h2>
+
+    <form method="get" action="/cgi-bin/get.py">
+      <p>
+        <label>Primeiro número:</label>
+        <input type="text" name="num1" required />
+      </p>
+      <p>
+        <label>Segundo número:</label>
+        <input type="text" name="num2" required />
+      </p>
+      <p>
+        <label>Operação:</label>
+        <select name="operacao">
+          <option value="+">+</option>
+          <option value="-">-</option>
+          <option value="*">*</option>
+          <option value="/">/</option>
+        </select>
+      </p>
+      <input type="submit" value="Calcular" />
+    </form>
+
+    <form method="post" action="/cgi-bin/post.py" enctype="multipart/form-data">
+      <p>
+        <label>Primeiro número:</label>
+        <input type="file" name="file" required />
+      </p>
+      <input type="submit" value="Submit" />
+    </form>
+
+    <form method="get" action="/cgi-bin/loop.py">
+      <p>Test</p>
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>
