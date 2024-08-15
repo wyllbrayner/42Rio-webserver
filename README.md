@@ -21,7 +21,7 @@ Neste projeto devemos desenvolver um servidor web que replique as funcionalidade
 </ul>
 
 # Como clonar o repositório...
-    Utilize um sistema operacional baseado no Unix (Linux ou MacOs), clone o [projeto](https://github.com/wyllbrayner/42Rio-webserver) do **github**.
+Utilize um sistema operacional baseado no Unix (Linux ou MacOs), clone o [projeto](https://github.com/wyllbrayner/42Rio-webserver) do **github**.
 </br>
 </br>
 
