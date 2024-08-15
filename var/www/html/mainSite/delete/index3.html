@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requisição DELETE</title>
+</head>
+<body>
+
+    <h1>Lista de Compras Escolares (index3)</h1>
+
+    <div class="post" id="post1">
+        <h2>#1 - Caneta</h2>
+        <p>Nome: Caneta</p>
+        <p>Quantidade: 15</p>
+        <p>Preço: R$ 1,20</p>
+        <button onclick="excluirPost('post1')">Excluir</button>
+    </div>
+    
+    <div class="post" id="post2">
+        <h2>#2 - Lápis</h2>
+        <p>Nome: Lápis</p>
+        <p>Quantidade: 20</p>
+        <p>Preço: R$ 1,00</p>
+        <button onclick="excluirPost('post2')">Excluir</button>
+    </div>
+    
+    <div class="post" id="post3">
+        <h2>#3 - Borracha</h2>
+        <p>Nome: Borracha</p>
+        <p>Quantidade: 15</p>
+        <p>Preço: R$ 0,70</p>
+        <button onclick="excluirPost('post3')">Excluir</button>
+    </div>
+
+    <hr>
+
+    <script>
+        function excluirPost(postId) {
+            fetch(`http://127.0.0.42:8003/delete/index3.html?id=${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Post ${postId} excluído com sucesso.`);
+                    return fetch('http://127.0.0.42:8003/delete/index3.html');
+                } else {
+                    console.error(`Falha ao excluir o post ${postId}.`);
+                }
+            })
+            .then(updatedResponse => {
+                if (updatedResponse.ok) {
+                    console.log('Dados atualizados com sucesso.');
+                    location.reload();
+                } else {
+                    console.error('Falha ao obter dados atualizados.');
+                }
+            })
+            .catch(error => console.error('Erro na requisição DELETE:', error));
+        }
+    </script>    
+</body>
+</html>
